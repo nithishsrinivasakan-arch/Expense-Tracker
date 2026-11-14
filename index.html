@@ -194,18 +194,11 @@
             </button>
           </div>
 
-          <!-- Reason Input with 1-Tap Quick Chips -->
-          <div class="space-y-1.5">
-            <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
-              <span class="text-[10px] font-bold text-slate-500 uppercase shrink-0">Quick:</span>
-              <button type="button" data-reason="Lunch" class="quick-reason-chip text-[11px] px-2.5 py-1 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 shrink-0">Lunch</button>
-              <button type="button" data-reason="Coffee / Tea" class="quick-reason-chip text-[11px] px-2.5 py-1 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 shrink-0">Coffee</button>
-              <button type="button" data-reason="Auto Fare" class="quick-reason-chip text-[11px] px-2.5 py-1 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 shrink-0">Auto</button>
-              <button type="button" data-reason="Cab / Uber" class="quick-reason-chip text-[11px] px-2.5 py-1 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 shrink-0">Cab</button>
-              <button type="button" data-reason="Groceries" class="quick-reason-chip text-[11px] px-2.5 py-1 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 shrink-0">Groceries</button>
-              <button type="button" data-reason="Snacks" class="quick-reason-chip text-[11px] px-2.5 py-1 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 shrink-0">Snacks</button>
-              <button type="button" data-reason="Dinner" class="quick-reason-chip text-[11px] px-2.5 py-1 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 shrink-0">Dinner</button>
-            </div>
+          <!-- 2. Reason Input: Where I can type why I spent -->
+          <div class="space-y-1">
+            <label for="reasonInput" class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block px-0.5">
+              Why did you spend?
+            </label>
             <input
               id="reasonInput"
               type="text"
@@ -216,60 +209,29 @@
               spellcheck="false"
               data-form-type="other"
               data-lpignore="true"
-              placeholder="Why did you spend? (e.g. Lunch, Uber)"
-              class="w-full bg-slate-950/80 border border-slate-800 focus:border-[#ea7a87] focus:ring-1 focus:ring-[#ea7a87]/30 rounded-2xl px-4 py-3 text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none transition-all"
+              placeholder="e.g. Lunch, Uber, Groceries, Coffee"
+              class="w-full bg-slate-950/80 border border-slate-800 focus:border-[#ea7a87] focus:ring-1 focus:ring-[#ea7a87]/30 rounded-2xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none transition-all"
             />
           </div>
 
-          <!-- Category Keyword Selector -->
-          <div class="space-y-2">
-            <div class="flex items-center justify-between text-[11px] text-slate-400">
-              <span class="font-bold uppercase tracking-wider">CATEGORY TAG</span>
-              <span class="text-slate-500 text-[10px]">Tap or type custom</span>
-            </div>
-
-            <!-- Horizontal Scrolling Touch Pills -->
-            <div id="quickTagChips" class="flex items-center gap-1.5 overflow-x-auto py-1 no-scrollbar">
-              <button type="button" data-tag="Food" class="tag-chip shrink-0 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all bg-slate-800/80 border-slate-700 text-slate-300 hover:border-slate-600">
-                🍔 Food
-              </button>
-              <button type="button" data-tag="Travel" class="tag-chip shrink-0 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all bg-[#ea7a87]/20 border-[#ea7a87]/70 text-[#ea7a87] shadow-sm shadow-rose-950">
-                🚕 Travel
-              </button>
-              <button type="button" data-tag="Shopping" class="tag-chip shrink-0 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all bg-slate-800/80 border-slate-700 text-slate-300 hover:border-slate-600">
-                🛍️ Shopping
-              </button>
-              <button type="button" data-tag="Bills" class="tag-chip shrink-0 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all bg-slate-800/80 border-slate-700 text-slate-300 hover:border-slate-600">
-                🧾 Bills
-              </button>
-              <button type="button" data-tag="Utilities" class="tag-chip shrink-0 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all bg-slate-800/80 border-slate-700 text-slate-300 hover:border-slate-600">
-                ⚡ Utilities
-              </button>
-              <button type="button" data-tag="Health" class="tag-chip shrink-0 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all bg-slate-800/80 border-slate-700 text-slate-300 hover:border-slate-600">
-                💊 Health
-              </button>
-              <button type="button" data-tag="Fuel" class="tag-chip shrink-0 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all bg-slate-800/80 border-slate-700 text-slate-300 hover:border-slate-600">
-                ⛽ Fuel
-              </button>
-              <button type="button" data-tag="Misc" class="tag-chip shrink-0 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all bg-slate-800/80 border-slate-700 text-slate-300 hover:border-slate-600">
-                📌 Misc
-              </button>
-            </div>
-
-            <!-- Category input with datalist -->
+          <!-- 3. Category Tag Input: Type a tag -->
+          <div class="space-y-1">
+            <label for="tagInput" class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block px-0.5">
+              Category Tag
+            </label>
             <input
               id="tagInput"
               type="text"
               list="categoryKeywordsList"
-              value="Travel"
-              placeholder="Travel"
+              value="Food"
+              placeholder="Type a tag (e.g. Food, Travel, Bills, Shopping)"
               autocomplete="off"
               autocorrect="off"
               autocapitalize="off"
               spellcheck="false"
               data-form-type="other"
               data-lpignore="true"
-              class="w-full bg-slate-950/80 border border-slate-800 focus:border-[#ea7a87] focus:ring-1 focus:ring-[#ea7a87]/30 rounded-2xl px-4 py-2.5 text-xs sm:text-sm text-slate-200 placeholder-slate-500 focus:outline-none transition-all"
+              class="w-full bg-slate-950/80 border border-slate-800 focus:border-[#ea7a87] focus:ring-1 focus:ring-[#ea7a87]/30 rounded-2xl px-4 py-3 text-sm text-slate-200 placeholder-slate-500 focus:outline-none transition-all"
             />
             <datalist id="categoryKeywordsList">
               <option value="Food"></option>
@@ -1186,30 +1148,16 @@
         });
       }
 
-      // Quick Reason Chips
-      document.querySelectorAll('.quick-reason-chip').forEach(btn => {
-        btn.addEventListener('click', () => {
-          reasonInput.value = btn.getAttribute('data-reason') || '';
-          if (navigator.vibrate) navigator.vibrate(20);
+      // Category chip click (if chips are present)
+      const quickTagChips = document.getElementById('quickTagChips');
+      if (quickTagChips) {
+        quickTagChips.addEventListener('click', e => {
+          const btn = e.target.closest('.tag-chip');
+          if (!btn) return;
+          const chosen = btn.getAttribute('data-tag') || 'Misc';
+          tagInput.value = chosen;
         });
-      });
-
-      // Category Chip Click
-      quickTagChips.addEventListener('click', e => {
-        const btn = e.target.closest('.tag-chip');
-        if (!btn) return;
-        const chosen = btn.getAttribute('data-tag') || 'Misc';
-        tagInput.value = chosen;
-
-        // Highlight selected chip
-        quickTagChips.querySelectorAll('.tag-chip').forEach(c => {
-          if (c.getAttribute('data-tag') === chosen) {
-            c.className = 'tag-chip shrink-0 px-2.5 py-1 rounded-xl text-xs font-semibold border transition-all bg-rose-500/20 border-rose-500/60 text-rose-300';
-          } else {
-            c.className = 'tag-chip shrink-0 px-2.5 py-1 rounded-xl text-xs font-semibold border transition-all bg-slate-800/80 border-slate-700 text-slate-300 hover:border-slate-600';
-          }
-        });
-      });
+      }
 
       // Submit Expense Form: Automatically saves immediately and shows confirmation screen
       expenseForm.addEventListener('submit', e => {
