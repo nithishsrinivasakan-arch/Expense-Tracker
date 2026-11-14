@@ -127,11 +127,11 @@
 
       <!-- Header Actions -->
       <div class="flex items-center gap-2 shrink-0">
-        <!-- Install App Button (Styled as vibrant red pill button with download icon) -->
+        <!-- Install App Button (Pastel Red pill button) -->
         <button
           id="installAppBtn"
           type="button"
-          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-rose-500 via-rose-600 to-red-600 active:scale-95 text-white font-extrabold text-xs shadow-lg shadow-rose-900/50 transition-all"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#ea7a87] via-[#e56b6f] to-[#ea7a87] active:scale-95 text-white font-extrabold text-xs shadow-lg shadow-rose-900/40 transition-all"
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V3" />
@@ -303,11 +303,11 @@
             </datalist>
           </div>
 
-          <!-- Big Red Record Expense Button (Without plus icon) -->
+          <!-- Pastel Red Record Expense Button (Without plus icon) -->
           <button
             id="recordBtn"
             type="submit"
-            class="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-rose-600 via-rose-500 to-red-600 hover:from-rose-500 hover:to-red-500 active:scale-[0.98] text-white font-extrabold text-sm tracking-wide shadow-xl shadow-rose-600/35 transition-all flex items-center justify-center"
+            class="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-[#ea7a87] via-[#e56b6f] to-[#ea7a87] hover:opacity-95 active:scale-[0.98] text-white font-black text-sm tracking-wide shadow-lg shadow-rose-950/40 transition-all flex items-center justify-center"
           >
             <span>Record Expense</span>
           </button>
@@ -328,74 +328,90 @@
           </div>
 
           <!-- This Month (Bordered in Red with Status Dot as in Image) -->
-          <div class="bg-slate-900/90 border border-rose-500/50 rounded-2xl p-2.5 flex flex-col justify-between shadow-md shadow-rose-950/30 relative">
+          <div class="bg-slate-900/90 border border-[#ea7a87]/60 rounded-2xl p-2.5 flex flex-col justify-between shadow-md shadow-rose-950/30 relative">
             <div class="flex items-center justify-between">
-              <span class="text-[10px] font-bold text-rose-400 uppercase tracking-wider">THIS MONTH</span>
-              <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+              <span class="text-[10px] font-bold text-[#ea7a87] uppercase tracking-wider">THIS MONTH</span>
+              <span class="w-1.5 h-1.5 rounded-full bg-[#ea7a87]"></span>
             </div>
-            <p id="summaryMonth" class="text-sm font-black text-rose-400 mt-1 truncate tabular-nums">₹0</p>
+            <p id="summaryMonth" class="text-sm font-black text-[#ea7a87] mt-1 truncate tabular-nums">₹0</p>
           </div>
         </div>
 
       </section>
 
       <!-- ====================================================
-           VIEW 2: FULL HISTORY & TRANSACTIONS
+           VIEW 2: FULL HISTORY & TRANSACTIONS (WITH CALENDAR FILTER)
            ==================================================== -->
       <section id="viewHistory" class="hidden flex-1 flex flex-col overflow-hidden py-1 space-y-2">
-        <!-- Controls Bar -->
-        <div class="flex items-center gap-1.5 shrink-0">
-          <div class="relative flex-1">
-            <input
-              id="searchFilterInput"
-              type="text"
-              placeholder="Search expenses..."
-              class="w-full bg-slate-900 border border-slate-800 rounded-xl pl-8 pr-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-rose-500"
-            />
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-slate-500 absolute left-2.5 top-1/2 -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
+        <!-- Controls Bar with Calendar Date Filter -->
+        <div class="space-y-1.5 shrink-0">
+          <!-- Row 1: Search + CSV Export -->
+          <div class="flex items-center gap-1.5">
+            <div class="relative flex-1">
+              <input
+                id="searchFilterInput"
+                type="text"
+                placeholder="Search reason, tag, amount..."
+                autocomplete="off"
+                class="w-full bg-slate-900 border border-slate-800 rounded-xl pl-8 pr-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-[#ea7a87]"
+              />
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-slate-500 absolute left-2.5 top-1/2 -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <button
+              id="exportCsvBtn"
+              type="button"
+              class="px-2.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-[#ea7a87] flex items-center gap-1 shrink-0"
+              title="Export CSV"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <span>CSV</span>
+            </button>
           </div>
-          <select
-            id="tagFilterSelect"
-            aria-label="Filter by Tag"
-            class="bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-2 text-xs text-slate-200 focus:outline-none focus:border-rose-500 shrink-0"
-          >
-            <option value="ALL">All Tags</option>
-          </select>
-          <button
-            id="exportCsvBtn"
-            type="button"
-            class="px-2.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-rose-300 flex items-center gap-1 shrink-0"
-            title="Export CSV"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <span>CSV</span>
-          </button>
+
+          <!-- Row 2: Category Filter + Calendar Date Picker Filter -->
+          <div class="flex items-center gap-1.5">
+            <select
+              id="tagFilterSelect"
+              aria-label="Filter by Tag"
+              class="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-[#ea7a87]"
+            >
+              <option value="ALL">All Categories</option>
+            </select>
+
+            <!-- Calendar Date Picker -->
+            <div class="flex items-center shrink-0 gap-1">
+              <input
+                id="dateFilterInput"
+                type="date"
+                aria-label="Filter by Calendar Date"
+                title="Filter by Calendar Date"
+                class="bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-[#ea7a87] cursor-pointer"
+              />
+              <button
+                id="clearDateFilterBtn"
+                type="button"
+                class="hidden text-[11px] font-bold text-slate-400 hover:text-[#ea7a87] active:scale-95 px-2 py-1 rounded-xl bg-slate-800/80 shrink-0 transition-all"
+                title="Reset date filter"
+              >
+                ✕ All
+              </button>
+            </div>
+          </div>
         </div>
 
         <!-- History Summary Strip -->
         <div class="flex items-center justify-between text-[11px] text-slate-400 px-1 shrink-0">
           <span id="filteredSummaryText">Showing 0 records</span>
-          <span id="filteredTotalText" class="font-bold text-rose-400 tabular-nums">Total: ₹0</span>
+          <span id="filteredTotalText" class="font-bold text-[#ea7a87] tabular-nums">Total: ₹0</span>
         </div>
 
         <!-- Expense List Container -->
         <div id="expenseListContainer" class="flex-1 overflow-y-auto space-y-2 pr-0.5 select-text">
           <!-- Populated by JS -->
-        </div>
-
-        <!-- Clear All Data Button -->
-        <div class="pt-1 shrink-0 flex justify-end">
-          <button
-            id="clearAllDataBtn"
-            type="button"
-            class="text-[11px] text-slate-500 hover:text-rose-400 transition-colors px-2 py-1"
-          >
-            Clear All Data
-          </button>
         </div>
       </section>
 
@@ -445,7 +461,7 @@
       <button
         id="navAddBtn"
         type="button"
-        class="nav-tab-btn flex flex-col items-center justify-center py-1.5 px-1 rounded-2xl text-[11px] font-extrabold transition-all bg-gradient-to-r from-rose-500 via-rose-600 to-red-600 text-white shadow-lg shadow-rose-950/60"
+        class="nav-tab-btn flex flex-col items-center justify-center py-1.5 px-1 rounded-2xl text-[11px] font-extrabold transition-all bg-gradient-to-r from-[#ea7a87] via-[#e56b6f] to-[#ea7a87] text-white shadow-lg shadow-rose-950/60"
       >
         <span class="text-base font-black leading-none mb-0.5">+</span>
         <span>Add Expense</span>
@@ -513,7 +529,7 @@
       <button
         id="recordDoneBtn"
         type="button"
-        class="mt-4 w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-rose-600 via-rose-500 to-red-600 hover:from-rose-500 hover:to-red-500 active:scale-95 text-xs font-black text-white shadow-md shadow-rose-950 transition-all"
+        class="mt-4 w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#ea7a87] via-[#e56b6f] to-[#ea7a87] hover:opacity-95 active:scale-95 text-xs font-black text-white shadow-md shadow-rose-950 transition-all"
       >
         Done
       </button>
@@ -565,7 +581,7 @@
         <button
           id="deleteConfirmBtn"
           type="button"
-          class="py-2.5 px-3 rounded-xl bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 active:scale-95 text-xs font-black text-white shadow-md shadow-rose-950 transition-all"
+          class="py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#ea7a87] to-[#e56b6f] hover:opacity-95 active:scale-95 text-xs font-black text-white shadow-md shadow-rose-950 transition-all"
         >
           Delete
         </button>
@@ -629,11 +645,12 @@
 
       const searchFilterInput = document.getElementById('searchFilterInput');
       const tagFilterSelect = document.getElementById('tagFilterSelect');
+      const dateFilterInput = document.getElementById('dateFilterInput');
+      const clearDateFilterBtn = document.getElementById('clearDateFilterBtn');
       const exportCsvBtn = document.getElementById('exportCsvBtn');
       const filteredSummaryText = document.getElementById('filteredSummaryText');
       const filteredTotalText = document.getElementById('filteredTotalText');
       const expenseListContainer = document.getElementById('expenseListContainer');
-      const clearAllDataBtn = document.getElementById('clearAllDataBtn');
 
       const drilldownTitle = document.getElementById('drilldownTitle');
       const drilldownSubtitle = document.getElementById('drilldownSubtitle');
@@ -852,14 +869,34 @@
       function renderHistory() {
         const query = (searchFilterInput.value || '').trim().toLowerCase();
         const selectedTag = tagFilterSelect.value || 'ALL';
+        const selectedDate = dateFilterInput ? (dateFilterInput.value || '') : '';
+
+        if (clearDateFilterBtn) {
+          if (selectedDate) {
+            clearDateFilterBtn.classList.remove('hidden');
+          } else {
+            clearDateFilterBtn.classList.add('hidden');
+          }
+        }
 
         const sorted = [...expenses].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
         const filtered = sorted.filter(item => {
           const matchesTag = selectedTag === 'ALL' || (item.tag || '').toLowerCase() === selectedTag.toLowerCase();
           if (!matchesTag) return false;
+
+          if (selectedDate) {
+            const d = new Date(item.createdAt);
+            if (isNaN(d.getTime())) return false;
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            const itemDateStr = `${year}-${month}-${day}`;
+            if (itemDateStr !== selectedDate) return false;
+          }
+
           if (!query) return true;
-          const haystack = `${item.reason} ${item.tag} ${item.remark} ${item.amount}`.toLowerCase();
+          const haystack = `${item.reason} ${item.tag} ${item.remark || ''} ${item.amount}`.toLowerCase();
           return haystack.includes(query);
         });
 
@@ -1042,7 +1079,7 @@
         tabs.forEach(t => {
           if (t.name === tab) {
             t.view.classList.remove('hidden');
-            t.btn.className = 'nav-tab-btn flex flex-col items-center justify-center py-1.5 px-1 rounded-2xl text-[11px] font-extrabold transition-all bg-gradient-to-r from-rose-500 via-rose-600 to-red-600 text-white shadow-lg shadow-rose-950/60';
+            t.btn.className = 'nav-tab-btn flex flex-col items-center justify-center py-1.5 px-1 rounded-2xl text-[11px] font-extrabold transition-all bg-gradient-to-r from-[#ea7a87] via-[#e56b6f] to-[#ea7a87] text-white shadow-lg shadow-rose-950/60';
           } else {
             t.view.classList.add('hidden');
             t.btn.className = 'nav-tab-btn flex flex-col items-center justify-center py-1.5 px-1 rounded-2xl text-[11px] font-bold transition-all text-slate-400 hover:text-white';
@@ -1259,15 +1296,19 @@
       expenseListContainer.addEventListener('click', handleDeleteClick);
       drilldownListContainer.addEventListener('click', handleDeleteClick);
 
-      // Clear All Data
-      clearAllDataBtn.addEventListener('click', () => {
-        if (expenses.length === 0) return;
-        openClearAllModal();
-      });
-
-      // Filters
+      // Filters & Search
       searchFilterInput.addEventListener('input', renderHistory);
       tagFilterSelect.addEventListener('change', renderHistory);
+
+      if (dateFilterInput) {
+        dateFilterInput.addEventListener('change', renderHistory);
+      }
+      if (clearDateFilterBtn) {
+        clearDateFilterBtn.addEventListener('click', () => {
+          if (dateFilterInput) dateFilterInput.value = '';
+          renderHistory();
+        });
+      }
 
       // Export CSV
       exportCsvBtn.addEventListener('click', () => {
