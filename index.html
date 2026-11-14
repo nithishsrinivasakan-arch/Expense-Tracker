@@ -127,11 +127,11 @@
 
       <!-- Header Actions -->
       <div class="flex items-center gap-2 shrink-0">
-        <!-- Install App Button (Pastel Red pill button) -->
+        <!-- Install App Button (Light Red pill button) -->
         <button
           id="installAppBtn"
           type="button"
-          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#ea7a87] via-[#e56b6f] to-[#ea7a87] active:scale-95 text-white font-extrabold text-xs shadow-lg shadow-rose-900/40 transition-all"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#ff5c5c] via-[#ff6e6e] to-[#ff5c5c] active:scale-95 text-white font-extrabold text-xs shadow-lg shadow-red-900/40 transition-all"
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V3" />
@@ -158,15 +158,15 @@
             <span class="text-[11px] font-black uppercase tracking-widest text-slate-400">
               ADD EXPENSE
             </span>
-            <span id="saveFeedbackBadge" class="text-xs font-bold text-[#ea7a87] opacity-0 transition-opacity duration-300">
+            <span id="saveFeedbackBadge" class="text-xs font-bold text-[#ff5c5c] opacity-0 transition-opacity duration-300">
               ✓ Saved!
             </span>
           </div>
 
-          <!-- Amount Input with Pastel Red Border & Stacked - ₹ Prefix -->
-          <div class="relative flex items-center justify-between bg-slate-950/80 border-2 border-[#ea7a87]/80 rounded-2xl px-4 py-3 sm:py-4 shadow-lg shadow-rose-950/40 transition-all">
+          <!-- Amount Input with Light Red Border & Stacked - ₹ Prefix -->
+          <div class="relative flex items-center justify-between bg-slate-950/80 border-2 border-[#ff5c5c]/80 rounded-2xl px-4 py-3 sm:py-4 shadow-lg shadow-red-950/40 transition-all">
             <div class="flex items-center min-w-0 flex-1">
-              <div class="flex flex-col items-center justify-center text-[#ea7a87] mr-3 select-none leading-none shrink-0">
+              <div class="flex flex-col items-center justify-center text-[#ff5c5c] mr-3 select-none leading-none shrink-0">
                 <span class="text-sm font-bold leading-none mb-0.5">-</span>
                 <span class="text-3xl font-black leading-none">₹</span>
               </div>
@@ -187,7 +187,7 @@
             <button
               id="clearAmountBtn"
               type="button"
-              class="text-xs font-bold text-slate-400 hover:text-[#ea7a87] active:scale-95 px-2.5 py-1.5 rounded-lg bg-slate-800/80 transition-all shrink-0"
+              class="text-xs font-bold text-slate-400 hover:text-[#ff5c5c] active:scale-95 px-2.5 py-1.5 rounded-lg bg-slate-800/80 transition-all shrink-0"
               title="Clear Amount"
             >
               Clear
@@ -210,7 +210,7 @@
               data-form-type="other"
               data-lpignore="true"
               placeholder="e.g. Lunch, Uber, Groceries, Coffee"
-              class="w-full bg-slate-950/80 border border-slate-800 focus:border-[#ea7a87] focus:ring-1 focus:ring-[#ea7a87]/30 rounded-2xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none transition-all"
+              class="w-full bg-slate-950/80 border border-slate-800 focus:border-[#ff5c5c] focus:ring-1 focus:ring-[#ff5c5c]/30 rounded-2xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none transition-all"
             />
           </div>
 
@@ -231,7 +231,7 @@
               spellcheck="false"
               data-form-type="other"
               data-lpignore="true"
-              class="w-full bg-slate-950/80 border border-slate-800 focus:border-[#ea7a87] focus:ring-1 focus:ring-[#ea7a87]/30 rounded-2xl px-4 py-3 text-sm text-slate-200 placeholder-slate-500 focus:outline-none transition-all"
+              class="w-full bg-slate-950/80 border border-slate-800 focus:border-[#ff5c5c] focus:ring-1 focus:ring-[#ff5c5c]/30 rounded-2xl px-4 py-3 text-sm text-slate-200 placeholder-slate-500 focus:outline-none transition-all"
             />
             <datalist id="categoryKeywordsList">
               <option value="Food"></option>
@@ -247,11 +247,11 @@
             </datalist>
           </div>
 
-          <!-- Pastel Red Record Expense Button (Without plus icon) -->
+          <!-- Light Red Record Expense Button -->
           <button
             id="recordBtn"
             type="submit"
-            class="w-full py-4 px-4 rounded-2xl bg-gradient-to-r from-[#ea7a87] via-[#e56b6f] to-[#ea7a87] hover:opacity-95 active:scale-[0.98] text-white font-black text-sm sm:text-base tracking-wide shadow-lg shadow-rose-950/40 transition-all flex items-center justify-center cursor-pointer"
+            class="w-full py-4 px-4 rounded-2xl bg-gradient-to-r from-[#ff5c5c] via-[#ff6e6e] to-[#ff5c5c] hover:opacity-95 active:scale-[0.98] text-white font-black text-sm sm:text-base tracking-wide shadow-lg shadow-red-950/40 transition-all flex items-center justify-center cursor-pointer"
           >
             <span>Record Expense</span>
           </button>
@@ -271,13 +271,13 @@
             <p id="summaryWeek" class="text-sm sm:text-base font-extrabold text-slate-100 mt-1 truncate tabular-nums">₹0</p>
           </div>
 
-          <!-- This Month (Bordered in Red with Status Dot as in Image) -->
-          <div class="bg-slate-900/90 border border-[#ea7a87]/60 rounded-2xl p-3 flex flex-col justify-between shadow-md shadow-rose-950/30 relative">
+          <!-- This Month (Bordered in Light Red with Status Dot as in Image) -->
+          <div class="bg-slate-900/90 border border-[#ff5c5c]/60 rounded-2xl p-3 flex flex-col justify-between shadow-md shadow-red-950/30 relative">
             <div class="flex items-center justify-between">
-              <span class="text-[10px] font-bold text-[#ea7a87] uppercase tracking-wider">THIS MONTH</span>
-              <span class="w-1.5 h-1.5 rounded-full bg-[#ea7a87]"></span>
+              <span class="text-[10px] font-bold text-[#ff5c5c] uppercase tracking-wider">THIS MONTH</span>
+              <span class="w-1.5 h-1.5 rounded-full bg-[#ff5c5c]"></span>
             </div>
-            <p id="summaryMonth" class="text-sm sm:text-base font-black text-[#ea7a87] mt-1 truncate tabular-nums">₹0</p>
+            <p id="summaryMonth" class="text-sm sm:text-base font-black text-[#ff5c5c] mt-1 truncate tabular-nums">₹0</p>
           </div>
         </div>
 
@@ -297,7 +297,7 @@
                 type="text"
                 placeholder="Search reason, tag, amount..."
                 autocomplete="off"
-                class="w-full bg-slate-900 border border-slate-800 rounded-xl pl-8 pr-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-[#ea7a87]"
+                class="w-full bg-slate-900 border border-slate-800 rounded-xl pl-8 pr-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-[#ff5c5c]"
               />
               <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-slate-500 absolute left-2.5 top-1/2 -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -306,7 +306,7 @@
             <button
               id="exportCsvBtn"
               type="button"
-              class="px-2.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-[#ea7a87] flex items-center gap-1 shrink-0"
+              class="px-2.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-[#ff5c5c] flex items-center gap-1 shrink-0"
               title="Export CSV"
             >
               <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -321,7 +321,7 @@
             <select
               id="tagFilterSelect"
               aria-label="Filter by Tag"
-              class="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-[#ea7a87]"
+              class="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-[#ff5c5c]"
             >
               <option value="ALL">All Categories</option>
             </select>
@@ -331,10 +331,10 @@
               <button
                 id="dateRangeBtn"
                 type="button"
-                class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-200 hover:border-[#ea7a87] active:scale-95 transition-all cursor-pointer"
+                class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-200 hover:border-[#ff5c5c] active:scale-95 transition-all cursor-pointer"
                 title="Select single or multiple days"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-[#ea7a87]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-[#ff5c5c]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
                 <span id="dateRangeDisplayLabel" class="font-semibold text-slate-200">All Dates</span>
@@ -342,7 +342,7 @@
               <button
                 id="clearDateFilterBtn"
                 type="button"
-                class="hidden text-[11px] font-bold text-slate-400 hover:text-[#ea7a87] active:scale-95 px-2 py-1.5 rounded-xl bg-slate-800/80 shrink-0 transition-all"
+                class="hidden text-[11px] font-bold text-slate-400 hover:text-[#ff5c5c] active:scale-95 px-2 py-1.5 rounded-xl bg-slate-800/80 shrink-0 transition-all"
                 title="Reset date filter"
               >
                 ✕ All
@@ -354,7 +354,7 @@
         <!-- History Summary Strip -->
         <div class="flex items-center justify-between text-[11px] text-slate-400 px-1 shrink-0">
           <span id="filteredSummaryText">Showing 0 records</span>
-          <span id="filteredTotalText" class="font-bold text-[#ea7a87] tabular-nums">Total: ₹0</span>
+          <span id="filteredTotalText" class="font-bold text-[#ff5c5c] tabular-nums">Total: ₹0</span>
         </div>
 
         <!-- Expense List Container -->
@@ -409,7 +409,7 @@
       <button
         id="navAddBtn"
         type="button"
-        class="nav-tab-btn flex flex-col items-center justify-center py-1.5 px-1 rounded-2xl text-[11px] font-extrabold transition-all bg-gradient-to-r from-[#ea7a87] via-[#e56b6f] to-[#ea7a87] text-white shadow-lg shadow-rose-950/60"
+        class="nav-tab-btn flex flex-col items-center justify-center py-1.5 px-1 rounded-2xl text-[11px] font-extrabold transition-all bg-gradient-to-r from-[#ff5c5c] via-[#ff6e6e] to-[#ff5c5c] text-white shadow-lg shadow-red-950/60"
       >
         <span class="text-base font-black leading-none mb-0.5">+</span>
         <span>Add Expense</span>
@@ -477,7 +477,7 @@
       <button
         id="recordDoneBtn"
         type="button"
-        class="mt-4 w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#ea7a87] via-[#e56b6f] to-[#ea7a87] hover:opacity-95 active:scale-95 text-xs font-black text-white shadow-md shadow-rose-950 transition-all"
+        class="mt-4 w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#ff5c5c] via-[#ff6e6e] to-[#ff5c5c] hover:opacity-95 active:scale-95 text-xs font-black text-white shadow-md shadow-red-950 transition-all"
       >
         Done
       </button>
@@ -529,7 +529,7 @@
         <button
           id="deleteConfirmBtn"
           type="button"
-          class="py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#ea7a87] to-[#e56b6f] hover:opacity-95 active:scale-95 text-xs font-black text-white shadow-md shadow-rose-950 transition-all"
+          class="py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#ff5c5c] to-[#ff4747] hover:opacity-95 active:scale-95 text-xs font-black text-white shadow-md shadow-red-950 transition-all"
         >
           Delete
         </button>
@@ -586,20 +586,20 @@
       <div class="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-slate-800/80">
         <div>
           <label class="text-[9px] font-bold text-slate-400 block mb-0.5">FROM</label>
-          <input id="calInputStart" type="date" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-1 text-xs text-slate-200 focus:outline-none focus:border-[#ea7a87]">
+          <input id="calInputStart" type="date" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-1 text-xs text-slate-200 focus:outline-none focus:border-[#ff5c5c]">
         </div>
         <div>
           <label class="text-[9px] font-bold text-slate-400 block mb-0.5">TO</label>
-          <input id="calInputEnd" type="date" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-1 text-xs text-slate-200 focus:outline-none focus:border-[#ea7a87]">
+          <input id="calInputEnd" type="date" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-1 text-xs text-slate-200 focus:outline-none focus:border-[#ff5c5c]">
         </div>
       </div>
 
       <!-- Footer Action Strip -->
       <div class="mt-3 flex items-center justify-between gap-2 pt-1">
-        <span id="calSelectionSummary" class="text-[11px] font-bold text-[#ea7a87] truncate">All Dates</span>
+        <span id="calSelectionSummary" class="text-[11px] font-bold text-[#ff5c5c] truncate">All Dates</span>
         <div class="flex items-center gap-1.5 shrink-0">
           <button id="calResetBtn" type="button" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-xs font-bold text-slate-300 transition-all">Reset</button>
-          <button id="calApplyBtn" type="button" class="px-4 py-1.5 rounded-xl bg-gradient-to-r from-[#ea7a87] via-[#e56b6f] to-[#ea7a87] hover:opacity-95 active:scale-95 text-xs font-black text-white shadow-md shadow-rose-950 transition-all">Apply</button>
+          <button id="calApplyBtn" type="button" class="px-4 py-1.5 rounded-xl bg-gradient-to-r from-[#ff5c5c] via-[#ff6e6e] to-[#ff5c5c] hover:opacity-95 active:scale-95 text-xs font-black text-white shadow-md shadow-red-950 transition-all">Apply</button>
         </div>
       </div>
     </div>
@@ -1123,7 +1123,7 @@
         tabs.forEach(t => {
           if (t.name === tab) {
             t.view.classList.remove('hidden');
-            t.btn.className = 'nav-tab-btn flex flex-col items-center justify-center py-1.5 px-1 rounded-2xl text-[11px] font-extrabold transition-all bg-gradient-to-r from-[#ea7a87] via-[#e56b6f] to-[#ea7a87] text-white shadow-lg shadow-rose-950/60';
+            t.btn.className = 'nav-tab-btn flex flex-col items-center justify-center py-1.5 px-1 rounded-2xl text-[11px] font-extrabold transition-all bg-gradient-to-r from-[#ff5c5c] via-[#ff6e6e] to-[#ff5c5c] text-white shadow-lg shadow-red-950/60';
           } else {
             t.view.classList.add('hidden');
             t.btn.className = 'nav-tab-btn flex flex-col items-center justify-center py-1.5 px-1 rounded-2xl text-[11px] font-bold transition-all text-slate-400 hover:text-white';
@@ -1423,9 +1423,9 @@
 
           if (start && end) {
             if (dateStr === start || dateStr === end) {
-              btn.classList.add('bg-gradient-to-r', 'from-[#ea7a87]', 'via-[#e56b6f]', 'to-[#ea7a87]', 'text-white', 'shadow-md', 'shadow-rose-950/60', 'scale-105', 'z-10');
+              btn.classList.add('bg-gradient-to-r', 'from-[#ff5c5c]', 'via-[#ff6e6e]', 'to-[#ff5c5c]', 'text-white', 'shadow-md', 'shadow-red-950/60', 'scale-105', 'z-10');
             } else if (dateStr > start && dateStr < end) {
-              btn.classList.add('bg-[#ea7a87]/25', 'text-rose-200', 'rounded-lg');
+              btn.classList.add('bg-[#ff5c5c]/25', 'text-red-200', 'rounded-lg');
             } else {
               btn.classList.add('text-slate-300', 'hover:bg-slate-800');
             }
