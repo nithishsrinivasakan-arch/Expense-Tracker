@@ -110,28 +110,28 @@
     <!-- ==========================================
          TOP MOBILE APP BAR (EXACT MATCH TO LAYOUT)
          ========================================== -->
-    <header class="shrink-0 flex items-center justify-between py-2 px-0.5 border-b border-slate-800/80 mb-2">
+    <header class="shrink-0 flex items-center justify-between py-1.5 px-0.5 border-b border-slate-800/80 mb-1">
       <!-- App Brand -->
-      <div class="flex items-center gap-2.5 min-w-0">
-        <div class="w-9 h-9 rounded-2xl bg-rose-950/60 border border-rose-500/30 flex items-center justify-center text-rose-400 font-black text-base shadow-md shadow-rose-950/50 shrink-0">
+      <div class="flex items-center gap-2 min-w-0">
+        <div class="w-8 h-8 rounded-xl bg-red-950/60 border border-red-500/40 flex items-center justify-center text-red-400 font-black text-sm shadow-md shadow-red-950/50 shrink-0">
           ₹
         </div>
         <div class="min-w-0">
-          <h1 class="text-sm font-extrabold tracking-tight text-white flex items-center gap-1.5">
+          <h1 class="text-xs sm:text-sm font-extrabold tracking-tight text-white flex items-center gap-1.5">
             Expense Tracker
-            <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
           </h1>
-          <p id="topBarSubtitle" class="text-[10px] text-slate-400 font-medium">0 records</p>
+          <p id="topBarSubtitle" class="text-[9px] text-slate-400 font-medium">0 records</p>
         </div>
       </div>
 
       <!-- Header Actions -->
       <div class="flex items-center gap-2 shrink-0">
-        <!-- Install App Button (Light Red pill button) -->
+        <!-- Install App Button (Red button) -->
         <button
           id="installAppBtn"
           type="button"
-          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#ff5c5c] via-[#ff6e6e] to-[#ff5c5c] active:scale-95 text-white font-extrabold text-xs shadow-lg shadow-red-900/40 transition-all"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-500 active:scale-95 text-white font-extrabold text-xs shadow-md shadow-red-950/60 transition-all"
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V3" />
@@ -147,28 +147,28 @@
     <div class="flex-1 flex flex-col overflow-hidden relative">
 
       <!-- ====================================================
-           VIEW 1: QUICK ENTRY (MOBILE-FIRST SPACIOUS LAYOUT)
+           VIEW 1: QUICK ENTRY (TIGHT COMPACT LAYOUT - NO UNWANTED GAPS)
            ==================================================== -->
-      <section id="viewQuickAdd" class="flex-1 flex flex-col justify-between overflow-y-auto py-1.5 space-y-3">
+      <section id="viewQuickAdd" class="flex-1 flex flex-col overflow-y-auto py-1 space-y-2">
         
         <!-- Central Quick-Entry Form Card -->
-        <form id="expenseForm" class="bg-slate-900/90 border border-slate-800 rounded-3xl p-4 sm:p-5 shadow-xl space-y-3.5 flex-1 flex flex-col justify-between">
+        <form id="expenseForm" class="bg-slate-900/90 border border-slate-800 rounded-2xl p-3 sm:p-3.5 shadow-xl space-y-2.5 flex flex-col">
           
           <div class="flex items-center justify-between">
-            <span class="text-[11px] font-black uppercase tracking-widest text-slate-400">
+            <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">
               ADD EXPENSE
             </span>
-            <span id="saveFeedbackBadge" class="text-xs font-bold text-[#ff5c5c] opacity-0 transition-opacity duration-300">
+            <span id="saveFeedbackBadge" class="text-xs font-bold text-red-400 opacity-0 transition-opacity duration-300">
               ✓ Saved!
             </span>
           </div>
 
-          <!-- Amount Input with Light Red Border & Stacked - ₹ Prefix -->
-          <div class="relative flex items-center justify-between bg-slate-950/80 border-2 border-[#ff5c5c]/80 rounded-2xl px-4 py-3 sm:py-4 shadow-lg shadow-red-950/40 transition-all">
+          <!-- 1. Amount Input: Red Border & Stacked - ₹ Prefix -->
+          <div class="relative flex items-center justify-between bg-slate-950/80 border-2 border-red-500 rounded-xl px-3.5 py-2.5 shadow-md shadow-red-950/30 transition-all">
             <div class="flex items-center min-w-0 flex-1">
-              <div class="flex flex-col items-center justify-center text-[#ff5c5c] mr-3 select-none leading-none shrink-0">
-                <span class="text-sm font-bold leading-none mb-0.5">-</span>
-                <span class="text-3xl font-black leading-none">₹</span>
+              <div class="flex flex-col items-center justify-center text-red-500 mr-2.5 select-none leading-none shrink-0">
+                <span class="text-xs font-bold leading-none mb-0.5">-</span>
+                <span class="text-2xl font-black leading-none">₹</span>
               </div>
               <input
                 id="amountInput"
@@ -181,13 +181,11 @@
                 autocomplete="off"
                 data-form-type="other"
                 data-lpignore="true"
-                class="w-full bg-transparent text-3xl sm:text-4xl font-black text-white placeholder-slate-600 focus:outline-none tabular-nums"
+                class="w-full bg-transparent text-2xl sm:text-3xl font-black text-white placeholder-slate-600 focus:outline-none tabular-nums"
               />
             </div>
             <button
-              id="clearAmountBtn"
-              type="button"
-              class="text-xs font-bold text-slate-400 hover:text-[#ff5c5c] active:scale-95 px-2.5 py-1.5 rounded-lg bg-slate-800/80 transition-all shrink-0"
+              id="clearAmountBtn" type="button" class="text-xs font-bold text-white active:scale-95 px-2.5 py-1 rounded-lg bg-red-600 hover:bg-red-500 transition-all shrink-0 shadow-sm shadow-red-950"
               title="Clear Amount"
             >
               Clear
@@ -196,7 +194,7 @@
 
           <!-- 2. Reason Input: Where I can type why I spent -->
           <div class="space-y-1">
-            <label for="reasonInput" class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block px-0.5">
+            <label for="reasonInput" class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block px-0.5">
               Why did you spend?
             </label>
             <input
@@ -210,13 +208,13 @@
               data-form-type="other"
               data-lpignore="true"
               placeholder="e.g. Lunch, Uber, Groceries, Coffee"
-              class="w-full bg-slate-950/80 border border-slate-800 focus:border-[#ff5c5c] focus:ring-1 focus:ring-[#ff5c5c]/30 rounded-2xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none transition-all"
+              class="w-full bg-slate-950/80 border border-slate-800 focus:border-red-500 focus:ring-1 focus:ring-red-500/30 rounded-xl px-3.5 py-2 text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none transition-all"
             />
           </div>
 
           <!-- 3. Category Tag Input: Type a tag -->
           <div class="space-y-1">
-            <label for="tagInput" class="text-[11px] font-bold uppercase tracking-wider text-slate-400 block px-0.5">
+            <label for="tagInput" class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block px-0.5">
               Category Tag
             </label>
             <input
@@ -231,7 +229,7 @@
               spellcheck="false"
               data-form-type="other"
               data-lpignore="true"
-              class="w-full bg-slate-950/80 border border-slate-800 focus:border-[#ff5c5c] focus:ring-1 focus:ring-[#ff5c5c]/30 rounded-2xl px-4 py-3 text-sm text-slate-200 placeholder-slate-500 focus:outline-none transition-all"
+              class="w-full bg-slate-950/80 border border-slate-800 focus:border-red-500 focus:ring-1 focus:ring-red-500/30 rounded-xl px-3.5 py-2 text-xs sm:text-sm text-slate-200 placeholder-slate-500 focus:outline-none transition-all"
             />
             <datalist id="categoryKeywordsList">
               <option value="Food"></option>
@@ -247,11 +245,11 @@
             </datalist>
           </div>
 
-          <!-- Light Red Record Expense Button -->
+          <!-- Red Record Expense Button (Directly below tag - no unwanted gap!) -->
           <button
             id="recordBtn"
             type="submit"
-            class="w-full py-4 px-4 rounded-2xl bg-gradient-to-r from-[#ff5c5c] via-[#ff6e6e] to-[#ff5c5c] hover:opacity-95 active:scale-[0.98] text-white font-black text-sm sm:text-base tracking-wide shadow-lg shadow-red-950/40 transition-all flex items-center justify-center cursor-pointer"
+            class="w-full py-3.5 px-4 rounded-xl bg-red-600 hover:bg-red-500 active:scale-[0.98] text-white font-black text-sm sm:text-base tracking-wide shadow-lg shadow-red-950/60 transition-all flex items-center justify-center cursor-pointer"
           >
             <span>Record Expense</span>
           </button>
@@ -260,24 +258,24 @@
         <!-- 3-Card Summary Dashboard Positioned BELOW the Form (As Shown in Image) -->
         <div class="grid grid-cols-3 gap-2 shrink-0 pt-0.5">
           <!-- Today -->
-          <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-3 flex flex-col justify-between shadow-sm">
-            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">TODAY</span>
-            <p id="summaryToday" class="text-sm sm:text-base font-extrabold text-slate-100 mt-1 truncate tabular-nums">₹0</p>
+          <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-2.5 flex flex-col justify-between shadow-sm">
+            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">TODAY</span>
+            <p id="summaryToday" class="text-sm font-extrabold text-slate-100 mt-0.5 truncate tabular-nums">₹0</p>
           </div>
 
           <!-- This Week -->
-          <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-3 flex flex-col justify-between shadow-sm">
-            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">THIS WEEK</span>
-            <p id="summaryWeek" class="text-sm sm:text-base font-extrabold text-slate-100 mt-1 truncate tabular-nums">₹0</p>
+          <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-2.5 flex flex-col justify-between shadow-sm">
+            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">THIS WEEK</span>
+            <p id="summaryWeek" class="text-sm font-extrabold text-slate-100 mt-0.5 truncate tabular-nums">₹0</p>
           </div>
 
-          <!-- This Month (Bordered in Light Red with Status Dot as in Image) -->
-          <div class="bg-slate-900/90 border border-[#ff5c5c]/60 rounded-2xl p-3 flex flex-col justify-between shadow-md shadow-red-950/30 relative">
+          <!-- This Month (Bordered in Red with Status Dot as in Image) -->
+          <div class="bg-slate-900/90 border border-red-500/60 rounded-xl p-2.5 flex flex-col justify-between shadow-md shadow-red-950/30 relative">
             <div class="flex items-center justify-between">
-              <span class="text-[10px] font-bold text-[#ff5c5c] uppercase tracking-wider">THIS MONTH</span>
-              <span class="w-1.5 h-1.5 rounded-full bg-[#ff5c5c]"></span>
+              <span class="text-[9px] font-bold text-red-400 uppercase tracking-wider">THIS MONTH</span>
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
             </div>
-            <p id="summaryMonth" class="text-sm sm:text-base font-black text-[#ff5c5c] mt-1 truncate tabular-nums">₹0</p>
+            <p id="summaryMonth" class="text-sm font-black text-red-400 mt-0.5 truncate tabular-nums">₹0</p>
           </div>
         </div>
 
@@ -304,9 +302,7 @@
               </svg>
             </div>
             <button
-              id="exportCsvBtn"
-              type="button"
-              class="px-2.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-[#ff5c5c] flex items-center gap-1 shrink-0"
+              id="exportCsvBtn" type="button" class="px-3 py-2 rounded-xl bg-red-600 hover:bg-red-500 active:scale-95 text-xs font-bold text-white flex items-center gap-1.5 shrink-0 shadow-md shadow-red-950/40"
               title="Export CSV"
             >
               <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -316,36 +312,49 @@
             </button>
           </div>
 
-          <!-- Row 2: Category Filter + Calendar Date Picker Filter -->
-          <div class="flex items-center gap-1.5">
+          <!-- Row 2: Category Filter -->
+          <div>
             <select
               id="tagFilterSelect"
               aria-label="Filter by Tag"
-              class="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-[#ff5c5c]"
+              class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-red-500"
             >
               <option value="ALL">All Categories</option>
             </select>
+          </div>
 
-            <!-- Multi-Day / Range Calendar Filter Button -->
-            <div class="flex items-center shrink-0 gap-1">
+          <!-- Row 3: From and To Date Selection -->
+          <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-2.5 space-y-2">
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label for="historyFromDate" class="text-[9px] font-bold uppercase tracking-wider text-slate-400 block px-0.5 mb-1">
+                  From Date
+                </label>
+                <input
+                  id="historyFromDate"
+                  type="date"
+                  class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-red-500 cursor-pointer"
+                />
+              </div>
+              <div>
+                <label for="historyToDate" class="text-[9px] font-bold uppercase tracking-wider text-slate-400 block px-0.5 mb-1">
+                  To Date
+                </label>
+                <input
+                  id="historyToDate"
+                  type="date"
+                  class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-red-500 cursor-pointer"
+                />
+              </div>
+            </div>
+            <div id="dateFilterActiveBar" class="hidden flex items-center justify-between pt-1.5 border-t border-slate-800/80">
+              <span id="dateFilterActiveText" class="text-[10px] font-bold text-red-400">Date filter active</span>
               <button
-                id="dateRangeBtn"
+                id="clearHistoryDateBtn"
                 type="button"
-                class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-200 hover:border-[#ff5c5c] active:scale-95 transition-all cursor-pointer"
-                title="Select single or multiple days"
+                class="px-2.5 py-1 rounded-lg bg-red-600 hover:bg-red-500 active:scale-95 text-[10px] font-black text-white transition-all cursor-pointer shadow-sm shadow-red-950"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-[#ff5c5c]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                <span id="dateRangeDisplayLabel" class="font-semibold text-slate-200">All Dates</span>
-              </button>
-              <button
-                id="clearDateFilterBtn"
-                type="button"
-                class="hidden text-[11px] font-bold text-slate-400 hover:text-[#ff5c5c] active:scale-95 px-2 py-1.5 rounded-xl bg-slate-800/80 shrink-0 transition-all"
-                title="Reset date filter"
-              >
-                ✕ All
+                ✕ Reset Dates
               </button>
             </div>
           </div>
@@ -409,7 +418,7 @@
       <button
         id="navAddBtn"
         type="button"
-        class="nav-tab-btn flex flex-col items-center justify-center py-1.5 px-1 rounded-2xl text-[11px] font-extrabold transition-all bg-gradient-to-r from-[#ff5c5c] via-[#ff6e6e] to-[#ff5c5c] text-white shadow-lg shadow-red-950/60"
+        class="nav-tab-btn flex flex-col items-center justify-center py-1.5 px-1 rounded-2xl text-[11px] font-black transition-all bg-red-600 text-white shadow-lg shadow-red-950/60"
       >
         <span class="text-base font-black leading-none mb-0.5">+</span>
         <span>Add Expense</span>
@@ -475,9 +484,7 @@
 
       <!-- Dismiss Button -->
       <button
-        id="recordDoneBtn"
-        type="button"
-        class="mt-4 w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#ff5c5c] via-[#ff6e6e] to-[#ff5c5c] hover:opacity-95 active:scale-95 text-xs font-black text-white shadow-md shadow-red-950 transition-all"
+        id="recordDoneBtn" type="button" class="mt-4 w-full py-2.5 px-3 rounded-xl bg-red-600 hover:bg-red-500 active:scale-95 text-xs font-black text-white shadow-md shadow-red-950 transition-all cursor-pointer"
       >
         Done
       </button>
@@ -527,9 +534,7 @@
           Cancel
         </button>
         <button
-          id="deleteConfirmBtn"
-          type="button"
-          class="py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#ff5c5c] to-[#ff4747] hover:opacity-95 active:scale-95 text-xs font-black text-white shadow-md shadow-red-950 transition-all"
+          id="deleteConfirmBtn" type="button" class="py-2.5 px-3 rounded-xl bg-red-600 hover:bg-red-500 active:scale-95 text-xs font-black text-white shadow-md shadow-red-950 transition-all cursor-pointer"
         >
           Delete
         </button>
@@ -667,29 +672,6 @@
       const filteredSummaryText = document.getElementById('filteredSummaryText');
       const filteredTotalText = document.getElementById('filteredTotalText');
       const expenseListContainer = document.getElementById('expenseListContainer');
-
-      // Date Range Filter State
-      let filterStartDate = null; // 'YYYY-MM-DD'
-      let filterEndDate = null;   // 'YYYY-MM-DD'
-
-      // Calendar Modal DOM Elements
-      const calendarRangeModal = document.getElementById('calendarRangeModal');
-      const calendarRangeCard = document.getElementById('calendarRangeCard');
-      const calPrevMonthBtn = document.getElementById('calPrevMonthBtn');
-      const calNextMonthBtn = document.getElementById('calNextMonthBtn');
-      const calMonthYearTitle = document.getElementById('calMonthYearTitle');
-      const closeCalModalBtn = document.getElementById('closeCalModalBtn');
-      const calendarDaysGrid = document.getElementById('calendarDaysGrid');
-      const calInputStart = document.getElementById('calInputStart');
-      const calInputEnd = document.getElementById('calInputEnd');
-      const calSelectionSummary = document.getElementById('calSelectionSummary');
-      const calResetBtn = document.getElementById('calResetBtn');
-      const calApplyBtn = document.getElementById('calApplyBtn');
-
-      let calViewYear = new Date().getFullYear();
-      let calViewMonth = new Date().getMonth();
-      let tempStartDate = null;
-      let tempEndDate = null;
 
       const drilldownTitle = document.getElementById('drilldownTitle');
       const drilldownSubtitle = document.getElementById('drilldownSubtitle');
@@ -908,9 +890,12 @@
         const query = (searchFilterInput.value || '').trim().toLowerCase();
         const selectedTag = tagFilterSelect.value || 'ALL';
 
-        const isDateFiltered = !!(filterStartDate || filterEndDate);
-        if (clearDateFilterBtn) {
-          clearDateFilterBtn.classList.toggle('hidden', !isDateFiltered);
+        const fromVal = historyFromDate ? historyFromDate.value : '';
+        const toVal = historyToDate ? historyToDate.value : '';
+        const isDateFiltered = !!(fromVal || toVal);
+
+        if (dateFilterActiveBar) {
+          dateFilterActiveBar.classList.toggle('hidden', !isDateFiltered);
         }
 
         const sorted = [...expenses].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -919,8 +904,8 @@
           const matchesTag = selectedTag === 'ALL' || (item.tag || '').toLowerCase() === selectedTag.toLowerCase();
           if (!matchesTag) return false;
 
-          // Date Range Filtering (Multi-Day or Single-Day)
-          if (filterStartDate || filterEndDate) {
+          // Date Range Filtering (From Date & To Date)
+          if (fromVal || toVal) {
             const d = new Date(item.createdAt);
             if (isNaN(d.getTime())) return false;
             const year = d.getFullYear();
@@ -928,14 +913,14 @@
             const day = String(d.getDate()).padStart(2, '0');
             const itemDate = `${year}-${month}-${day}`;
 
-            if (filterStartDate && filterEndDate) {
-              const start = filterStartDate <= filterEndDate ? filterStartDate : filterEndDate;
-              const end = filterStartDate <= filterEndDate ? filterEndDate : filterStartDate;
+            if (fromVal && toVal) {
+              const start = fromVal <= toVal ? fromVal : toVal;
+              const end = fromVal <= toVal ? toVal : fromVal;
               if (itemDate < start || itemDate > end) return false;
-            } else if (filterStartDate) {
-              if (itemDate !== filterStartDate) return false;
-            } else if (filterEndDate) {
-              if (itemDate !== filterEndDate) return false;
+            } else if (fromVal) {
+              if (itemDate < fromVal) return false;
+            } else if (toVal) {
+              if (itemDate > toVal) return false;
             }
           }
 
@@ -1123,7 +1108,7 @@
         tabs.forEach(t => {
           if (t.name === tab) {
             t.view.classList.remove('hidden');
-            t.btn.className = 'nav-tab-btn flex flex-col items-center justify-center py-1.5 px-1 rounded-2xl text-[11px] font-extrabold transition-all bg-gradient-to-r from-[#ff5c5c] via-[#ff6e6e] to-[#ff5c5c] text-white shadow-lg shadow-red-950/60';
+            t.btn.className = 'nav-tab-btn flex flex-col items-center justify-center py-1.5 px-1 rounded-2xl text-[11px] font-black transition-all bg-red-600 text-white shadow-lg shadow-red-950/60';
           } else {
             t.view.classList.add('hidden');
             t.btn.className = 'nav-tab-btn flex flex-col items-center justify-center py-1.5 px-1 rounded-2xl text-[11px] font-bold transition-all text-slate-400 hover:text-white';
@@ -1303,324 +1288,25 @@
       searchFilterInput.addEventListener('input', renderHistory);
       tagFilterSelect.addEventListener('change', renderHistory);
 
-      // Multi-Day / Range Calendar Filtering Logic
-      function formatDateShort(dateStr) {
-        if (!dateStr) return '';
-        const [y, m, d] = dateStr.split('-').map(Number);
-        const dt = new Date(y, m - 1, d);
-        return dt.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+      // Date Range Filter Elements
+      const historyFromDate = document.getElementById('historyFromDate');
+      const historyToDate = document.getElementById('historyToDate');
+      const dateFilterActiveBar = document.getElementById('dateFilterActiveBar');
+      const clearHistoryDateBtn = document.getElementById('clearHistoryDateBtn');
+
+      if (historyFromDate) {
+        historyFromDate.addEventListener('change', () => renderHistory());
       }
-
-      function updateDateRangeDisplayLabel() {
-        if (!filterStartDate && !filterEndDate) {
-          dateRangeDisplayLabel.textContent = 'All Dates';
-          return;
-        }
-        if (filterStartDate && filterEndDate) {
-          if (filterStartDate === filterEndDate) {
-            dateRangeDisplayLabel.textContent = formatDateShort(filterStartDate);
-          } else {
-            const start = filterStartDate <= filterEndDate ? filterStartDate : filterEndDate;
-            const end = filterStartDate <= filterEndDate ? filterEndDate : filterStartDate;
-            dateRangeDisplayLabel.textContent = `${formatDateShort(start)} - ${formatDateShort(end)}`;
-          }
-        } else {
-          dateRangeDisplayLabel.textContent = formatDateShort(filterStartDate || filterEndDate);
-        }
+      if (historyToDate) {
+        historyToDate.addEventListener('change', () => renderHistory());
       }
-
-      function openCalendarModal() {
-        tempStartDate = filterStartDate;
-        tempEndDate = filterEndDate;
-        const baseDate = filterStartDate ? new Date(filterStartDate) : new Date();
-        calViewYear = baseDate.getFullYear();
-        calViewMonth = baseDate.getMonth();
-        renderCalendarGrid();
-        updateCalInputs();
-
-        calendarRangeModal.classList.remove('opacity-0', 'pointer-events-none');
-        calendarRangeCard.classList.remove('translate-y-full', 'scale-90');
-        calendarRangeCard.classList.add('translate-y-0', 'scale-100');
-      }
-
-      function closeCalendarModal() {
-        calendarRangeModal.classList.add('opacity-0', 'pointer-events-none');
-        calendarRangeCard.classList.add('translate-y-full', 'scale-90');
-        calendarRangeCard.classList.remove('translate-y-0', 'scale-100');
-      }
-
-      function updateCalInputs() {
-        if (calInputStart) calInputStart.value = tempStartDate || '';
-        if (calInputEnd) calInputEnd.value = tempEndDate || '';
-
-        if (!tempStartDate && !tempEndDate) {
-          calSelectionSummary.textContent = 'All Dates';
-        } else if (tempStartDate && tempEndDate) {
-          if (tempStartDate === tempEndDate) {
-            calSelectionSummary.textContent = `Selected: ${formatDateShort(tempStartDate)} (1 day)`;
-          } else {
-            const s = tempStartDate <= tempEndDate ? tempStartDate : tempEndDate;
-            const e = tempStartDate <= tempEndDate ? tempEndDate : tempStartDate;
-            const d1 = new Date(s);
-            const d2 = new Date(e);
-            const diffDays = Math.round((d2 - d1) / (1000 * 60 * 60 * 24)) + 1;
-            calSelectionSummary.textContent = `Selected: ${formatDateShort(s)} - ${formatDateShort(e)} (${diffDays} days)`;
-          }
-        } else {
-          calSelectionSummary.textContent = `Selected: ${formatDateShort(tempStartDate || tempEndDate)}`;
-        }
-      }
-
-      function renderCalendarGrid() {
-        const d = new Date(calViewYear, calViewMonth, 1);
-        calMonthYearTitle.textContent = d.toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
-
-        const firstDayIndex = d.getDay(); // 0 for Sunday
-        const totalDays = new Date(calViewYear, calViewMonth + 1, 0).getDate();
-        const prevMonthTotalDays = new Date(calViewYear, calViewMonth, 0).getDate();
-
-        const todayObj = new Date();
-        const todayStr = `${todayObj.getFullYear()}-${String(todayObj.getMonth() + 1).padStart(2, '0')}-${String(todayObj.getDate()).padStart(2, '0')}`;
-
-        let html = '';
-
-        // Previous month days (faded)
-        for (let i = firstDayIndex - 1; i >= 0; i--) {
-          const dayNum = prevMonthTotalDays - i;
-          html += `<div class="h-9 flex items-center justify-center text-[11px] text-slate-700 pointer-events-none select-none">${dayNum}</div>`;
-        }
-
-        // Current month days
-        for (let day = 1; day <= totalDays; day++) {
-          const dateStr = `${calViewYear}-${String(calViewMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-          const isToday = dateStr === todayStr;
-
-          html += `
-            <button
-              type="button"
-              data-calendar-date="${dateStr}"
-              class="cal-day-cell h-9 rounded-xl flex flex-col items-center justify-center text-xs font-bold transition-all relative select-none cursor-pointer"
-            >
-              <span>${day}</span>
-              ${isToday ? '<span class="w-1 h-1 rounded-full bg-rose-400 absolute bottom-1"></span>' : ''}
-            </button>
-          `;
-        }
-
-        calendarDaysGrid.innerHTML = html;
-        highlightCalendarGrid();
-      }
-
-      function highlightCalendarGrid() {
-        const start = tempStartDate && tempEndDate ? (tempStartDate <= tempEndDate ? tempStartDate : tempEndDate) : (tempStartDate || tempEndDate);
-        const end = tempStartDate && tempEndDate ? (tempStartDate <= tempEndDate ? tempEndDate : tempStartDate) : (tempStartDate || tempEndDate);
-
-        calendarDaysGrid.querySelectorAll('.cal-day-cell').forEach(btn => {
-          const dateStr = btn.getAttribute('data-calendar-date');
-          if (!dateStr) return;
-
-          btn.className = 'cal-day-cell h-9 rounded-xl flex flex-col items-center justify-center text-xs font-bold transition-all relative select-none cursor-pointer';
-
-          if (start && end) {
-            if (dateStr === start || dateStr === end) {
-              btn.classList.add('bg-gradient-to-r', 'from-[#ff5c5c]', 'via-[#ff6e6e]', 'to-[#ff5c5c]', 'text-white', 'shadow-md', 'shadow-red-950/60', 'scale-105', 'z-10');
-            } else if (dateStr > start && dateStr < end) {
-              btn.classList.add('bg-[#ff5c5c]/25', 'text-red-200', 'rounded-lg');
-            } else {
-              btn.classList.add('text-slate-300', 'hover:bg-slate-800');
-            }
-          } else {
-            btn.classList.add('text-slate-300', 'hover:bg-slate-800');
-          }
+      if (clearHistoryDateBtn) {
+        clearHistoryDateBtn.addEventListener('click', () => {
+          if (historyFromDate) historyFromDate.value = '';
+          if (historyToDate) historyToDate.value = '';
+          renderHistory();
         });
       }
-
-      // Touch & Drag Swiping Event Listeners
-      let isCalSwiping = false;
-      let swipeAnchorDate = null;
-
-      calendarDaysGrid.addEventListener('touchstart', e => {
-        const touch = e.touches[0];
-        const elem = document.elementFromPoint(touch.clientX, touch.clientY);
-        const cell = elem?.closest('[data-calendar-date]');
-        if (!cell) return;
-
-        isCalSwiping = true;
-        swipeAnchorDate = cell.getAttribute('data-calendar-date');
-        tempStartDate = swipeAnchorDate;
-        tempEndDate = swipeAnchorDate;
-        highlightCalendarGrid();
-        updateCalInputs();
-        if (navigator.vibrate) navigator.vibrate(15);
-      }, { passive: true });
-
-      calendarDaysGrid.addEventListener('touchmove', e => {
-        if (!isCalSwiping || !swipeAnchorDate) return;
-        const touch = e.touches[0];
-        const elem = document.elementFromPoint(touch.clientX, touch.clientY);
-        const cell = elem?.closest('[data-calendar-date]');
-        if (!cell) return;
-
-        const hovered = cell.getAttribute('data-calendar-date');
-        if (hovered && hovered !== tempEndDate) {
-          if (hovered < swipeAnchorDate) {
-            tempStartDate = hovered;
-            tempEndDate = swipeAnchorDate;
-          } else {
-            tempStartDate = swipeAnchorDate;
-            tempEndDate = hovered;
-          }
-          highlightCalendarGrid();
-          updateCalInputs();
-        }
-      }, { passive: true });
-
-      calendarDaysGrid.addEventListener('touchend', () => {
-        isCalSwiping = false;
-        swipeAnchorDate = null;
-      });
-
-      // Click / Tap Events
-      calendarDaysGrid.addEventListener('click', e => {
-        const cell = e.target.closest('[data-calendar-date]');
-        if (!cell) return;
-        const clicked = cell.getAttribute('data-calendar-date');
-        if (!clicked) return;
-
-        if (navigator.vibrate) navigator.vibrate(15);
-
-        if (!tempStartDate || (tempStartDate && tempEndDate && tempStartDate !== tempEndDate)) {
-          tempStartDate = clicked;
-          tempEndDate = clicked;
-        } else if (tempStartDate && (!tempEndDate || tempStartDate === tempEndDate)) {
-          if (clicked < tempStartDate) {
-            tempEndDate = tempStartDate;
-            tempStartDate = clicked;
-          } else {
-            tempEndDate = clicked;
-          }
-        }
-        highlightCalendarGrid();
-        updateCalInputs();
-      });
-
-      calPrevMonthBtn.addEventListener('click', () => {
-        calViewMonth--;
-        if (calViewMonth < 0) {
-          calViewMonth = 11;
-          calViewYear--;
-        }
-        renderCalendarGrid();
-      });
-
-      calNextMonthBtn.addEventListener('click', () => {
-        calViewMonth++;
-        if (calViewMonth > 11) {
-          calViewMonth = 0;
-          calViewYear++;
-        }
-        renderCalendarGrid();
-      });
-
-      closeCalModalBtn.addEventListener('click', closeCalendarModal);
-      calendarRangeModal.addEventListener('click', e => {
-        if (e.target === calendarRangeModal) closeCalendarModal();
-      });
-
-      // Quick Presets
-      document.querySelectorAll('.cal-preset-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const preset = btn.getAttribute('data-preset');
-          const now = new Date();
-          const toStr = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-
-          if (preset === 'today') {
-            tempStartDate = toStr(now);
-            tempEndDate = tempStartDate;
-          } else if (preset === 'yesterday') {
-            const y = new Date();
-            y.setDate(y.getDate() - 1);
-            tempStartDate = toStr(y);
-            tempEndDate = tempStartDate;
-          } else if (preset === 'last7') {
-            const past = new Date();
-            past.setDate(past.getDate() - 6);
-            tempStartDate = toStr(past);
-            tempEndDate = toStr(now);
-          } else if (preset === 'thisMonth') {
-            const first = new Date(now.getFullYear(), now.getMonth(), 1);
-            tempStartDate = toStr(first);
-            tempEndDate = toStr(now);
-          } else if (preset === 'all') {
-            tempStartDate = null;
-            tempEndDate = null;
-          }
-
-          if (tempStartDate) {
-            const dt = new Date(tempStartDate);
-            calViewYear = dt.getFullYear();
-            calViewMonth = dt.getMonth();
-          }
-          renderCalendarGrid();
-          updateCalInputs();
-          if (navigator.vibrate) navigator.vibrate(20);
-        });
-      });
-
-      if (calInputStart) {
-        calInputStart.addEventListener('change', () => {
-          tempStartDate = calInputStart.value || null;
-          if (tempStartDate) {
-            const dt = new Date(tempStartDate);
-            calViewYear = dt.getFullYear();
-            calViewMonth = dt.getMonth();
-            renderCalendarGrid();
-          }
-          highlightCalendarGrid();
-          updateCalInputs();
-        });
-      }
-
-      if (calInputEnd) {
-        calInputEnd.addEventListener('change', () => {
-          tempEndDate = calInputEnd.value || null;
-          highlightCalendarGrid();
-          updateCalInputs();
-        });
-      }
-
-      calResetBtn.addEventListener('click', () => {
-        tempStartDate = null;
-        tempEndDate = null;
-        renderCalendarGrid();
-        updateCalInputs();
-        if (navigator.vibrate) navigator.vibrate(20);
-      });
-
-      calApplyBtn.addEventListener('click', () => {
-        if (tempStartDate && tempEndDate) {
-          filterStartDate = tempStartDate <= tempEndDate ? tempStartDate : tempEndDate;
-          filterEndDate = tempStartDate <= tempEndDate ? tempEndDate : tempStartDate;
-        } else {
-          filterStartDate = tempStartDate || tempEndDate || null;
-          filterEndDate = filterStartDate;
-        }
-
-        updateDateRangeDisplayLabel();
-        closeCalendarModal();
-        renderHistory();
-        if (navigator.vibrate) navigator.vibrate(30);
-      });
-
-      dateRangeBtn.addEventListener('click', openCalendarModal);
-
-      clearDateFilterBtn.addEventListener('click', () => {
-        filterStartDate = null;
-        filterEndDate = null;
-        updateDateRangeDisplayLabel();
-        renderHistory();
-        if (navigator.vibrate) navigator.vibrate(20);
-      });
 
       // Export CSV
       exportCsvBtn.addEventListener('click', () => {
