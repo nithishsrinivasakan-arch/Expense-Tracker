@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f172a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="₹ Tracker" />
+  <meta name="description" content="Minimalist, mobile-first Progressive Web App for tracking daily expenses in Indian Rupees (₹)." />
+  <title>₹ Expense Tracker</title>
+
+  <!-- Web App Manifest for Mobile PWA Installation & PWABuilder -->
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="./icon-192.svg" />
+  <link rel="apple-touch-icon" href="./icon-512.svg" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            slate: {
+              950: '#020617',
+              900: '#0f172a',
+              850: '#131c31',
+              800: '#1e293b',
+              700: '#334155',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <style>
+    * {
+      -webkit-tap-highlight-color: transparent;
+      box-sizing: border-box;
+    }
+    html, body {
+      background-color: #0f172a;
+      color: #f8fafc;
+      overscroll-behavior-y: none;
+    }
+    /* Hide number input spinners for clean minimalist look */
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+    /* Custom subtle scrollbars */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.4);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(71, 85, 105, 0.6);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(100, 116, 139, 0.9);
+    }
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+    /* Smooth dropdown transition */
+    #historyDropdown {
+      transition: max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+  </style>
+</head>
+
+<body class="bg-[#0f172a] text-slate-100 min-h-[100dvh] h-[100dvh] flex flex-col justify-between overflow-hidden select-none antialiased">
+
+  <!-- App Container (Mobile-First Centered Shell) -->
+  <div class="w-full max-w-md mx-auto h-full flex flex-col justify-between relative px-4 pt-3 pb-4">
+
+    <!-- ==========================================
+         1. TOP SECTION: COLLAPSIBLE HISTORY & ANALYTICS DROPDOWN
+         ========================================== -->
+    <header class="relative z-30 shrink-0">
+      <!-- Top Header Bar -->
+      <div class="bg-slate-800/80 backdrop-blur-md border border-slate-700/70 rounded-2xl p-3 shadow-lg flex items-center justify-between gap-2 transition-colors hover:border-slate-600/80">
+        <!-- Expand/Collapse Trigger Area -->
+        <button
+          id="dropdownToggleBtn"
+          type="button"
+          aria-expanded="false"
+          aria-controls="historyDropdown"
+          class="flex-1 flex items-center justify-between text-left group focus:outline-none"
+        >
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-9 h-9 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold text-lg shrink-0">
+              ₹
+            </div>
+            <div class="min-w-0">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">History &amp; Analytics</span>
+                <span id="headerRecordCount" class="text-[11px] font-medium px-2 py-0.5 rounded-full bg-slate-700/80 text-slate-300 tabular-nums">0 items</span>
+              </div>
+              <div class="flex items-baseline gap-1.5 mt-0.5">
+                <span class="text-xs text-slate-400">This Month:</span>
+                <span id="headerMonthTotal" class="text-sm font-bold text-emerald-400 tabular-nums">₹0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Arrow Icon -->
+          <div class="ml-2 w-8 h-8 rounded-lg bg-slate-700/50 group-hover:bg-slate-700 flex items-center justify-center text-slate-300 transition-transform duration-300" id="dropdownArrow">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
+        </button>
+
+        <!-- PWA Install App Button (Appears when installable) -->
+        <button
+          id="installAppBtn"
+          type="button"
+          class="hidden shrink-0 items-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-slate-950 font-semibold text-xs shadow-md shadow-emerald-500/20 transition-all"
+          title="Install App to Home Screen"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V3" />
+          </svg>
+          <span>Install</span>
+        </button>
+      </div>
+
+      <!-- Collapsible Dropdown Panel -->
+      <div
+        id="historyDropdown"
+        class="max-h-0 opacity-0 pointer-events-none -translate-y-2 overflow-hidden absolute left-0 right-0 top-full mt-2 bg-slate-900/95 backdrop-blur-xl border border-slate-700/80 rounded-2xl shadow-2xl shadow-black/70 flex flex-col z-40"
+        style="height: calc(100dvh - 96px);"
+      >
+        <!-- Dropdown Top Controls: Tab Switcher -->
+        <div class="p-3 border-b border-slate-800 flex items-center justify-between gap-2 shrink-0">
+          <div class="grid grid-cols-2 bg-slate-800/90 p-1 rounded-xl w-full border border-slate-700/50">
+            <button
+              id="tabFullListBtn"
+              type="button"
+              class="py-1.5 px-3 rounded-lg text-xs font-semibold transition-all bg-emerald-500 text-slate-950 shadow-sm"
+            >
+              Full List
+            </button>
+            <button
+              id="tabMonthlyChartBtn"
+              type="button"
+              class="py-1.5 px-3 rounded-lg text-xs font-semibold transition-all text-slate-300 hover:text-white"
+            >
+              Monthly Chart
+            </button>
+          </div>
+        </div>
+
+        <!-- TAB 1: FULL LIST -->
+        <div id="tabFullListContent" class="flex-1 flex flex-col overflow-hidden p-3 gap-2.5">
+          <!-- Action & Filter Bar -->
+          <div class="flex flex-wrap items-center justify-between gap-2 shrink-0">
+            <!-- Filter by Keyword/Tag or Search -->
+            <div class="flex items-center gap-1.5 flex-1 min-w-[170px]">
+              <div class="relative flex-1">
+                <input
+                  id="searchFilterInput"
+                  type="text"
+                  placeholder="Search reason, remark, tag..."
+                  class="w-full bg-slate-800/90 border border-slate-700/70 rounded-xl pl-8 pr-3 py-1.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500/70"
+                />
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-slate-500 absolute left-2.5 top-1/2 -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <select
+                id="tagFilterSelect"
+                aria-label="Filter by Tag"
+                class="bg-slate-800/90 border border-slate-700/70 rounded-xl px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-emerald-500/70"
+              >
+                <option value="ALL">All Tags</option>
+              </select>
+            </div>
+
+            <!-- Export Excel (CSV) Button -->
+            <button
+              id="exportCsvBtn"
+              type="button"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 active:scale-95 border border-emerald-500/30 text-emerald-300 text-xs font-semibold transition-all shrink-0"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <span>Export Excel (CSV)</span>
+            </button>
+          </div>
+
+          <!-- Summary Strip inside Full List -->
+          <div class="flex items-center justify-between text-[11px] text-slate-400 px-1 shrink-0">
+            <span id="filteredSummaryText">Showing 0 records</span>
+            <span id="filteredTotalText" class="font-semibold text-slate-200 tabular-nums">Total: ₹0</span>
+          </div>
+
+          <!-- Scrollable Expense List -->
+          <div id="expenseListContainer" class="flex-1 overflow-y-auto space-y-2 pr-0.5 select-text">
+            <!-- Dynamically populated by JS -->
+          </div>
+        </div>
+
+        <!-- TAB 2: MONTHLY CHART -->
+        <div id="tabMonthlyChartContent" class="hidden flex-1 flex flex-col overflow-hidden p-3 gap-3">
+          <div class="bg-slate-800/60 border border-slate-700/60 rounded-xl p-3 shrink-0">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-semibold text-slate-300">Monthly Spending (₹)</span>
+              <span class="text-[11px] text-slate-400">Tap a bar to drill down</span>
+            </div>
+            <div class="relative w-full h-44">
+              <canvas id="monthlyBarChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Drill-down Section for Selected Month -->
+          <div class="flex-1 flex flex-col overflow-hidden bg-slate-800/40 border border-slate-800 rounded-xl p-2.5">
+            <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-800 shrink-0">
+              <div>
+                <h4 id="drilldownTitle" class="text-xs font-bold text-emerald-400">Select a month bar above</h4>
+                <p id="drilldownSubtitle" class="text-[11px] text-slate-400">Tap any month in the chart to inspect its expenses</p>
+              </div>
+              <span id="drilldownTotalBadge" class="text-xs font-bold px-2.5 py-1 rounded-lg bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 tabular-nums hidden">
+                ₹0
+              </span>
+            </div>
+
+            <div id="drilldownListContainer" class="flex-1 overflow-y-auto space-y-2 pr-0.5 select-text">
+              <!-- Populated when a month bar is tapped -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Dropdown Footer Close Button -->
+        <div class="p-2 border-t border-slate-800 bg-slate-900/90 flex items-center justify-between shrink-0">
+          <button
+            id="seedDemoDataBtn"
+            type="button"
+            class="text-[11px] text-slate-500 hover:text-slate-300 px-2 py-1 rounded transition-colors"
+            title="Load sample records for testing analytics"
+          >
+            + Sample Data
+          </button>
+          <button
+            id="closeDropdownFooterBtn"
+            type="button"
+            class="text-xs font-medium text-slate-400 hover:text-white px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 transition-colors"
+          >
+            Close ▲
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- ==========================================
+         2. MIDDLE SECTION: CENTRAL QUICK-ENTRY FORM
+         ========================================== -->
+    <main class="flex-1 flex flex-col justify-center my-auto py-2 z-10 overflow-y-auto">
+      <form id="expenseForm" class="bg-slate-800/50 border border-slate-800/90 rounded-3xl p-4 sm:p-5 shadow-xl space-y-3.5 backdrop-blur-sm">
+        
+        <!-- Form Header Badge & Quick Feedback Toast -->
+        <div class="flex items-center justify-between">
+          <span class="text-[11px] font-semibold uppercase tracking-widest text-slate-400 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            Quick Entry
+          </span>
+          <span id="saveFeedbackBadge" class="text-xs font-semibold text-emerald-400 opacity-0 transition-opacity duration-300 flex items-center gap-1">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+            </svg>
+            Saved!
+          </span>
+        </div>
+
+        <!-- Amount Input (Large Central Numerical Input Prefixed with ₹) -->
+        <div class="relative flex items-center justify-center bg-slate-900/90 border-2 border-slate-700/80 focus-within:border-emerald-500 focus-within:ring-4 focus-within:ring-emerald-500/15 rounded-2xl px-4 py-3 transition-all">
+          <span class="text-3xl sm:text-4xl font-extrabold text-emerald-400 mr-2 select-none">₹</span>
+          <input
+            id="amountInput"
+            type="number"
+            inputmode="decimal"
+            step="any"
+            min="0.01"
+            required
+            autofocus
+            placeholder="0"
+            aria-label="Amount in Indian Rupees"
+            class="w-full bg-transparent text-3xl sm:text-4xl font-extrabold text-white placeholder-slate-600 focus:outline-none tabular-nums"
+          />
+        </div>
+
+        <!-- Reason Input ("Why did you spend?") -->
+        <div>
+          <label for="reasonInput" class="sr-only">Why did you spend?</label>
+          <div class="relative">
+            <input
+              id="reasonInput"
+              type="text"
+              required
+              autocomplete="off"
+              placeholder="Why did you spend?"
+              class="w-full bg-slate-900/75 border border-slate-700/80 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-slate-400 focus:outline-none transition-all"
+            />
+          </div>
+        </div>
+
+        <!-- NEW FEATURE: Keyword / Tag Selector + Custom Input -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <label for="tagInput" class="text-[11px] font-medium text-slate-400">Category Keyword / Tag</label>
+            <span class="text-[10px] text-slate-500">Tap preset or type custom</span>
+          </div>
+
+          <!-- Quick Category Pills -->
+          <div id="quickTagChips" class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
+            <button type="button" data-tag="Food" class="tag-chip shrink-0 px-2.5 py-1 rounded-lg text-xs font-medium border transition-all bg-emerald-500/20 border-emerald-500/50 text-emerald-300">
+              🍔 Food
+            </button>
+            <button type="button" data-tag="Travel" class="tag-chip shrink-0 px-2.5 py-1 rounded-lg text-xs font-medium border transition-all bg-slate-800/90 border-slate-700 text-slate-300 hover:border-slate-600">
+              🚕 Travel
+            </button>
+            <button type="button" data-tag="Utilities" class="tag-chip shrink-0 px-2.5 py-1 rounded-lg text-xs font-medium border transition-all bg-slate-800/90 border-slate-700 text-slate-300 hover:border-slate-600">
+              ⚡ Utilities
+            </button>
+            <button type="button" data-tag="Shopping" class="tag-chip shrink-0 px-2.5 py-1 rounded-lg text-xs font-medium border transition-all bg-slate-800/90 border-slate-700 text-slate-300 hover:border-slate-600">
+              🛍️ Shopping
+            </button>
+            <button type="button" data-tag="Bills" class="tag-chip shrink-0 px-2.5 py-1 rounded-lg text-xs font-medium border transition-all bg-slate-800/90 border-slate-700 text-slate-300 hover:border-slate-600">
+              🧾 Bills
+            </button>
+            <button type="button" data-tag="Misc" class="tag-chip shrink-0 px-2.5 py-1 rounded-lg text-xs font-medium border transition-all bg-slate-800/90 border-slate-700 text-slate-300 hover:border-slate-600">
+              📌 Misc
+            </button>
+          </div>
+
+          <!-- Tag Dropdown / Custom Keyword Input -->
+          <div class="relative">
+            <input
+              id="tagInput"
+              type="text"
+              list="categoryKeywordsList"
+              value="Food"
+              placeholder="Select or type keyword (e.g., Food, Travel, Medical...)"
+              class="w-full bg-slate-900/75 border border-slate-700/80 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15 rounded-xl pl-9 pr-3.5 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none transition-all"
+            />
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-emerald-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+            </svg>
+            <datalist id="categoryKeywordsList">
+              <option value="Food"></option>
+              <option value="Travel"></option>
+              <option value="Utilities"></option>
+              <option value="Shopping"></option>
+              <option value="Bills"></option>
+              <option value="Misc"></option>
+              <option value="Groceries"></option>
+              <option value="Health"></option>
+              <option value="Entertainment"></option>
+              <option value="Fuel"></option>
+            </datalist>
+          </div>
+        </div>
+
+        <!-- NEW FEATURE: Remark / Note Input (Optional Secondary Text Field) -->
+        <div>
+          <label for="remarkInput" class="sr-only">Remark or Note (Optional)</label>
+          <div class="relative">
+            <input
+              id="remarkInput"
+              type="text"
+              autocomplete="off"
+              placeholder="Remark / Note (optional, e.g., Client meeting lunch)"
+              class="w-full bg-slate-900/60 border border-slate-700/60 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15 rounded-xl pl-9 pr-3.5 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none transition-all"
+            />
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Record Button -->
+        <button
+          id="recordBtn"
+          type="submit"
+          class="w-full py-3.5 px-4 rounded-2xl bg-emerald-500 hover:bg-emerald-400 active:scale-[0.98] text-slate-950 font-extrabold text-sm tracking-wide shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2 focus:outline-none focus:ring-4 focus:ring-emerald-500/30"
+        >
+          <span>Record Expense</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+          </svg>
+        </button>
+      </form>
+    </main>
+
+    <!-- ==========================================
+         3. BOTTOM SECTION: SUMMARY DASHBOARD (3-CARD FOOTER GRID)
+         ========================================== -->
+    <footer class="shrink-0 z-20 pt-1">
+      <div class="grid grid-cols-3 gap-2.5">
+        <!-- Card 1: Today -->
+        <div class="bg-slate-800/75 border border-slate-700/70 rounded-2xl p-3 flex flex-col justify-between shadow-md">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-medium text-slate-400">Today</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-sky-400/80"></span>
+          </div>
+          <p id="summaryToday" class="text-base sm:text-lg font-bold text-slate-100 mt-1 truncate tabular-nums">₹0</p>
+        </div>
+
+        <!-- Card 2: This Week -->
+        <div class="bg-slate-800/75 border border-slate-700/70 rounded-2xl p-3 flex flex-col justify-between shadow-md">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-medium text-slate-400">This Week</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-indigo-400/80"></span>
+          </div>
+          <p id="summaryWeek" class="text-base sm:text-lg font-bold text-slate-100 mt-1 truncate tabular-nums">₹0</p>
+        </div>
+
+        <!-- Card 3: This Month (Highlighted in Emerald Accent Color) -->
+        <div class="bg-emerald-950/60 border border-emerald-500/50 rounded-2xl p-3 flex flex-col justify-between shadow-md shadow-emerald-950/50 relative overflow-hidden">
+          <div class="flex items-center justify-between relative z-10">
+            <span class="text-[11px] font-semibold text-emerald-300">This Month</span>
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          </div>
+          <p id="summaryMonth" class="text-base sm:text-lg font-extrabold text-emerald-400 mt-1 truncate tabular-nums relative z-10">₹0</p>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- ==========================================
+       APPLICATION LOGIC & PWA SETUP
+       ========================================== -->
+  <script>
+    (function () {
+      'use strict';
+
+      // --- LocalStorage Key ---
+      const STORAGE_KEY = 'rupee_expenses_pwa_v1';
+
+      // --- Preset Tag Styles ---
+      const TAG_COLORS = {
+        Food: 'bg-amber-500/15 text-amber-300 border-amber-500/30',
+        Travel: 'bg-sky-500/15 text-sky-300 border-sky-500/30',
+        Utilities: 'bg-purple-500/15 text-purple-300 border-purple-500/30',
+        Shopping: 'bg-pink-500/15 text-pink-300 border-pink-500/30',
+        Bills: 'bg-rose-500/15 text-rose-300 border-rose-500/30',
+        Misc: 'bg-slate-600/30 text-slate-300 border-slate-500/30'
+      };
+
+      // --- State ---
+      let expenses = [];
+      let isDropdownOpen = false;
+      let activeTab = 'list'; // 'list' | 'chart'
+      let selectedMonthKey = null; // e.g., '2026-11'
+      let monthlyChartInstance = null;
+      let deferredInstallPrompt = null;
+
+      // --- DOM Elements ---
+      const dropdownToggleBtn = document.getElementById('dropdownToggleBtn');
+      const dropdownArrow = document.getElementById('dropdownArrow');
+      const historyDropdown = document.getElementById('historyDropdown');
+      const closeDropdownFooterBtn = document.getElementById('closeDropdownFooterBtn');
+
+      const headerRecordCount = document.getElementById('headerRecordCount');
+      const headerMonthTotal = document.getElementById('headerMonthTotal');
+      const installAppBtn = document.getElementById('installAppBtn');
+
+      const tabFullListBtn = document.getElementById('tabFullListBtn');
+      const tabMonthlyChartBtn = document.getElementById('tabMonthlyChartBtn');
+      const tabFullListContent = document.getElementById('tabFullListContent');
+      const tabMonthlyChartContent = document.getElementById('tabMonthlyChartContent');
+
+      const searchFilterInput = document.getElementById('searchFilterInput');
+      const tagFilterSelect = document.getElementById('tagFilterSelect');
+      const exportCsvBtn = document.getElementById('exportCsvBtn');
+      const filteredSummaryText = document.getElementById('filteredSummaryText');
+      const filteredTotalText = document.getElementById('filteredTotalText');
+      const expenseListContainer = document.getElementById('expenseListContainer');
+
+      const drilldownTitle = document.getElementById('drilldownTitle');
+      const drilldownSubtitle = document.getElementById('drilldownSubtitle');
+      const drilldownTotalBadge = document.getElementById('drilldownTotalBadge');
+      const drilldownListContainer = document.getElementById('drilldownListContainer');
+      const seedDemoDataBtn = document.getElementById('seedDemoDataBtn');
+
+      const expenseForm = document.getElementById('expenseForm');
+      const amountInput = document.getElementById('amountInput');
+      const reasonInput = document.getElementById('reasonInput');
+      const tagInput = document.getElementById('tagInput');
+      const remarkInput = document.getElementById('remarkInput');
+      const quickTagChips = document.getElementById('quickTagChips');
+      const saveFeedbackBadge = document.getElementById('saveFeedbackBadge');
+
+      const summaryToday = document.getElementById('summaryToday');
+      const summaryWeek = document.getElementById('summaryWeek');
+      const summaryMonth = document.getElementById('summaryMonth');
+
+      // --- Indian Rupee Formatter ---
+      const inrFormatter = new Intl.NumberFormat('en-IN', {
+        style: 'currency',
+        currency: 'INR',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2
+      });
+
+      function formatINR(value) {
+        const num = Number(value) || 0;
+        return inrFormatter.format(num);
+      }
+
+      // --- Date Helpers ---
+      function getMonthKey(isoOrDate) {
+        const d = new Date(isoOrDate);
+        if (isNaN(d.getTime())) return 'Unknown';
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        return `${year}-${month}`;
+      }
+
+      function formatMonthLabel(monthKey) {
+        const [year, month] = monthKey.split('-').map(Number);
+        if (!year || !month) return monthKey;
+        const d = new Date(year, month - 1, 1);
+        return d.toLocaleDateString('en-IN', { month: 'short', year: 'numeric' });
+      }
+
+      function formatExpenseDate(isoString) {
+        const d = new Date(isoString);
+        if (isNaN(d.getTime())) return '';
+        return d.toLocaleDateString('en-IN', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric'
+        }) + ' • ' + d.toLocaleTimeString('en-IN', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true
+        });
+      }
+
+      function isSameDay(d1, d2) {
+        return (
+          d1.getFullYear() === d2.getFullYear() &&
+          d1.getMonth() === d2.getMonth() &&
+          d1.getDate() === d2.getDate()
+        );
+      }
+
+      function getStartOfWeek(date) {
+        // Week starting Monday (standard in India) with Sunday included cleanly
+        const d = new Date(date);
+        d.setHours(0, 0, 0, 0);
+        const day = d.getDay(); // 0 (Sun) to 6 (Sat)
+        const diff = day === 0 ? -6 : 1 - day; // Monday as start of week
+        d.setDate(d.getDate() + diff);
+        return d;
+      }
+
+      // --- Storage Persistence ---
+      function loadExpenses() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) {
+            expenses = [];
+            return;
+          }
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) {
+            expenses = parsed.map(item => ({
+              id: item.id || String(Date.now() + Math.random()),
+              amount: Number(item.amount) || 0,
+              reason: String(item.reason || 'Expense').trim(),
+              tag: String(item.tag || 'Misc').trim() || 'Misc',
+              remark: String(item.remark || '').trim(),
+              createdAt: item.createdAt || new Date().toISOString()
+            }));
+          } else {
+            expenses = [];
+          }
+        } catch (err) {
+          console.error('Failed to parse expenses from localStorage:', err);
+          expenses = [];
+        }
+      }
+
+      function saveExpenses() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(expenses));
+        } catch (err) {
+          console.error('Failed to save expenses to localStorage:', err);
+        }
+      }
+
+      // --- HTML Escaping ---
+      function escapeHtml(str) {
+        return String(str || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
+      function getTagBadgeClass(tag) {
+        return TAG_COLORS[tag] || 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30';
+      }
+
+      // --- Summary Calculations ---
+      function updateSummaries() {
+        const now = new Date();
+        const startOfWeek = getStartOfWeek(now);
+        const currentMonthKey = getMonthKey(now);
+
+        let todayTotal = 0;
+        let weekTotal = 0;
+        let monthTotal = 0;
+
+        for (const item of expenses) {
+          const d = new Date(item.createdAt);
+          if (isNaN(d.getTime())) continue;
+          const amt = Number(item.amount) || 0;
+
+          if (isSameDay(d, now)) {
+            todayTotal += amt;
+          }
+          if (d >= startOfWeek && d <= now) {
+            weekTotal += amt;
+          }
+          if (getMonthKey(d) === currentMonthKey) {
+            monthTotal += amt;
+          }
+        }
+
+        summaryToday.textContent = formatINR(todayTotal);
+        summaryWeek.textContent = formatINR(weekTotal);
+        summaryMonth.textContent = formatINR(monthTotal);
+
+        headerMonthTotal.textContent = formatINR(monthTotal);
+        headerRecordCount.textContent = `${expenses.length} ${expenses.length === 1 ? 'record' : 'records'}`;
+      }
+
+      // --- Populate Tag Filter Dropdown ---
+      function updateTagFilterOptions() {
+        const previousValue = tagFilterSelect.value || 'ALL';
+        const tags = new Set(['Food', 'Travel', 'Utilities', 'Shopping', 'Bills', 'Misc']);
+        expenses.forEach(e => {
+          if (e.tag) tags.add(e.tag);
+        });
+
+        tagFilterSelect.innerHTML = '<option value="ALL">All Tags</option>';
+        Array.from(tags).sort().forEach(tag => {
+          const opt = document.createElement('option');
+          opt.value = tag;
+          opt.textContent = tag;
+          tagFilterSelect.appendChild(opt);
+        });
+
+        if (Array.from(tags).includes(previousValue)) {
+          tagFilterSelect.value = previousValue;
+        } else {
+          tagFilterSelect.value = 'ALL';
+        }
+      }
+
+      // --- Render Single Expense Card ---
+      function createExpenseItemHTML(item) {
+        const tagClass = getTagBadgeClass(item.tag);
+        const hasRemark = item.remark && item.remark.trim().length > 0;
+
+        return `
+          <div class="bg-slate-800/80 hover:bg-slate-800 border border-slate-700/60 rounded-xl p-3 flex items-start justify-between gap-3 transition-all group">
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center flex-wrap gap-1.5">
+                <span class="text-sm font-bold text-slate-100 truncate">${escapeHtml(item.reason)}</span>
+                <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full border ${tagClass}">
+                  ${escapeHtml(item.tag || 'Misc')}
+                </span>
+              </div>
+              ${hasRemark ? `<p class="text-xs text-slate-400 mt-1 break-words italic">"${escapeHtml(item.remark)}"</p>` : ''}
+              <p class="text-[11px] text-slate-500 mt-1 tabular-nums">${formatExpenseDate(item.createdAt)}</p>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <span class="text-sm font-extrabold text-emerald-400 tabular-nums">${formatINR(item.amount)}</span>
+              <button
+                type="button"
+                data-delete-id="${escapeHtml(item.id)}"
+                class="delete-expense-btn w-7 h-7 rounded-lg bg-slate-700/50 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 flex items-center justify-center transition-colors"
+                title="Delete record"
+                aria-label="Delete expense"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        `;
+      }
+
+      // --- Render Full List Tab ---
+      function renderFullList() {
+        const query = (searchFilterInput.value || '').trim().toLowerCase();
+        const selectedTag = tagFilterSelect.value || 'ALL';
+
+        const sorted = [...expenses].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+        const filtered = sorted.filter(item => {
+          const matchesTag = selectedTag === 'ALL' || (item.tag || '').toLowerCase() === selectedTag.toLowerCase();
+          if (!matchesTag) return false;
+          if (!query) return true;
+          const haystack = `${item.reason} ${item.tag} ${item.remark} ${item.amount}`.toLowerCase();
+          return haystack.includes(query);
+        });
+
+        const totalFiltered = filtered.reduce((acc, cur) => acc + (Number(cur.amount) || 0), 0);
+        filteredSummaryText.textContent = `Showing ${filtered.length} of ${expenses.length} records`;
+        filteredTotalText.textContent = `Total: ${formatINR(totalFiltered)}`;
+
+        if (filtered.length === 0) {
+          expenseListContainer.innerHTML = `
+            <div class="h-44 flex flex-col items-center justify-center text-center px-4 text-slate-500">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 mb-2 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" />
+              </svg>
+              <p class="text-xs font-medium text-slate-400">No expense records found</p>
+              <p class="text-[11px] text-slate-500 mt-0.5">Add an expense from the central form or tap "+ Sample Data" below.</p>
+            </div>
+          `;
+          return;
+        }
+
+        expenseListContainer.innerHTML = filtered.map(createExpenseItemHTML).join('');
+      }
+
+      // --- Render Monthly Chart & Drill-Down ---
+      function getMonthlyAggregates() {
+        const map = new Map();
+        for (const item of expenses) {
+          const key = getMonthKey(item.createdAt);
+          if (key === 'Unknown') continue;
+          if (!map.has(key)) {
+            map.set(key, { monthKey: key, total: 0, items: [] });
+          }
+          const entry = map.get(key);
+          entry.total += Number(item.amount) || 0;
+          entry.items.push(item);
+        }
+
+        // Sort keys chronologically ascending for chart
+        const sortedKeys = Array.from(map.keys()).sort();
+        return sortedKeys.map(k => map.get(k));
+      }
+
+      function renderMonthlyChart() {
+        const monthlyData = getMonthlyAggregates();
+        const canvas = document.getElementById('monthlyBarChart');
+        if (!canvas) return;
+
+        // Default selectedMonthKey to latest month with data if not set or no longer valid
+        if (monthlyData.length > 0) {
+          const exists = monthlyData.some(m => m.monthKey === selectedMonthKey);
+          if (!selectedMonthKey || !exists) {
+            selectedMonthKey = monthlyData[monthlyData.length - 1].monthKey;
+          }
+        } else {
+          selectedMonthKey = null;
+        }
+
+        const labels = monthlyData.map(m => formatMonthLabel(m.monthKey));
+        const values = monthlyData.map(m => m.total);
+        const bgColors = monthlyData.map(m =>
+          m.monthKey === selectedMonthKey ? 'rgba(16, 185, 129, 0.9)' : 'rgba(56, 189, 248, 0.45)'
+        );
+        const borderColors = monthlyData.map(m =>
+          m.monthKey === selectedMonthKey ? '#34d399' : '#38bdf8'
+        );
+
+        if (monthlyChartInstance) {
+          monthlyChartInstance.destroy();
+          monthlyChartInstance = null;
+        }
+
+        monthlyChartInstance = new Chart(canvas, {
+          type: 'bar',
+          data: {
+            labels,
+            datasets: [
+              {
+                label: 'Spent (₹)',
+                data: values,
+                backgroundColor: bgColors,
+                borderColor: borderColors,
+                borderWidth: 1.5,
+                borderRadius: 8,
+                maxBarThickness: 42
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            onClick: (event, elements) => {
+              if (elements && elements.length > 0) {
+                const index = elements[0].index;
+                const clickedMonth = monthlyData[index];
+                if (clickedMonth) {
+                  selectedMonthKey = clickedMonth.monthKey;
+                  renderMonthlyChart();
+                  renderDrilldownList();
+                }
+              }
+            },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: '#0f172a',
+                borderColor: '#334155',
+                borderWidth: 1,
+                titleColor: '#f8fafc',
+                bodyColor: '#34d399',
+                callbacks: {
+                  label: ctx => ` ${formatINR(ctx.parsed.y)}`
+                }
+              }
+            },
+            scales: {
+              x: {
+                grid: { display: false },
+                ticks: {
+                  color: '#94a3b8',
+                  font: { size: 11, weight: '600' }
+                }
+              },
+              y: {
+                beginAtZero: true,
+                grid: { color: 'rgba(51, 65, 85, 0.35)' },
+                ticks: {
+                  color: '#94a3b8',
+                  font: { size: 10 },
+                  callback: value => '₹' + Number(value).toLocaleString('en-IN')
+                }
+              }
+            }
+          }
+        });
+
+        renderDrilldownList();
+      }
+
+      function renderDrilldownList() {
+        const monthlyData = getMonthlyAggregates();
+        if (!selectedMonthKey || monthlyData.length === 0) {
+          drilldownTitle.textContent = 'No monthly data yet';
+          drilldownSubtitle.textContent = 'Record expenses to see monthly bar chart & drill-down';
+          drilldownTotalBadge.classList.add('hidden');
+          drilldownListContainer.innerHTML = `
+            <div class="h-28 flex items-center justify-center text-xs text-slate-500">
+              No expenses recorded yet.
+            </div>
+          `;
+          return;
+        }
+
+        const target = monthlyData.find(m => m.monthKey === selectedMonthKey);
+        if (!target) return;
+
+        const sortedItems = [...target.items].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        drilldownTitle.textContent = `${formatMonthLabel(target.monthKey)} Breakdown`;
+        drilldownSubtitle.textContent = `${sortedItems.length} ${sortedItems.length === 1 ? 'expense' : 'expenses'} recorded`;
+        drilldownTotalBadge.textContent = formatINR(target.total);
+        drilldownTotalBadge.classList.remove('hidden');
+
+        drilldownListContainer.innerHTML = sortedItems.map(createExpenseItemHTML).join('');
+      }
+
+      // --- Master UI Refresh ---
+      function refreshUI() {
+        updateSummaries();
+        updateTagFilterOptions();
+        renderFullList();
+        if (activeTab === 'chart') {
+          renderMonthlyChart();
+        }
+      }
+
+      // --- Quick Tag Chip Selection ---
+      function updateTagChipHighlight(currentTagValue) {
+        const normalized = (currentTagValue || '').trim().toLowerCase();
+        const chips = quickTagChips.querySelectorAll('.tag-chip');
+        chips.forEach(chip => {
+          const chipTag = (chip.getAttribute('data-tag') || '').toLowerCase();
+          if (chipTag === normalized) {
+            chip.className = 'tag-chip shrink-0 px-2.5 py-1 rounded-lg text-xs font-medium border transition-all bg-emerald-500/20 border-emerald-500/50 text-emerald-300';
+          } else {
+            chip.className = 'tag-chip shrink-0 px-2.5 py-1 rounded-lg text-xs font-medium border transition-all bg-slate-800/90 border-slate-700 text-slate-300 hover:border-slate-600';
+          }
+        });
+      }
+
+      quickTagChips.addEventListener('click', e => {
+        const btn = e.target.closest('.tag-chip');
+        if (!btn) return;
+        const chosenTag = btn.getAttribute('data-tag') || 'Misc';
+        tagInput.value = chosenTag;
+        updateTagChipHighlight(chosenTag);
+      });
+
+      tagInput.addEventListener('input', () => {
+        updateTagChipHighlight(tagInput.value);
+      });
+
+      // --- Add Expense Form Submission ---
+      expenseForm.addEventListener('submit', e => {
+        e.preventDefault();
+
+        const rawAmount = parseFloat(amountInput.value);
+        if (isNaN(rawAmount) || rawAmount <= 0) {
+          amountInput.focus();
+          return;
+        }
+
+        const reason = reasonInput.value.trim();
+        if (!reason) {
+          reasonInput.focus();
+          return;
+        }
+
+        const tag = tagInput.value.trim() || 'Misc';
+        const remark = remarkInput.value.trim();
+
+        const newExpense = {
+          id: 'exp_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
+          amount: Math.round(rawAmount * 100) / 100,
+          reason,
+          tag,
+          remark,
+          createdAt: new Date().toISOString()
+        };
+
+        expenses.push(newExpense);
+        saveExpenses();
+
+        // Select current month in chart drilldown
+        selectedMonthKey = getMonthKey(newExpense.createdAt);
+        refreshUI();
+
+        // Reset inputs for rapid sequential entry while preserving chosen category tag
+        amountInput.value = '';
+        reasonInput.value = '';
+        remarkInput.value = '';
+
+        // Show saved feedback badge
+        saveFeedbackBadge.classList.remove('opacity-0');
+        clearTimeout(window.__saveBadgeTimer);
+        window.__saveBadgeTimer = setTimeout(() => {
+          saveFeedbackBadge.classList.add('opacity-0');
+        }, 1600);
+
+        // Immediately focus back on Amount Input for rapid sequential entry
+        amountInput.focus();
+      });
+
+      // --- Delete Expense Handler (Event Delegation for both Full List & Drill-Down List) ---
+      function handleDeleteClick(e) {
+        const btn = e.target.closest('.delete-expense-btn');
+        if (!btn) return;
+        const id = btn.getAttribute('data-delete-id');
+        if (!id) return;
+
+        expenses = expenses.filter(item => item.id !== id);
+        saveExpenses();
+        refreshUI();
+      }
+
+      expenseListContainer.addEventListener('click', handleDeleteClick);
+      drilldownListContainer.addEventListener('click', handleDeleteClick);
+
+      // --- Filter Listeners ---
+      searchFilterInput.addEventListener('input', renderFullList);
+      tagFilterSelect.addEventListener('change', renderFullList);
+
+      // --- Collapsible Top Dropdown Toggle ---
+      function setDropdownOpen(open) {
+        isDropdownOpen = Boolean(open);
+        dropdownToggleBtn.setAttribute('aria-expanded', String(isDropdownOpen));
+
+        if (isDropdownOpen) {
+          historyDropdown.classList.remove('max-h-0', 'opacity-0', 'pointer-events-none', '-translate-y-2');
+          historyDropdown.classList.add('max-h-[85dvh]', 'opacity-100', 'pointer-events-auto', 'translate-y-0');
+          dropdownArrow.classList.add('rotate-180', 'bg-emerald-500/20', 'text-emerald-300');
+          if (activeTab === 'chart') {
+            setTimeout(renderMonthlyChart, 50);
+          }
+        } else {
+          historyDropdown.classList.add('max-h-0', 'opacity-0', 'pointer-events-none', '-translate-y-2');
+          historyDropdown.classList.remove('max-h-[85dvh]', 'opacity-100', 'pointer-events-auto', 'translate-y-0');
+          dropdownArrow.classList.remove('rotate-180', 'bg-emerald-500/20', 'text-emerald-300');
+        }
+      }
+
+      dropdownToggleBtn.addEventListener('click', () => {
+        setDropdownOpen(!isDropdownOpen);
+      });
+
+      closeDropdownFooterBtn.addEventListener('click', () => {
+        setDropdownOpen(false);
+      });
+
+      // --- Tab Switcher (Full List vs Monthly Chart) ---
+      function switchTab(tab) {
+        activeTab = tab;
+        if (tab === 'list') {
+          tabFullListBtn.className = 'py-1.5 px-3 rounded-lg text-xs font-semibold transition-all bg-emerald-500 text-slate-950 shadow-sm';
+          tabMonthlyChartBtn.className = 'py-1.5 px-3 rounded-lg text-xs font-semibold transition-all text-slate-300 hover:text-white';
+          tabFullListContent.classList.remove('hidden');
+          tabMonthlyChartContent.classList.add('hidden');
+          renderFullList();
+        } else {
+          tabMonthlyChartBtn.className = 'py-1.5 px-3 rounded-lg text-xs font-semibold transition-all bg-emerald-500 text-slate-950 shadow-sm';
+          tabFullListBtn.className = 'py-1.5 px-3 rounded-lg text-xs font-semibold transition-all text-slate-300 hover:text-white';
+          tabMonthlyChartContent.classList.remove('hidden');
+          tabFullListContent.classList.add('hidden');
+          renderMonthlyChart();
+        }
+      }
+
+      tabFullListBtn.addEventListener('click', () => switchTab('list'));
+      tabMonthlyChartBtn.addEventListener('click', () => switchTab('chart'));
+
+      // --- Export Excel (CSV) ---
+      exportCsvBtn.addEventListener('click', () => {
+        if (expenses.length === 0) {
+          alert('No expenses recorded yet to export.');
+          return;
+        }
+
+        const sorted = [...expenses].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        const headers = ['Date', 'Time', 'Amount (INR)', 'Reason', 'Keyword/Tag', 'Remark'];
+
+        const rows = sorted.map(item => {
+          const d = new Date(item.createdAt);
+          const dateStr = isNaN(d.getTime()) ? '' : d.toLocaleDateString('en-IN');
+          const timeStr = isNaN(d.getTime()) ? '' : d.toLocaleTimeString('en-IN');
+          const escapeCsv = val => `"${String(val ?? '').replace(/"/g, '""')}"`;
+          return [
+            escapeCsv(dateStr),
+            escapeCsv(timeStr),
+            escapeCsv(item.amount),
+            escapeCsv(item.reason),
+            escapeCsv(item.tag || 'Misc'),
+            escapeCsv(item.remark || '')
+          ].join(',');
+        });
+
+        // Include UTF-8 BOM (\uFEFF) so Microsoft Excel opens Indian Rupees & UTF-8 cleanly
+        const csvContent = '\uFEFF' + [headers.join(','), ...rows].join('\r\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        const dateStamp = new Date().toISOString().slice(0, 10);
+        a.href = url;
+        a.download = `rupee-expenses-${dateStamp}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      });
+
+      // --- Seed Sample Data (for testing multi-month charts & drill-down) ---
+      seedDemoDataBtn.addEventListener('click', () => {
+        const now = new Date();
+        const y = now.getFullYear();
+        const m = now.getMonth();
+
+        const sampleItems = [
+          { amount: 240, reason: 'Masala Dosa & Filter Coffee', tag: 'Food', remark: 'Breakfast with colleague', date: new Date(y, m, now.getDate(), 9, 15) },
+          { amount: 185, reason: 'Uber Auto to Metro', tag: 'Travel', remark: 'Morning commute', date: new Date(y, m, now.getDate(), 10, 0) },
+          { amount: 1450, reason: 'Broadband Fiber Bill', tag: 'Utilities', remark: 'Monthly Airtel fiber', date: new Date(y, m, Math.max(1, now.getDate() - 2), 14, 30) },
+          { amount: 680, reason: 'Fresh Vegetables & Dairy', tag: 'Food', remark: 'Local market', date: new Date(y, m, Math.max(1, now.getDate() - 4), 19, 10) },
+          { amount: 2499, reason: 'Running Shoes', tag: 'Shopping', remark: 'Festive discount sale', date: new Date(y, m - 1, 18, 16, 45) },
+          { amount: 1120, reason: 'Electricity Bill', tag: 'Bills', remark: 'BESCOM monthly bill', date: new Date(y, m - 1, 10, 11, 20) },
+          { amount: 520, reason: 'Team Lunch Biryani', tag: 'Food', remark: 'Friday office lunch', date: new Date(y, m - 1, 5, 13, 30) },
+          { amount: 1890, reason: 'Train Tickets', tag: 'Travel', remark: 'Weekend trip', date: new Date(y, m - 2, 21, 8, 15) },
+          { amount: 950, reason: 'Mobile Postpaid Plan', tag: 'Bills', remark: 'Family plan', date: new Date(y, m - 2, 7, 17, 0) }
+        ];
+
+        for (const s of sampleItems) {
+          expenses.push({
+            id: 'exp_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
+            amount: s.amount,
+            reason: s.reason,
+            tag: s.tag,
+            remark: s.remark,
+            createdAt: s.date.toISOString()
+          });
+        }
+
+        saveExpenses();
+        refreshUI();
+        if (activeTab === 'chart') {
+          renderMonthlyChart();
+        }
+      });
+
+      // --- PWA Install Prompt & Service Worker Setup ---
+      window.addEventListener('beforeinstallprompt', e => {
+        e.preventDefault();
+        deferredInstallPrompt = e;
+        installAppBtn.classList.remove('hidden');
+        installAppBtn.classList.add('inline-flex');
+      });
+
+      installAppBtn.addEventListener('click', async () => {
+        if (!deferredInstallPrompt) return;
+        deferredInstallPrompt.prompt();
+        const { outcome } = await deferredInstallPrompt.userChoice;
+        if (outcome === 'accepted') {
+          installAppBtn.classList.add('hidden');
+          installAppBtn.classList.remove('inline-flex');
+        }
+        deferredInstallPrompt = null;
+      });
+
+      window.addEventListener('appinstalled', () => {
+        deferredInstallPrompt = null;
+        installAppBtn.classList.add('hidden');
+        installAppBtn.classList.remove('inline-flex');
+      });
+
+      // Register Service Worker for offline capability & PWA installability
+      if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+        navigator.serviceWorker.register('./sw.js').then(reg => {
+          console.log('ServiceWorker registered with scope:', reg.scope);
+        }).catch(err => {
+          console.warn('External sw.js registration failed, using fallback:', err);
+        });
+      }
+
+      // --- Initialize App ---
+      loadExpenses();
+      refreshUI();
+    })();
+  </script>
+</body>
+</html>

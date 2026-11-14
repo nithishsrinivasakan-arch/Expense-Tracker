@@ -1,0 +1,13 @@
+{
+  "name": "rupee-expense-tracker",
+  "version": "1.0.0",
+  "description": "Minimalist Indian Rupee Expense Tracker PWA",
+  "main": "main.js",
+  "scripts": {
+    "start": "npx serve .",
+    "desktop": "npx electron main.js"
+  },
+  "keywords": ["expense-tracker", "pwa", "rupee", "finance"],
+  "author": "ManuPulse01",
+  "license": "MIT"
+}
