@@ -488,13 +488,67 @@
   </div>
 
   <!-- ==========================================
+       DELETE CONFIRMATION MODAL SCREEN
+       ========================================== -->
+  <div
+    id="deleteConfirmModal"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200"
+    role="dialog"
+    aria-modal="true"
+  >
+    <div
+      id="deleteConfirmCard"
+      class="w-full max-w-xs bg-slate-900 border border-slate-700/80 rounded-3xl p-5 shadow-2xl shadow-rose-950/90 flex flex-col items-center text-center transform scale-90 transition-all duration-200"
+    >
+      <!-- Red Trash Warning Icon -->
+      <div class="w-13 h-13 p-3 rounded-2xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-400 mb-3 shadow-lg shadow-rose-950/50">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+        </svg>
+      </div>
+
+      <h3 id="deleteModalTitle" class="text-base font-extrabold text-white">Delete Expense?</h3>
+
+      <!-- Record Preview Card -->
+      <div id="deleteModalPreview" class="my-3 px-3.5 py-2.5 rounded-2xl bg-slate-950/80 border border-slate-800 w-full text-left">
+        <div class="flex items-center justify-between gap-2">
+          <span id="deleteModalReason" class="text-xs font-bold text-slate-100 truncate">Expense</span>
+          <span id="deleteModalAmount" class="text-xs font-black text-rose-400 tabular-nums shrink-0">-₹0</span>
+        </div>
+        <p id="deleteModalMeta" class="text-[10px] text-slate-400 mt-1 truncate">Category • Date</p>
+      </div>
+
+      <p id="deleteModalDesc" class="text-xs text-slate-400">This record will be permanently deleted from your phone.</p>
+
+      <!-- Cancel / Delete Action Buttons -->
+      <div class="grid grid-cols-2 gap-2 mt-4 w-full">
+        <button
+          id="deleteCancelBtn"
+          type="button"
+          class="py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-xs font-bold text-slate-300 transition-all"
+        >
+          Cancel
+        </button>
+        <button
+          id="deleteConfirmBtn"
+          type="button"
+          class="py-2.5 px-3 rounded-xl bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 active:scale-95 text-xs font-black text-white shadow-md shadow-rose-950 transition-all"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
        JAVASCRIPT APPLICATION LOGIC
        ========================================== -->
   <script>
     (function () {
       'use strict';
 
-      const STORAGE_KEY = 'rupee_expenses_pwa_v1';
+      // Fresh storage key ensures all old sample data is removed
+      const STORAGE_KEY = 'rupee_expenses_v2_fresh';
 
       // Red/Rose Category Badges
       const TAG_COLORS = {
@@ -654,9 +708,18 @@
         return d;
       }
 
-      // Load & Save (Clean slate - no sample data by default)
+      // Load & Save (Clean slate - all previous sample data permanently purged)
       function loadExpenses() {
         try {
+          // Automatic purge of previous test/sample data so user starts with a completely fresh slate
+          if (localStorage.getItem('rupee_clean_v2_initialized') !== 'true') {
+            localStorage.removeItem('rupee_expenses_pwa_v1');
+            localStorage.removeItem(STORAGE_KEY);
+            localStorage.setItem('rupee_clean_v2_initialized', 'true');
+            expenses = [];
+            return;
+          }
+
           const raw = localStorage.getItem(STORAGE_KEY);
           if (!raw) {
             expenses = [];
@@ -1050,6 +1113,81 @@
         amountInput.focus();
       });
 
+      // Custom Mobile Delete & Clear Confirmation Screen Logic
+      const deleteConfirmModal = document.getElementById('deleteConfirmModal');
+      const deleteConfirmCard = document.getElementById('deleteConfirmCard');
+      const deleteModalTitle = document.getElementById('deleteModalTitle');
+      const deleteModalReason = document.getElementById('deleteModalReason');
+      const deleteModalAmount = document.getElementById('deleteModalAmount');
+      const deleteModalMeta = document.getElementById('deleteModalMeta');
+      const deleteModalDesc = document.getElementById('deleteModalDesc');
+      const deleteCancelBtn = document.getElementById('deleteCancelBtn');
+      const deleteConfirmBtn = document.getElementById('deleteConfirmBtn');
+
+      let itemPendingDeleteId = null;
+      let isClearAllPending = false;
+
+      function openDeleteModal(item) {
+        itemPendingDeleteId = item.id;
+        isClearAllPending = false;
+
+        deleteModalTitle.textContent = 'Delete Expense?';
+        deleteModalReason.textContent = item.reason;
+        deleteModalAmount.textContent = `- ${formatINR(item.amount)}`;
+        deleteModalMeta.textContent = `${item.tag || 'Misc'} • ${formatExpenseDate(item.createdAt)}`;
+        deleteModalDesc.textContent = 'This expense record will be permanently deleted from your phone.';
+        deleteConfirmBtn.textContent = 'Delete';
+
+        deleteConfirmModal.classList.remove('opacity-0', 'pointer-events-none');
+        deleteConfirmCard.classList.remove('scale-90');
+        deleteConfirmCard.classList.add('scale-100');
+      }
+
+      function openClearAllModal() {
+        itemPendingDeleteId = null;
+        isClearAllPending = true;
+
+        deleteModalTitle.textContent = 'Clear All Records?';
+        deleteModalReason.textContent = 'All Expenses';
+        deleteModalAmount.textContent = `${expenses.length} Records`;
+        deleteModalMeta.textContent = 'Permanent Reset';
+        deleteModalDesc.textContent = 'Are you sure you want to delete ALL expense records? This cannot be undone.';
+        deleteConfirmBtn.textContent = 'Clear All';
+
+        deleteConfirmModal.classList.remove('opacity-0', 'pointer-events-none');
+        deleteConfirmCard.classList.remove('scale-90');
+        deleteConfirmCard.classList.add('scale-100');
+      }
+
+      function closeDeleteModal() {
+        itemPendingDeleteId = null;
+        isClearAllPending = false;
+        deleteConfirmModal.classList.add('opacity-0', 'pointer-events-none');
+        deleteConfirmCard.classList.remove('scale-100');
+        deleteConfirmCard.classList.add('scale-90');
+      }
+
+      deleteCancelBtn.addEventListener('click', closeDeleteModal);
+      deleteConfirmModal.addEventListener('click', e => {
+        if (e.target === deleteConfirmModal) closeDeleteModal();
+      });
+
+      deleteConfirmBtn.addEventListener('click', () => {
+        if (isClearAllPending) {
+          expenses = [];
+          saveExpenses();
+          refreshUI();
+          if (navigator.vibrate) navigator.vibrate(50);
+          closeDeleteModal();
+        } else if (itemPendingDeleteId) {
+          expenses = expenses.filter(i => i.id !== itemPendingDeleteId);
+          saveExpenses();
+          refreshUI();
+          if (navigator.vibrate) navigator.vibrate(35);
+          closeDeleteModal();
+        }
+      });
+
       // Delete Expense Handler
       function handleDeleteClick(e) {
         const btn = e.target.closest('.delete-expense-btn');
@@ -1057,10 +1195,9 @@
         const id = btn.getAttribute('data-delete-id');
         if (!id) return;
 
-        if (confirm('Delete this expense?')) {
-          expenses = expenses.filter(item => item.id !== id);
-          saveExpenses();
-          refreshUI();
+        const target = expenses.find(i => i.id === id);
+        if (target) {
+          openDeleteModal(target);
         }
       }
 
@@ -1069,16 +1206,8 @@
 
       // Clear All Data
       clearAllDataBtn.addEventListener('click', () => {
-        if (expenses.length === 0) {
-          alert('No records to clear.');
-          return;
-        }
-        if (confirm('Are you sure you want to delete ALL expense records? This cannot be undone.')) {
-          expenses = [];
-          saveExpenses();
-          refreshUI();
-          alert('All expense records cleared.');
-        }
+        if (expenses.length === 0) return;
+        openClearAllModal();
       });
 
       // Filters
