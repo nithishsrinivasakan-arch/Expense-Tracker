@@ -76,11 +76,11 @@ git push -u origin main
 1. **Enable GitHub Pages:**
    - In your GitHub repository, go to **Settings** ➔ **Pages**.
    - Under **Build and deployment**, set Source to **Deploy from a branch**, choose `main` branch, and folder `/ (root)`. Click **Save**.
-   - Your live app URL will be: `https://manupulse01.github.io/Expense-Tracker/`
+   - Your live app URL will be: `https://nithishsrinivasakan-arch.github.io/Expense-Tracker/`
 
 2. **Generate Downloadable APK:**
    - Go to [PWABuilder.com](https://www.pwabuilder.com).
-   - Enter your live URL: `https://manupulse01.github.io/Expense-Tracker/` and click **Start**.
+   - Enter your live URL: `https://nithishsrinivasakan-arch.github.io/Expense-Tracker/` and click **Start**.
    - PWABuilder checks the `manifest.json` and `sw.js` (both are already configured with 100% score).
    - Click **Package for Stores** ➔ **Android**.
    - Click **Generate Package** to download your signed `.apk` file directly to your computer or phone!
@@ -88,7 +88,7 @@ git push -u origin main
 ### Option B: Instant Mobile App (No App Store / WebAPK)
 
 Once deployed to GitHub Pages:
-- **Android:** Open `https://manupulse01.github.io/Expense-Tracker/` in Chrome. Tap the **Install** button inside the app or the 3-dot menu ➔ **Install app** / **Add to Home screen**. Android creates a native WebAPK that runs full-screen with offline support.
+- **Android:** Open `https://nithishsrinivasakan-arch.github.io/Expense-Tracker/` in Chrome. Tap the **Install** button inside the app or the 3-dot menu ➔ **Install app** / **Add to Home screen**. Android creates a native WebAPK that runs full-screen with offline support.
 - **iPhone / iOS:** Open in Safari ➔ Tap the **Share** button ➔ **Add to Home Screen**.
 
 ### Option C: Standalone Windows Desktop App (.exe)
