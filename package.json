@@ -8,6 +8,6 @@
     "desktop": "npx electron main.js"
   },
   "keywords": ["expense-tracker", "pwa", "rupee", "finance"],
-  "author": "ManuPulse01",
+  "author": "nithishsrinivasakan-arch",
   "license": "MIT"
 }
