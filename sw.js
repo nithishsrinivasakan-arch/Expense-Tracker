@@ -1,8 +1,12 @@
-const CACHE_NAME = 'rupee-tracker-cache-v1';
+const CACHE_NAME = 'rupee-tracker-cache-v2';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './manifest.json',
+  './icon-192.png',
+  './icon-512.png',
+  './icon-maskable-192.png',
+  './icon-maskable-512.png',
   './icon-192.svg',
   './icon-512.svg',
   'https://cdn.tailwindcss.com',
