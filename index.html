@@ -448,6 +448,46 @@
   </div>
 
   <!-- ==========================================
+       RECORDED EXPENSE POPUP MODAL
+       ========================================== -->
+  <div
+    id="recordedPopupModal"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200"
+    role="dialog"
+    aria-modal="true"
+  >
+    <div
+      id="recordedPopupCard"
+      class="w-full max-w-xs bg-slate-900 border-2 border-rose-500/60 rounded-3xl p-5 shadow-2xl shadow-rose-950/90 flex flex-col items-center text-center transform scale-90 transition-all duration-200"
+    >
+      <!-- Glowing Red Success Icon -->
+      <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-rose-600 to-red-500 flex items-center justify-center text-white shadow-xl shadow-rose-600/40 mb-2.5">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.8">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+        </svg>
+      </div>
+
+      <span class="text-[10px] font-black uppercase tracking-widest text-rose-400">Expense Recorded!</span>
+      <h3 id="popupAmount" class="text-2xl sm:text-3xl font-black text-rose-400 mt-1 tabular-nums">-₹0</h3>
+      <p id="popupReason" class="text-sm font-bold text-slate-100 mt-1 truncate max-w-[220px]">Expense</p>
+      
+      <div class="flex items-center gap-1.5 mt-2 flex-wrap justify-center">
+        <span id="popupTag" class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40">Food</span>
+        <span id="popupRemark" class="text-[10px] text-slate-400 italic truncate max-w-[130px] hidden"></span>
+      </div>
+
+      <!-- Quick Dismiss Button -->
+      <button
+        id="popupDoneBtn"
+        type="button"
+        class="mt-4 w-full py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-red-600 active:scale-95 text-xs font-bold text-white shadow-md shadow-rose-950 transition-all"
+      >
+        Done
+      </button>
+    </div>
+  </div>
+
+  <!-- ==========================================
        JAVASCRIPT APPLICATION LOGIC
        ========================================== -->
   <script>
@@ -512,6 +552,52 @@
       const drilldownSubtitle = document.getElementById('drilldownSubtitle');
       const drilldownTotalBadge = document.getElementById('drilldownTotalBadge');
       const drilldownListContainer = document.getElementById('drilldownListContainer');
+
+      // Recorded Popup Elements
+      const recordedPopupModal = document.getElementById('recordedPopupModal');
+      const recordedPopupCard = document.getElementById('recordedPopupCard');
+      const popupAmount = document.getElementById('popupAmount');
+      const popupReason = document.getElementById('popupReason');
+      const popupTag = document.getElementById('popupTag');
+      const popupRemark = document.getElementById('popupRemark');
+      const popupDoneBtn = document.getElementById('popupDoneBtn');
+      let popupTimer = null;
+
+      function showRecordedPopup(item) {
+        popupAmount.textContent = `- ${formatINR(item.amount)}`;
+        popupReason.textContent = item.reason;
+        popupTag.textContent = item.tag || 'Misc';
+
+        if (item.remark && item.remark.trim().length > 0) {
+          popupRemark.textContent = `"${item.remark.trim()}"`;
+          popupRemark.classList.remove('hidden');
+        } else {
+          popupRemark.classList.add('hidden');
+        }
+
+        // Show modal with animation
+        recordedPopupModal.classList.remove('opacity-0', 'pointer-events-none');
+        recordedPopupCard.classList.remove('scale-90');
+        recordedPopupCard.classList.add('scale-100');
+
+        // Auto close after 2.2 seconds (or user can tap immediately)
+        clearTimeout(popupTimer);
+        popupTimer = setTimeout(hideRecordedPopup, 2200);
+      }
+
+      function hideRecordedPopup() {
+        clearTimeout(popupTimer);
+        recordedPopupModal.classList.add('opacity-0', 'pointer-events-none');
+        recordedPopupCard.classList.remove('scale-100');
+        recordedPopupCard.classList.add('scale-90');
+      }
+
+      recordedPopupModal.addEventListener('click', e => {
+        if (e.target === recordedPopupModal || e.target === popupDoneBtn) {
+          hideRecordedPopup();
+        }
+      });
+      popupDoneBtn.addEventListener('click', hideRecordedPopup);
 
       // Currency Formatter
       const inrFormatter = new Intl.NumberFormat('en-IN', {
@@ -949,7 +1035,10 @@
         remarkInput.value = '';
 
         // Haptic feedback on supported mobile devices
-        if (navigator.vibrate) navigator.vibrate(35);
+        if (navigator.vibrate) navigator.vibrate([40, 30, 40]);
+
+        // Show Recorded Popup
+        showRecordedPopup(newExpense);
 
         // Flash saved badge
         saveFeedbackBadge.classList.remove('opacity-0');
