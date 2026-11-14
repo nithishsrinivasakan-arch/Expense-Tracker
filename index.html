@@ -364,19 +364,23 @@
               <option value="ALL">All Categories</option>
             </select>
 
-            <!-- Calendar Date Picker -->
+            <!-- Multi-Day / Range Calendar Filter Button -->
             <div class="flex items-center shrink-0 gap-1">
-              <input
-                id="dateFilterInput"
-                type="date"
-                aria-label="Filter by Calendar Date"
-                title="Filter by Calendar Date"
-                class="bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-[#ea7a87] cursor-pointer"
-              />
+              <button
+                id="dateRangeBtn"
+                type="button"
+                class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-200 hover:border-[#ea7a87] active:scale-95 transition-all cursor-pointer"
+                title="Select single or multiple days"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-[#ea7a87]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span id="dateRangeDisplayLabel" class="font-semibold text-slate-200">All Dates</span>
+              </button>
               <button
                 id="clearDateFilterBtn"
                 type="button"
-                class="hidden text-[11px] font-bold text-slate-400 hover:text-[#ea7a87] active:scale-95 px-2 py-1 rounded-xl bg-slate-800/80 shrink-0 transition-all"
+                class="hidden text-[11px] font-bold text-slate-400 hover:text-[#ea7a87] active:scale-95 px-2 py-1.5 rounded-xl bg-slate-800/80 shrink-0 transition-all"
                 title="Reset date filter"
               >
                 ✕ All
@@ -572,6 +576,74 @@
   </div>
 
   <!-- ==========================================
+       MULTI-DAY / RANGE CALENDAR MODAL
+       ========================================== -->
+  <div
+    id="calendarRangeModal"
+    class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200 select-none"
+    role="dialog"
+    aria-modal="true"
+  >
+    <div
+      id="calendarRangeCard"
+      class="w-full max-w-sm bg-slate-900 border-t sm:border border-slate-800 rounded-t-3xl sm:rounded-3xl p-4 shadow-2xl flex flex-col transform translate-y-full sm:translate-y-0 sm:scale-90 transition-all duration-200 max-h-[92vh] overflow-y-auto"
+    >
+      <!-- Header with Month/Year Navigation and Close -->
+      <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+        <div class="flex items-center gap-1.5">
+          <button id="calPrevMonthBtn" type="button" class="w-7 h-7 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center text-xs font-bold active:scale-95 transition-all">◀</button>
+          <h4 id="calMonthYearTitle" class="text-xs font-extrabold text-white min-w-[110px] text-center">November 2026</h4>
+          <button id="calNextMonthBtn" type="button" class="w-7 h-7 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center text-xs font-bold active:scale-95 transition-all">▶</button>
+        </div>
+        <button id="closeCalModalBtn" type="button" class="text-slate-400 hover:text-white text-base font-bold px-2 py-0.5 rounded-lg">✕</button>
+      </div>
+
+      <!-- Quick Range Presets -->
+      <div class="flex items-center gap-1 py-2 overflow-x-auto no-scrollbar shrink-0">
+        <button type="button" data-preset="today" class="cal-preset-btn text-[10px] font-semibold px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 shrink-0 transition-all">Today</button>
+        <button type="button" data-preset="yesterday" class="cal-preset-btn text-[10px] font-semibold px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 shrink-0 transition-all">Yesterday</button>
+        <button type="button" data-preset="last7" class="cal-preset-btn text-[10px] font-semibold px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 shrink-0 transition-all">Last 7 Days</button>
+        <button type="button" data-preset="thisMonth" class="cal-preset-btn text-[10px] font-semibold px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 shrink-0 transition-all">This Month</button>
+        <button type="button" data-preset="all" class="cal-preset-btn text-[10px] font-semibold px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 shrink-0 transition-all">All Time</button>
+      </div>
+
+      <!-- Swipe / Drag Helper Instruction -->
+      <p class="text-[10px] text-slate-400 text-center pb-1 font-medium">💡 Swipe across dates or tap start & end dates</p>
+
+      <!-- Weekday Header -->
+      <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-slate-400 mb-1">
+        <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+      </div>
+
+      <!-- Interactive Calendar Grid with Touch-Swipe -->
+      <div id="calendarDaysGrid" class="grid grid-cols-7 gap-1 py-1 touch-none">
+        <!-- Generated by JavaScript -->
+      </div>
+
+      <!-- Direct Date Inputs (Alternative) -->
+      <div class="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-slate-800/80">
+        <div>
+          <label class="text-[9px] font-bold text-slate-400 block mb-0.5">FROM</label>
+          <input id="calInputStart" type="date" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-1 text-xs text-slate-200 focus:outline-none focus:border-[#ea7a87]">
+        </div>
+        <div>
+          <label class="text-[9px] font-bold text-slate-400 block mb-0.5">TO</label>
+          <input id="calInputEnd" type="date" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-1 text-xs text-slate-200 focus:outline-none focus:border-[#ea7a87]">
+        </div>
+      </div>
+
+      <!-- Footer Action Strip -->
+      <div class="mt-3 flex items-center justify-between gap-2 pt-1">
+        <span id="calSelectionSummary" class="text-[11px] font-bold text-[#ea7a87] truncate">All Dates</span>
+        <div class="flex items-center gap-1.5 shrink-0">
+          <button id="calResetBtn" type="button" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-xs font-bold text-slate-300 transition-all">Reset</button>
+          <button id="calApplyBtn" type="button" class="px-4 py-1.5 rounded-xl bg-gradient-to-r from-[#ea7a87] via-[#e56b6f] to-[#ea7a87] hover:opacity-95 active:scale-95 text-xs font-black text-white shadow-md shadow-rose-950 transition-all">Apply</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
        JAVASCRIPT APPLICATION LOGIC
        ========================================== -->
   <script>
@@ -626,12 +698,36 @@
 
       const searchFilterInput = document.getElementById('searchFilterInput');
       const tagFilterSelect = document.getElementById('tagFilterSelect');
-      const dateFilterInput = document.getElementById('dateFilterInput');
+      const dateRangeBtn = document.getElementById('dateRangeBtn');
+      const dateRangeDisplayLabel = document.getElementById('dateRangeDisplayLabel');
       const clearDateFilterBtn = document.getElementById('clearDateFilterBtn');
       const exportCsvBtn = document.getElementById('exportCsvBtn');
       const filteredSummaryText = document.getElementById('filteredSummaryText');
       const filteredTotalText = document.getElementById('filteredTotalText');
       const expenseListContainer = document.getElementById('expenseListContainer');
+
+      // Date Range Filter State
+      let filterStartDate = null; // 'YYYY-MM-DD'
+      let filterEndDate = null;   // 'YYYY-MM-DD'
+
+      // Calendar Modal DOM Elements
+      const calendarRangeModal = document.getElementById('calendarRangeModal');
+      const calendarRangeCard = document.getElementById('calendarRangeCard');
+      const calPrevMonthBtn = document.getElementById('calPrevMonthBtn');
+      const calNextMonthBtn = document.getElementById('calNextMonthBtn');
+      const calMonthYearTitle = document.getElementById('calMonthYearTitle');
+      const closeCalModalBtn = document.getElementById('closeCalModalBtn');
+      const calendarDaysGrid = document.getElementById('calendarDaysGrid');
+      const calInputStart = document.getElementById('calInputStart');
+      const calInputEnd = document.getElementById('calInputEnd');
+      const calSelectionSummary = document.getElementById('calSelectionSummary');
+      const calResetBtn = document.getElementById('calResetBtn');
+      const calApplyBtn = document.getElementById('calApplyBtn');
+
+      let calViewYear = new Date().getFullYear();
+      let calViewMonth = new Date().getMonth();
+      let tempStartDate = null;
+      let tempEndDate = null;
 
       const drilldownTitle = document.getElementById('drilldownTitle');
       const drilldownSubtitle = document.getElementById('drilldownSubtitle');
@@ -849,14 +945,10 @@
       function renderHistory() {
         const query = (searchFilterInput.value || '').trim().toLowerCase();
         const selectedTag = tagFilterSelect.value || 'ALL';
-        const selectedDate = dateFilterInput ? (dateFilterInput.value || '') : '';
 
+        const isDateFiltered = !!(filterStartDate || filterEndDate);
         if (clearDateFilterBtn) {
-          if (selectedDate) {
-            clearDateFilterBtn.classList.remove('hidden');
-          } else {
-            clearDateFilterBtn.classList.add('hidden');
-          }
+          clearDateFilterBtn.classList.toggle('hidden', !isDateFiltered);
         }
 
         const sorted = [...expenses].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -865,14 +957,24 @@
           const matchesTag = selectedTag === 'ALL' || (item.tag || '').toLowerCase() === selectedTag.toLowerCase();
           if (!matchesTag) return false;
 
-          if (selectedDate) {
+          // Date Range Filtering (Multi-Day or Single-Day)
+          if (filterStartDate || filterEndDate) {
             const d = new Date(item.createdAt);
             if (isNaN(d.getTime())) return false;
             const year = d.getFullYear();
             const month = String(d.getMonth() + 1).padStart(2, '0');
             const day = String(d.getDate()).padStart(2, '0');
-            const itemDateStr = `${year}-${month}-${day}`;
-            if (itemDateStr !== selectedDate) return false;
+            const itemDate = `${year}-${month}-${day}`;
+
+            if (filterStartDate && filterEndDate) {
+              const start = filterStartDate <= filterEndDate ? filterStartDate : filterEndDate;
+              const end = filterStartDate <= filterEndDate ? filterEndDate : filterStartDate;
+              if (itemDate < start || itemDate > end) return false;
+            } else if (filterStartDate) {
+              if (itemDate !== filterStartDate) return false;
+            } else if (filterEndDate) {
+              if (itemDate !== filterEndDate) return false;
+            }
           }
 
           if (!query) return true;
@@ -1253,15 +1355,324 @@
       searchFilterInput.addEventListener('input', renderHistory);
       tagFilterSelect.addEventListener('change', renderHistory);
 
-      if (dateFilterInput) {
-        dateFilterInput.addEventListener('change', renderHistory);
+      // Multi-Day / Range Calendar Filtering Logic
+      function formatDateShort(dateStr) {
+        if (!dateStr) return '';
+        const [y, m, d] = dateStr.split('-').map(Number);
+        const dt = new Date(y, m - 1, d);
+        return dt.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
       }
-      if (clearDateFilterBtn) {
-        clearDateFilterBtn.addEventListener('click', () => {
-          if (dateFilterInput) dateFilterInput.value = '';
-          renderHistory();
+
+      function updateDateRangeDisplayLabel() {
+        if (!filterStartDate && !filterEndDate) {
+          dateRangeDisplayLabel.textContent = 'All Dates';
+          return;
+        }
+        if (filterStartDate && filterEndDate) {
+          if (filterStartDate === filterEndDate) {
+            dateRangeDisplayLabel.textContent = formatDateShort(filterStartDate);
+          } else {
+            const start = filterStartDate <= filterEndDate ? filterStartDate : filterEndDate;
+            const end = filterStartDate <= filterEndDate ? filterEndDate : filterStartDate;
+            dateRangeDisplayLabel.textContent = `${formatDateShort(start)} - ${formatDateShort(end)}`;
+          }
+        } else {
+          dateRangeDisplayLabel.textContent = formatDateShort(filterStartDate || filterEndDate);
+        }
+      }
+
+      function openCalendarModal() {
+        tempStartDate = filterStartDate;
+        tempEndDate = filterEndDate;
+        const baseDate = filterStartDate ? new Date(filterStartDate) : new Date();
+        calViewYear = baseDate.getFullYear();
+        calViewMonth = baseDate.getMonth();
+        renderCalendarGrid();
+        updateCalInputs();
+
+        calendarRangeModal.classList.remove('opacity-0', 'pointer-events-none');
+        calendarRangeCard.classList.remove('translate-y-full', 'scale-90');
+        calendarRangeCard.classList.add('translate-y-0', 'scale-100');
+      }
+
+      function closeCalendarModal() {
+        calendarRangeModal.classList.add('opacity-0', 'pointer-events-none');
+        calendarRangeCard.classList.add('translate-y-full', 'scale-90');
+        calendarRangeCard.classList.remove('translate-y-0', 'scale-100');
+      }
+
+      function updateCalInputs() {
+        if (calInputStart) calInputStart.value = tempStartDate || '';
+        if (calInputEnd) calInputEnd.value = tempEndDate || '';
+
+        if (!tempStartDate && !tempEndDate) {
+          calSelectionSummary.textContent = 'All Dates';
+        } else if (tempStartDate && tempEndDate) {
+          if (tempStartDate === tempEndDate) {
+            calSelectionSummary.textContent = `Selected: ${formatDateShort(tempStartDate)} (1 day)`;
+          } else {
+            const s = tempStartDate <= tempEndDate ? tempStartDate : tempEndDate;
+            const e = tempStartDate <= tempEndDate ? tempEndDate : tempStartDate;
+            const d1 = new Date(s);
+            const d2 = new Date(e);
+            const diffDays = Math.round((d2 - d1) / (1000 * 60 * 60 * 24)) + 1;
+            calSelectionSummary.textContent = `Selected: ${formatDateShort(s)} - ${formatDateShort(e)} (${diffDays} days)`;
+          }
+        } else {
+          calSelectionSummary.textContent = `Selected: ${formatDateShort(tempStartDate || tempEndDate)}`;
+        }
+      }
+
+      function renderCalendarGrid() {
+        const d = new Date(calViewYear, calViewMonth, 1);
+        calMonthYearTitle.textContent = d.toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
+
+        const firstDayIndex = d.getDay(); // 0 for Sunday
+        const totalDays = new Date(calViewYear, calViewMonth + 1, 0).getDate();
+        const prevMonthTotalDays = new Date(calViewYear, calViewMonth, 0).getDate();
+
+        const todayObj = new Date();
+        const todayStr = `${todayObj.getFullYear()}-${String(todayObj.getMonth() + 1).padStart(2, '0')}-${String(todayObj.getDate()).padStart(2, '0')}`;
+
+        let html = '';
+
+        // Previous month days (faded)
+        for (let i = firstDayIndex - 1; i >= 0; i--) {
+          const dayNum = prevMonthTotalDays - i;
+          html += `<div class="h-9 flex items-center justify-center text-[11px] text-slate-700 pointer-events-none select-none">${dayNum}</div>`;
+        }
+
+        // Current month days
+        for (let day = 1; day <= totalDays; day++) {
+          const dateStr = `${calViewYear}-${String(calViewMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+          const isToday = dateStr === todayStr;
+
+          html += `
+            <button
+              type="button"
+              data-calendar-date="${dateStr}"
+              class="cal-day-cell h-9 rounded-xl flex flex-col items-center justify-center text-xs font-bold transition-all relative select-none cursor-pointer"
+            >
+              <span>${day}</span>
+              ${isToday ? '<span class="w-1 h-1 rounded-full bg-rose-400 absolute bottom-1"></span>' : ''}
+            </button>
+          `;
+        }
+
+        calendarDaysGrid.innerHTML = html;
+        highlightCalendarGrid();
+      }
+
+      function highlightCalendarGrid() {
+        const start = tempStartDate && tempEndDate ? (tempStartDate <= tempEndDate ? tempStartDate : tempEndDate) : (tempStartDate || tempEndDate);
+        const end = tempStartDate && tempEndDate ? (tempStartDate <= tempEndDate ? tempEndDate : tempStartDate) : (tempStartDate || tempEndDate);
+
+        calendarDaysGrid.querySelectorAll('.cal-day-cell').forEach(btn => {
+          const dateStr = btn.getAttribute('data-calendar-date');
+          if (!dateStr) return;
+
+          btn.className = 'cal-day-cell h-9 rounded-xl flex flex-col items-center justify-center text-xs font-bold transition-all relative select-none cursor-pointer';
+
+          if (start && end) {
+            if (dateStr === start || dateStr === end) {
+              btn.classList.add('bg-gradient-to-r', 'from-[#ea7a87]', 'via-[#e56b6f]', 'to-[#ea7a87]', 'text-white', 'shadow-md', 'shadow-rose-950/60', 'scale-105', 'z-10');
+            } else if (dateStr > start && dateStr < end) {
+              btn.classList.add('bg-[#ea7a87]/25', 'text-rose-200', 'rounded-lg');
+            } else {
+              btn.classList.add('text-slate-300', 'hover:bg-slate-800');
+            }
+          } else {
+            btn.classList.add('text-slate-300', 'hover:bg-slate-800');
+          }
         });
       }
+
+      // Touch & Drag Swiping Event Listeners
+      let isCalSwiping = false;
+      let swipeAnchorDate = null;
+
+      calendarDaysGrid.addEventListener('touchstart', e => {
+        const touch = e.touches[0];
+        const elem = document.elementFromPoint(touch.clientX, touch.clientY);
+        const cell = elem?.closest('[data-calendar-date]');
+        if (!cell) return;
+
+        isCalSwiping = true;
+        swipeAnchorDate = cell.getAttribute('data-calendar-date');
+        tempStartDate = swipeAnchorDate;
+        tempEndDate = swipeAnchorDate;
+        highlightCalendarGrid();
+        updateCalInputs();
+        if (navigator.vibrate) navigator.vibrate(15);
+      }, { passive: true });
+
+      calendarDaysGrid.addEventListener('touchmove', e => {
+        if (!isCalSwiping || !swipeAnchorDate) return;
+        const touch = e.touches[0];
+        const elem = document.elementFromPoint(touch.clientX, touch.clientY);
+        const cell = elem?.closest('[data-calendar-date]');
+        if (!cell) return;
+
+        const hovered = cell.getAttribute('data-calendar-date');
+        if (hovered && hovered !== tempEndDate) {
+          if (hovered < swipeAnchorDate) {
+            tempStartDate = hovered;
+            tempEndDate = swipeAnchorDate;
+          } else {
+            tempStartDate = swipeAnchorDate;
+            tempEndDate = hovered;
+          }
+          highlightCalendarGrid();
+          updateCalInputs();
+        }
+      }, { passive: true });
+
+      calendarDaysGrid.addEventListener('touchend', () => {
+        isCalSwiping = false;
+        swipeAnchorDate = null;
+      });
+
+      // Click / Tap Events
+      calendarDaysGrid.addEventListener('click', e => {
+        const cell = e.target.closest('[data-calendar-date]');
+        if (!cell) return;
+        const clicked = cell.getAttribute('data-calendar-date');
+        if (!clicked) return;
+
+        if (navigator.vibrate) navigator.vibrate(15);
+
+        if (!tempStartDate || (tempStartDate && tempEndDate && tempStartDate !== tempEndDate)) {
+          tempStartDate = clicked;
+          tempEndDate = clicked;
+        } else if (tempStartDate && (!tempEndDate || tempStartDate === tempEndDate)) {
+          if (clicked < tempStartDate) {
+            tempEndDate = tempStartDate;
+            tempStartDate = clicked;
+          } else {
+            tempEndDate = clicked;
+          }
+        }
+        highlightCalendarGrid();
+        updateCalInputs();
+      });
+
+      calPrevMonthBtn.addEventListener('click', () => {
+        calViewMonth--;
+        if (calViewMonth < 0) {
+          calViewMonth = 11;
+          calViewYear--;
+        }
+        renderCalendarGrid();
+      });
+
+      calNextMonthBtn.addEventListener('click', () => {
+        calViewMonth++;
+        if (calViewMonth > 11) {
+          calViewMonth = 0;
+          calViewYear++;
+        }
+        renderCalendarGrid();
+      });
+
+      closeCalModalBtn.addEventListener('click', closeCalendarModal);
+      calendarRangeModal.addEventListener('click', e => {
+        if (e.target === calendarRangeModal) closeCalendarModal();
+      });
+
+      // Quick Presets
+      document.querySelectorAll('.cal-preset-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const preset = btn.getAttribute('data-preset');
+          const now = new Date();
+          const toStr = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+          if (preset === 'today') {
+            tempStartDate = toStr(now);
+            tempEndDate = tempStartDate;
+          } else if (preset === 'yesterday') {
+            const y = new Date();
+            y.setDate(y.getDate() - 1);
+            tempStartDate = toStr(y);
+            tempEndDate = tempStartDate;
+          } else if (preset === 'last7') {
+            const past = new Date();
+            past.setDate(past.getDate() - 6);
+            tempStartDate = toStr(past);
+            tempEndDate = toStr(now);
+          } else if (preset === 'thisMonth') {
+            const first = new Date(now.getFullYear(), now.getMonth(), 1);
+            tempStartDate = toStr(first);
+            tempEndDate = toStr(now);
+          } else if (preset === 'all') {
+            tempStartDate = null;
+            tempEndDate = null;
+          }
+
+          if (tempStartDate) {
+            const dt = new Date(tempStartDate);
+            calViewYear = dt.getFullYear();
+            calViewMonth = dt.getMonth();
+          }
+          renderCalendarGrid();
+          updateCalInputs();
+          if (navigator.vibrate) navigator.vibrate(20);
+        });
+      });
+
+      if (calInputStart) {
+        calInputStart.addEventListener('change', () => {
+          tempStartDate = calInputStart.value || null;
+          if (tempStartDate) {
+            const dt = new Date(tempStartDate);
+            calViewYear = dt.getFullYear();
+            calViewMonth = dt.getMonth();
+            renderCalendarGrid();
+          }
+          highlightCalendarGrid();
+          updateCalInputs();
+        });
+      }
+
+      if (calInputEnd) {
+        calInputEnd.addEventListener('change', () => {
+          tempEndDate = calInputEnd.value || null;
+          highlightCalendarGrid();
+          updateCalInputs();
+        });
+      }
+
+      calResetBtn.addEventListener('click', () => {
+        tempStartDate = null;
+        tempEndDate = null;
+        renderCalendarGrid();
+        updateCalInputs();
+        if (navigator.vibrate) navigator.vibrate(20);
+      });
+
+      calApplyBtn.addEventListener('click', () => {
+        if (tempStartDate && tempEndDate) {
+          filterStartDate = tempStartDate <= tempEndDate ? tempStartDate : tempEndDate;
+          filterEndDate = tempStartDate <= tempEndDate ? tempEndDate : tempStartDate;
+        } else {
+          filterStartDate = tempStartDate || tempEndDate || null;
+          filterEndDate = filterStartDate;
+        }
+
+        updateDateRangeDisplayLabel();
+        closeCalendarModal();
+        renderHistory();
+        if (navigator.vibrate) navigator.vibrate(30);
+      });
+
+      dateRangeBtn.addEventListener('click', openCalendarModal);
+
+      clearDateFilterBtn.addEventListener('click', () => {
+        filterStartDate = null;
+        filterEndDate = null;
+        updateDateRangeDisplayLabel();
+        renderHistory();
+        if (navigator.vibrate) navigator.vibrate(20);
+      });
 
       // Export CSV
       exportCsvBtn.addEventListener('click', () => {
