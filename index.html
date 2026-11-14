@@ -138,11 +138,6 @@
           </svg>
           <span>Install</span>
         </button>
-
-        <!-- Quick Month Total Pill -->
-        <div class="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-slate-800 text-slate-300 font-extrabold text-xs tabular-nums">
-          <span id="topMonthTotal">₹0</span>
-        </div>
       </div>
     </header>
 
@@ -620,7 +615,6 @@
 
       // DOM Elements
       const topBarSubtitle = document.getElementById('topBarSubtitle');
-      const topMonthTotal = document.getElementById('topMonthTotal');
       const installAppBtn = document.getElementById('installAppBtn');
 
       const viewQuickAdd = document.getElementById('viewQuickAdd');
@@ -806,7 +800,6 @@
         summaryWeek.textContent = formatINR(weekTotal);
         summaryMonth.textContent = formatINR(monthTotal);
 
-        topMonthTotal.textContent = formatINR(monthTotal);
         topBarSubtitle.textContent = `${expenses.length} ${expenses.length === 1 ? 'record' : 'records'}`;
       }
 
