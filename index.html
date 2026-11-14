@@ -278,28 +278,28 @@
           </button>
         </form>
 
-        <!-- Bottom: 3-Card Summary Dashboard (Moved DOWN towards bottom) -->
-        <div class="w-full max-w-sm mx-auto mt-auto pt-2 pb-0.5">
+        <!-- Bottom: 3-Card Summary Dashboard (Enlarged Size) -->
+        <div class="w-full max-w-sm mx-auto mt-auto pt-3 pb-1">
           <div class="grid grid-cols-3 gap-2 sm:gap-2.5">
             <!-- Today -->
-            <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-2.5 sm:p-3 flex flex-col justify-between shadow-sm min-h-[66px]">
-              <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">TODAY</span>
-              <p id="summaryToday" class="text-sm sm:text-base font-extrabold text-slate-100 mt-1 truncate tabular-nums">₹0</p>
+            <div class="bg-slate-900/95 border border-slate-800 rounded-2xl sm:rounded-3xl p-3 sm:p-3.5 flex flex-col justify-between shadow-lg shadow-slate-950/50 min-h-[84px] sm:min-h-[92px] transition-all">
+              <span class="text-[10px] sm:text-[11px] font-black text-slate-400 uppercase tracking-wider">TODAY</span>
+              <p id="summaryToday" class="text-base sm:text-lg font-black text-slate-100 mt-1 truncate tabular-nums">₹0</p>
             </div>
 
             <!-- This Week -->
-            <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-2.5 sm:p-3 flex flex-col justify-between shadow-sm min-h-[66px]">
-              <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">THIS WEEK</span>
-              <p id="summaryWeek" class="text-sm sm:text-base font-extrabold text-slate-100 mt-1 truncate tabular-nums">₹0</p>
+            <div class="bg-slate-900/95 border border-slate-800 rounded-2xl sm:rounded-3xl p-3 sm:p-3.5 flex flex-col justify-between shadow-lg shadow-slate-950/50 min-h-[84px] sm:min-h-[92px] transition-all">
+              <span class="text-[10px] sm:text-[11px] font-black text-slate-400 uppercase tracking-wider">THIS WEEK</span>
+              <p id="summaryWeek" class="text-base sm:text-lg font-black text-slate-100 mt-1 truncate tabular-nums">₹0</p>
             </div>
 
             <!-- This Month (Bordered in Red with Status Dot as in Image) -->
-            <div class="bg-slate-900/90 border border-red-500/60 rounded-2xl p-2.5 sm:p-3 flex flex-col justify-between shadow-md shadow-red-950/30 relative min-h-[66px]">
+            <div class="bg-slate-900/95 border-2 border-red-500/70 rounded-2xl sm:rounded-3xl p-3 sm:p-3.5 flex flex-col justify-between shadow-xl shadow-red-950/40 relative min-h-[84px] sm:min-h-[92px] transition-all">
               <div class="flex items-center justify-between">
-                <span class="text-[9px] font-bold text-red-400 uppercase tracking-wider">THIS MONTH</span>
-                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                <span class="text-[10px] sm:text-[11px] font-black text-red-400 uppercase tracking-wider">THIS MONTH</span>
+                <span class="w-2 h-2 rounded-full bg-red-500 shadow-sm shadow-red-500/80"></span>
               </div>
-              <p id="summaryMonth" class="text-sm sm:text-base font-black text-red-400 mt-1 truncate tabular-nums">₹0</p>
+              <p id="summaryMonth" class="text-base sm:text-lg font-black text-red-400 mt-1 truncate tabular-nums">₹0</p>
             </div>
           </div>
         </div>
