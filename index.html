@@ -147,70 +147,55 @@
     <div class="flex-1 flex flex-col overflow-hidden relative">
 
       <!-- ====================================================
-           VIEW 1: QUICK ENTRY (TIGHT COMPACT LAYOUT - NO UNWANTED GAPS)
+           VIEW 1: QUICK ENTRY (MOVED DATA ENTRY UP, SUMMARY DOWN)
            ==================================================== -->
-      <section id="viewQuickAdd" class="flex-1 flex flex-col overflow-y-auto py-2 px-0.5 no-scrollbar">
-        <div class="my-auto w-full max-w-sm mx-auto space-y-3">
+      <section id="viewQuickAdd" class="flex-1 flex flex-col justify-between overflow-y-auto pt-1 pb-1 px-0.5 no-scrollbar">
+        
+        <!-- Top: Data Entry Section (Moved UP) -->
+        <form id="expenseForm" class="w-full max-w-sm mx-auto bg-slate-900/95 border border-slate-800 rounded-3xl p-4 sm:p-4.5 shadow-2xl space-y-3 flex flex-col">
           
-          <!-- Central Quick-Entry Form Card -->
-          <form id="expenseForm" class="bg-slate-900/95 border border-slate-800 rounded-3xl p-4 sm:p-5 shadow-2xl space-y-3.5 flex flex-col">
-            
-            <div class="flex items-center justify-between pb-0.5">
-              <span class="text-[10px] sm:text-[11px] font-black uppercase tracking-widest text-slate-400">
-                ADD EXPENSE
-              </span>
-              <span id="saveFeedbackBadge" class="text-xs font-bold text-red-400 opacity-0 transition-opacity duration-300">
-                ✓ Saved!
-              </span>
-            </div>
+          <div class="flex items-center justify-between pb-0.5">
+            <span class="text-[10px] sm:text-[11px] font-black uppercase tracking-widest text-slate-400">
+              ADD EXPENSE
+            </span>
+            <span id="saveFeedbackBadge" class="text-xs font-bold text-red-400 opacity-0 transition-opacity duration-300">
+              ✓ Saved!
+            </span>
+          </div>
 
-            <!-- 1. Amount Input: Red Border & Stacked - ₹ Prefix -->
-            <div class="relative flex items-center justify-between bg-slate-950/90 border-2 border-red-500 rounded-2xl px-4 py-3 shadow-lg shadow-red-950/40 transition-all">
-              <div class="flex items-center min-w-0 flex-1">
-                <div class="flex flex-col items-center justify-center text-red-500 mr-2.5 select-none leading-none shrink-0">
-                  <span class="text-xs font-bold leading-none mb-0.5">-</span>
-                  <span class="text-2xl sm:text-3xl font-black leading-none">₹</span>
-                </div>
-                <input
-                  id="amountInput"
-                  name="daily_amt"
-                  type="number"
-                  step="any"
-                  inputmode="decimal"
-                  placeholder="0"
-                  required
-                  aria-label="Expense Amount in Rupees"
-                  autocomplete="off"
-                  autocorrect="off"
-                  autocapitalize="off"
-                  spellcheck="false"
-                  data-form-type="other"
-                  data-lpignore="true"
-                  data-1p-ignore="true"
-                  data-bwignore="true"
-                  class="w-full bg-transparent text-2xl sm:text-3xl font-black text-white placeholder-slate-600 focus:outline-none tabular-nums"
-                />
-              </div>
+          <!-- 1. Amount Input: Bigger, with 'Expense' Header and Larger Input Field -->
+          <div class="relative bg-slate-950/90 border-2 border-red-500 rounded-2xl p-3 sm:p-3.5 shadow-lg shadow-red-950/40 transition-all flex flex-col justify-between min-h-[92px] sm:min-h-[100px]">
+            <!-- Top row inside amount box: 'Expense' label & Clear button -->
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-[11px] font-black uppercase tracking-wider text-red-400 flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                Expense
+              </span>
               <button
                 id="clearAmountBtn"
                 type="button"
-                class="text-xs font-bold text-white active:scale-95 px-2.5 py-1.5 rounded-xl bg-red-600 hover:bg-red-500 transition-all shrink-0 shadow-sm shadow-red-950 cursor-pointer"
+                class="text-xs font-bold text-white active:scale-95 px-2.5 py-1 rounded-xl bg-red-600 hover:bg-red-500 transition-all shrink-0 shadow-sm shadow-red-950 cursor-pointer"
                 title="Clear Amount"
               >
                 Clear
               </button>
             </div>
 
-            <!-- 2. Reason Input: Where I can type why I spent -->
-            <div class="space-y-1">
-              <label for="reasonInput" class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block px-0.5">
-                Why did you spend?
-              </label>
+            <!-- Bottom row: - ₹ Prefix and Large Input Field -->
+            <div class="flex items-center min-w-0 flex-1">
+              <div class="flex items-center text-red-500 mr-2 select-none leading-none shrink-0 gap-0.5">
+                <span class="text-xl sm:text-2xl font-black leading-none">-</span>
+                <span class="text-3xl sm:text-4xl font-black leading-none">₹</span>
+              </div>
               <input
-                id="reasonInput"
-                name="expense_desc"
-                type="text"
+                id="amountInput"
+                name="daily_amt"
+                type="number"
+                step="any"
+                inputmode="decimal"
+                placeholder="0"
                 required
+                aria-label="Expense Amount in Rupees"
                 autocomplete="off"
                 autocorrect="off"
                 autocapitalize="off"
@@ -219,58 +204,82 @@
                 data-lpignore="true"
                 data-1p-ignore="true"
                 data-bwignore="true"
-                placeholder="e.g. Lunch, Uber, Groceries, Coffee"
-                class="w-full h-11 px-3.5 bg-slate-950/80 border border-slate-800 focus:border-red-500 focus:ring-1 focus:ring-red-500/30 rounded-xl text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none transition-all"
+                class="w-full bg-transparent text-3xl sm:text-4xl font-black text-white placeholder-slate-600 focus:outline-none tabular-nums"
               />
             </div>
+          </div>
 
-            <!-- 3. Category Tag Input: Type a tag -->
-            <div class="space-y-1">
-              <label for="tagInput" class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block px-0.5">
-                Category Tag
-              </label>
-              <input
-                id="tagInput"
-                name="expense_cat"
-                type="text"
-                list="categoryKeywordsList"
-                value="Food"
-                placeholder="Type a tag (e.g. Food, Travel, Bills, Shopping)"
-                autocomplete="off"
-                autocorrect="off"
-                autocapitalize="off"
-                spellcheck="false"
-                data-form-type="other"
-                data-lpignore="true"
-                data-1p-ignore="true"
-                data-bwignore="true"
-                class="w-full h-11 px-3.5 bg-slate-950/80 border border-slate-800 focus:border-red-500 focus:ring-1 focus:ring-red-500/30 rounded-xl text-xs sm:text-sm text-slate-200 placeholder-slate-500 focus:outline-none transition-all"
-              />
-              <datalist id="categoryKeywordsList">
-                <option value="Food"></option>
-                <option value="Travel"></option>
-                <option value="Shopping"></option>
-                <option value="Bills"></option>
-                <option value="Utilities"></option>
-                <option value="Health"></option>
-                <option value="Fuel"></option>
-                <option value="Groceries"></option>
-                <option value="Entertainment"></option>
-                <option value="Misc"></option>
-              </datalist>
-            </div>
+          <!-- 2. Reason Input: Where I can type why I spent -->
+          <div class="space-y-1">
+            <label for="reasonInput" class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block px-0.5">
+              Why did you spend?
+            </label>
+            <input
+              id="reasonInput"
+              name="expense_desc"
+              type="text"
+              required
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="off"
+              spellcheck="false"
+              data-form-type="other"
+              data-lpignore="true"
+              data-1p-ignore="true"
+              data-bwignore="true"
+              placeholder="e.g. Lunch, Uber, Groceries, Coffee"
+              class="w-full h-11 px-3.5 bg-slate-950/80 border border-slate-800 focus:border-red-500 focus:ring-1 focus:ring-red-500/30 rounded-xl text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none transition-all"
+            />
+          </div>
 
-            <!-- Red Record Expense Button (Directly below tag - no unwanted gap!) -->
-            <button
-              id="recordBtn"
-              type="submit"
-              class="w-full h-12 rounded-2xl bg-red-600 hover:bg-red-500 active:scale-[0.98] text-white font-black text-sm sm:text-base tracking-wide shadow-xl shadow-red-950/60 transition-all flex items-center justify-center cursor-pointer mt-1"
-            >
-              <span>Record Expense</span>
-            </button>
-          </form>
+          <!-- 3. Category Tag Input: Type a tag -->
+          <div class="space-y-1">
+            <label for="tagInput" class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block px-0.5">
+              Category Tag
+            </label>
+            <input
+              id="tagInput"
+              name="expense_cat"
+              type="text"
+              list="categoryKeywordsList"
+              value="Food"
+              placeholder="Type a tag (e.g. Food, Travel, Bills, Shopping)"
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="off"
+              spellcheck="false"
+              data-form-type="other"
+              data-lpignore="true"
+              data-1p-ignore="true"
+              data-bwignore="true"
+              class="w-full h-11 px-3.5 bg-slate-950/80 border border-slate-800 focus:border-red-500 focus:ring-1 focus:ring-red-500/30 rounded-xl text-xs sm:text-sm text-slate-200 placeholder-slate-500 focus:outline-none transition-all"
+            />
+            <datalist id="categoryKeywordsList">
+              <option value="Food"></option>
+              <option value="Travel"></option>
+              <option value="Shopping"></option>
+              <option value="Bills"></option>
+              <option value="Utilities"></option>
+              <option value="Health"></option>
+              <option value="Fuel"></option>
+              <option value="Groceries"></option>
+              <option value="Entertainment"></option>
+              <option value="Misc"></option>
+            </datalist>
+          </div>
 
-          <!-- 3-Card Summary Dashboard Positioned BELOW the Form (As Shown in Image) -->
+          <!-- Red Record Expense Button (Directly below tag - no unwanted gap!) -->
+          <button
+            id="recordBtn"
+            type="submit"
+            class="w-full h-12 rounded-2xl bg-red-600 hover:bg-red-500 active:scale-[0.98] text-white font-black text-sm sm:text-base tracking-wide shadow-xl shadow-red-950/60 transition-all flex items-center justify-center cursor-pointer mt-0.5"
+          >
+            <span>Record Expense</span>
+          </button>
+        </form>
+
+        <!-- Bottom: 3-Card Summary Dashboard (Moved DOWN towards bottom) -->
+        <div class="w-full max-w-sm mx-auto mt-auto pt-2 pb-0.5">
           <div class="grid grid-cols-3 gap-2 sm:gap-2.5">
             <!-- Today -->
             <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-2.5 sm:p-3 flex flex-col justify-between shadow-sm min-h-[66px]">
@@ -293,8 +302,8 @@
               <p id="summaryMonth" class="text-sm sm:text-base font-black text-red-400 mt-1 truncate tabular-nums">₹0</p>
             </div>
           </div>
-
         </div>
+
       </section>
 
       <!-- ====================================================
