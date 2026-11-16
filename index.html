@@ -327,7 +327,7 @@
         <!-- Bottom: Unified Expense Summary Dashboard Panel (All in White Color) -->
         <div class="w-full max-w-sm mx-auto mt-auto pt-3 pb-1">
           <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-3 shadow-xl shadow-slate-950/60">
-            <!-- Summary Header (White text) -->
+            <!-- Summary Header (White text with Touch View All) -->
             <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-800/80">
               <div class="flex items-center gap-1.5">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -335,34 +335,63 @@
                 </svg>
                 <span class="text-[10px] font-black uppercase tracking-wider text-white">Spending Summary</span>
               </div>
-              <div class="flex items-center gap-1">
-                <span class="w-1.5 h-1.5 rounded-full bg-white"></span>
-                <span class="text-[9px] font-bold text-white uppercase tracking-wider">Live</span>
-              </div>
+              <button
+                id="summaryViewAllBtn"
+                type="button"
+                class="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 active:scale-95 text-[10px] font-bold text-white uppercase tracking-wider transition-all cursor-pointer border border-slate-700/60"
+                title="View All History Records"
+              >
+                <span>View All</span>
+                <span class="text-xs">›</span>
+              </button>
             </div>
 
-            <!-- 3 Summary Metrics: ALL IN WHITE COLOR -->
-            <div class="grid grid-cols-3 text-center">
-              <!-- Today -->
-              <div class="px-1 flex flex-col justify-between">
-                <span class="text-[10px] font-bold text-white uppercase tracking-wider">Today</span>
+            <!-- 3 Summary Metrics: TOUCHABLE BUTTONS TO DRILL DOWN INTO HISTORY -->
+            <div class="grid grid-cols-3 text-center gap-1">
+              <!-- Today Button -->
+              <button
+                id="summaryCardToday"
+                type="button"
+                class="p-1 flex flex-col justify-between rounded-xl hover:bg-slate-800/60 active:scale-95 transition-all cursor-pointer group select-none text-center"
+                title="View Today's Transactions"
+              >
+                <span class="text-[10px] font-bold text-white uppercase tracking-wider group-hover:text-red-400 transition-colors">Today</span>
                 <p id="summaryToday" class="text-lg sm:text-xl font-black text-white my-0.5 truncate tabular-nums">₹0</p>
-                <span class="text-[9px] text-white/80 font-medium">Daily</span>
-              </div>
+                <span class="text-[9px] text-white/80 font-medium flex items-center justify-center gap-0.5">
+                  <span>Daily</span>
+                  <span class="text-[8px] text-slate-400 group-hover:text-red-400">›</span>
+                </span>
+              </button>
 
-              <!-- This Week -->
-              <div class="px-1 border-x border-slate-800 flex flex-col justify-between">
-                <span class="text-[10px] font-bold text-white uppercase tracking-wider">This Week</span>
+              <!-- This Week Button -->
+              <button
+                id="summaryCardWeek"
+                type="button"
+                class="p-1 border-x border-slate-800 flex flex-col justify-between rounded-xl hover:bg-slate-800/60 active:scale-95 transition-all cursor-pointer group select-none text-center"
+                title="View This Week's Transactions"
+              >
+                <span class="text-[10px] font-bold text-white uppercase tracking-wider group-hover:text-red-400 transition-colors">This Week</span>
                 <p id="summaryWeek" class="text-lg sm:text-xl font-black text-white my-0.5 truncate tabular-nums">₹0</p>
-                <span class="text-[9px] text-white/80 font-medium">Rolling</span>
-              </div>
+                <span class="text-[9px] text-white/80 font-medium flex items-center justify-center gap-0.5">
+                  <span>Rolling</span>
+                  <span class="text-[8px] text-slate-400 group-hover:text-red-400">›</span>
+                </span>
+              </button>
 
-              <!-- This Month -->
-              <div class="px-1 flex flex-col justify-between">
-                <span class="text-[10px] font-bold text-white uppercase tracking-wider">This Month</span>
+              <!-- This Month Button -->
+              <button
+                id="summaryCardMonth"
+                type="button"
+                class="p-1 flex flex-col justify-between rounded-xl hover:bg-slate-800/60 active:scale-95 transition-all cursor-pointer group select-none text-center"
+                title="View This Month's Transactions"
+              >
+                <span class="text-[10px] font-bold text-white uppercase tracking-wider group-hover:text-red-400 transition-colors">This Month</span>
                 <p id="summaryMonth" class="text-lg sm:text-xl font-black text-white my-0.5 truncate tabular-nums">₹0</p>
-                <span class="text-[9px] text-white/80 font-medium">Monthly</span>
-              </div>
+                <span class="text-[9px] text-white/80 font-medium flex items-center justify-center gap-0.5">
+                  <span>Monthly</span>
+                  <span class="text-[8px] text-slate-400 group-hover:text-red-400">›</span>
+                </span>
+              </button>
             </div>
           </div>
         </div>
@@ -370,45 +399,70 @@
       </section>
 
       <!-- ====================================================
-           VIEW 2: FULL HISTORY & TRANSACTIONS (WITH CALENDAR FILTER)
+           VIEW 2: FULL HISTORY & TRANSACTIONS (WITH COLLAPSIBLE FILTER DRAWER)
            ==================================================== -->
       <section id="viewHistory" class="hidden flex-1 flex flex-col overflow-hidden py-1 space-y-2">
-        <!-- Controls Bar with Quick Buttons (Day, Week, Month, All) & Custom Date Range -->
+        <!-- Controls Bar with Period Filter Buttons, Search, CSV & Collapsible Filters -->
         <div class="space-y-1.5 shrink-0">
           
-          <!-- Top Row: Quick Period Filter Buttons (Day, Week, Month, All) -->
-          <div class="grid grid-cols-4 gap-1.5 p-1 bg-slate-900/90 border border-slate-800 rounded-2xl shadow-sm">
+          <!-- Period Filter: Row 1 (Current: Today, This Week, This Month) -->
+          <div class="grid grid-cols-3 gap-1 p-1 bg-slate-900/90 border border-slate-800 rounded-2xl shadow-sm">
             <button
-              id="historyBtnDay"
+              id="historyBtnToday"
               type="button"
-              class="history-filter-btn py-1.5 px-2 rounded-xl text-xs font-black transition-all bg-red-600 text-white shadow-sm shadow-red-950 active:scale-95 cursor-pointer text-center"
+              class="history-period-btn py-1.5 px-1.5 rounded-xl text-xs font-black transition-all bg-red-600 text-white shadow-sm shadow-red-950 active:scale-95 cursor-pointer text-center"
             >
-              Day
+              Today
             </button>
             <button
               id="historyBtnWeek"
               type="button"
-              class="history-filter-btn py-1.5 px-2 rounded-xl text-xs font-bold transition-all text-slate-300 hover:text-white hover:bg-slate-800 active:scale-95 cursor-pointer text-center"
+              class="history-period-btn py-1.5 px-1.5 rounded-xl text-xs font-bold transition-all text-slate-300 hover:text-white hover:bg-slate-800 active:scale-95 cursor-pointer text-center"
             >
-              Week
+              This Week
             </button>
             <button
               id="historyBtnMonth"
               type="button"
-              class="history-filter-btn py-1.5 px-2 rounded-xl text-xs font-bold transition-all text-slate-300 hover:text-white hover:bg-slate-800 active:scale-95 cursor-pointer text-center"
+              class="history-period-btn py-1.5 px-1.5 rounded-xl text-xs font-bold transition-all text-slate-300 hover:text-white hover:bg-slate-800 active:scale-95 cursor-pointer text-center"
             >
-              Month
+              This Month
+            </button>
+          </div>
+
+          <!-- Period Filter: Row 2 (Past: Yesterday, Last Week, Last Month, All) -->
+          <div class="grid grid-cols-4 gap-1 p-1 bg-slate-900/90 border border-slate-800 rounded-2xl shadow-sm">
+            <button
+              id="historyBtnYesterday"
+              type="button"
+              class="history-period-btn py-1.5 px-1 rounded-xl text-xs font-bold transition-all text-slate-300 hover:text-white hover:bg-slate-800 active:scale-95 cursor-pointer text-center"
+            >
+              Yesterday
+            </button>
+            <button
+              id="historyBtnLastWeek"
+              type="button"
+              class="history-period-btn py-1.5 px-1 rounded-xl text-xs font-bold transition-all text-slate-300 hover:text-white hover:bg-slate-800 active:scale-95 cursor-pointer text-center"
+            >
+              Last Week
+            </button>
+            <button
+              id="historyBtnLastMonth"
+              type="button"
+              class="history-period-btn py-1.5 px-1 rounded-xl text-xs font-bold transition-all text-slate-300 hover:text-white hover:bg-slate-800 active:scale-95 cursor-pointer text-center"
+            >
+              Last Month
             </button>
             <button
               id="historyBtnAll"
               type="button"
-              class="history-filter-btn py-1.5 px-2 rounded-xl text-xs font-bold transition-all text-slate-300 hover:text-white hover:bg-slate-800 active:scale-95 cursor-pointer text-center"
+              class="history-period-btn py-1.5 px-1 rounded-xl text-xs font-bold transition-all text-slate-300 hover:text-white hover:bg-slate-800 active:scale-95 cursor-pointer text-center"
             >
               All
             </button>
           </div>
 
-          <!-- Row 2: Search + CSV Export -->
+          <!-- Search + CSV + Filter Toggle Row -->
           <div class="flex items-center gap-1.5">
             <div class="relative flex-1">
               <input
@@ -422,8 +476,27 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
+
+            <!-- Filter Drawer Toggle Button -->
             <button
-              id="exportCsvBtn" type="button" class="px-3 py-2 rounded-xl bg-red-600 hover:bg-red-500 active:scale-95 text-xs font-bold text-white flex items-center gap-1.5 shrink-0 shadow-md shadow-red-950/40"
+              id="historyToggleFilterBtn"
+              type="button"
+              class="px-2.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 active:scale-95 text-xs font-bold text-slate-300 hover:text-white flex items-center gap-1.5 shrink-0 transition-all cursor-pointer shadow-sm"
+              title="Toggle Category & Date Filters"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+              </svg>
+              <span>Filter</span>
+              <span id="historyActiveFilterBadge" class="hidden text-[10px] font-bold text-red-400 bg-red-600/15 border border-red-500/30 px-1 rounded-full">0</span>
+              <span id="historyFilterToggleArrow" class="text-slate-500 text-[10px]">▼</span>
+            </button>
+
+            <!-- CSV Export Button -->
+            <button
+              id="exportCsvBtn"
+              type="button"
+              class="px-2.5 py-2 rounded-xl bg-red-600 hover:bg-red-500 active:scale-95 text-xs font-bold text-white flex items-center gap-1 shrink-0 shadow-md shadow-red-950/40 cursor-pointer"
               title="Export CSV"
             >
               <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -433,61 +506,58 @@
             </button>
           </div>
 
-          <!-- Row 3: Multi-Select Category Filter -->
-          <div class="space-y-1">
-            <div class="flex items-center justify-between px-0.5">
-              <span class="text-[9px] font-bold uppercase tracking-wider text-slate-400">Filter by Category (Multi-select)</span>
-              <span id="tagFilterStatusText" class="text-[10px] font-bold text-red-400">All</span>
+          <!-- Collapsible Filter Drawer (Hidden by default to give maximum screen space) -->
+          <div id="historyFilterDrawer" class="hidden space-y-2.5 p-3 rounded-2xl bg-slate-900/95 border border-slate-800 shadow-xl transition-all">
+            <!-- Multi-Select Category Filter -->
+            <div class="space-y-1">
+              <div class="flex items-center justify-between px-0.5">
+                <span class="text-[9px] font-bold uppercase tracking-wider text-slate-400">Category Tags (Multi-Select)</span>
+                <span id="tagFilterStatusText" class="text-[10px] font-bold text-red-400">All</span>
+              </div>
+              <div id="categoryChipsContainer" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
+                <!-- Dynamically populated chips -->
+              </div>
             </div>
-            <!-- Horizontal scrollable multi-select chips -->
-            <div id="categoryChipsContainer" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
-              <!-- Dynamically populated chips -->
-            </div>
-          </div>
 
-          <!-- Row 4: Custom From Date & To Date Selection (Clean, Organized Typography) -->
-          <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-2.5 space-y-2 shadow-sm">
-            <div class="flex items-center justify-between px-0.5">
-              <div class="flex items-center gap-1.5">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-300">Custom Date Range</span>
+            <!-- Custom From Date & To Date Selection -->
+            <div class="space-y-1.5 pt-1.5 border-t border-slate-800">
+              <div class="flex items-center justify-between px-0.5">
+                <span class="text-[9px] font-extrabold uppercase tracking-wider text-slate-400">Custom Date Range</span>
+                <span id="dateFilterActiveText" class="text-[10px] font-bold text-red-400 hidden">Active</span>
               </div>
-              <span id="dateFilterActiveText" class="text-[10px] font-bold text-red-400 hidden">Filtered</span>
-            </div>
-            <div class="grid grid-cols-2 gap-2">
-              <div class="space-y-1">
-                <label for="historyFromDate" class="text-[10px] font-bold text-slate-400 block px-0.5 flex items-center justify-between">
-                  <span>From Date</span>
-                  <span class="text-[9px] text-slate-500 font-medium">Start</span>
-                </label>
-                <input
-                  id="historyFromDate"
-                  type="date"
-                  class="w-full h-9 bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl px-2.5 text-xs font-semibold text-slate-100 focus:outline-none focus:ring-1 focus:ring-red-500/30 cursor-pointer tabular-nums"
-                />
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label for="historyFromDate" class="text-[9px] font-bold text-slate-400 block px-0.5 mb-0.5">From Date</label>
+                  <input id="historyFromDate" type="date" class="w-full h-8 bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl px-2 text-[11px] font-semibold text-slate-100 focus:outline-none tabular-nums cursor-pointer" />
+                </div>
+                <div>
+                  <label for="historyToDate" class="text-[9px] font-bold text-slate-400 block px-0.5 mb-0.5">To Date</label>
+                  <input id="historyToDate" type="date" class="w-full h-8 bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl px-2 text-[11px] font-semibold text-slate-100 focus:outline-none tabular-nums cursor-pointer" />
+                </div>
               </div>
-              <div class="space-y-1">
-                <label for="historyToDate" class="text-[10px] font-bold text-slate-400 block px-0.5 flex items-center justify-between">
-                  <span>To Date</span>
-                  <span class="text-[9px] text-slate-500 font-medium">End</span>
-                </label>
-                <input
-                  id="historyToDate"
-                  type="date"
-                  class="w-full h-9 bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl px-2.5 text-xs font-semibold text-slate-100 focus:outline-none focus:ring-1 focus:ring-red-500/30 cursor-pointer tabular-nums"
-                />
+              <div id="dateFilterActiveBar" class="hidden flex items-center justify-between pt-1">
+                <span class="text-[10px] font-bold text-red-400">Date range applied</span>
+                <button id="clearHistoryDateBtn" type="button" class="px-2 py-0.5 rounded-lg bg-red-600 text-[10px] font-black text-white cursor-pointer">
+                  ✕ Reset Dates
+                </button>
               </div>
             </div>
-            <div id="dateFilterActiveBar" class="hidden flex items-center justify-between pt-1.5 border-t border-slate-800/80">
-              <span class="text-[10px] font-bold text-red-400">Custom range applied</span>
+
+            <!-- Drawer Bottom Buttons: Reset All & Collapse -->
+            <div class="pt-2 border-t border-slate-800 flex items-center justify-between gap-2">
               <button
-                id="clearHistoryDateBtn"
+                id="historyResetAllFiltersBtn"
                 type="button"
-                class="px-2.5 py-1 rounded-lg bg-red-600 hover:bg-red-500 active:scale-95 text-[10px] font-black text-white transition-all cursor-pointer shadow-sm shadow-red-950"
+                class="py-1.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-xs font-bold text-slate-300 transition-all cursor-pointer"
               >
-                ✕ Reset Dates
+                Reset Filters
+              </button>
+              <button
+                id="historyCollapseDrawerBtn"
+                type="button"
+                class="flex-1 py-1.5 px-3 rounded-xl bg-red-600 hover:bg-red-500 active:scale-95 text-xs font-black text-white shadow-md shadow-red-950 transition-all cursor-pointer flex items-center justify-center gap-1"
+              >
+                <span>▲ Collapse Filters</span>
               </button>
             </div>
           </div>
@@ -1540,16 +1610,36 @@
       const tagFilterStatusText = document.getElementById('tagFilterStatusText');
       let selectedTags = new Set(); // Multi-select tags set
 
-      const historyBtnDay = document.getElementById('historyBtnDay');
+      // Summary Touch Cards (Drilldown into History)
+      const summaryCardToday = document.getElementById('summaryCardToday');
+      const summaryCardWeek = document.getElementById('summaryCardWeek');
+      const summaryCardMonth = document.getElementById('summaryCardMonth');
+      const summaryViewAllBtn = document.getElementById('summaryViewAllBtn');
+
+      // History Period Filter Buttons (Today, Yesterday, This Week, Last Week, This Month, Last Month, All)
+      const historyBtnToday = document.getElementById('historyBtnToday');
+      const historyBtnYesterday = document.getElementById('historyBtnYesterday');
       const historyBtnWeek = document.getElementById('historyBtnWeek');
+      const historyBtnLastWeek = document.getElementById('historyBtnLastWeek');
       const historyBtnMonth = document.getElementById('historyBtnMonth');
+      const historyBtnLastMonth = document.getElementById('historyBtnLastMonth');
       const historyBtnAll = document.getElementById('historyBtnAll');
+
+      // Collapsible Filter Drawer Controls
+      const historyToggleFilterBtn = document.getElementById('historyToggleFilterBtn');
+      const historyFilterDrawer = document.getElementById('historyFilterDrawer');
+      const historyCollapseDrawerBtn = document.getElementById('historyCollapseDrawerBtn');
+      const historyResetAllFiltersBtn = document.getElementById('historyResetAllFiltersBtn');
+      const historyActiveFilterBadge = document.getElementById('historyActiveFilterBadge');
+      const historyFilterToggleArrow = document.getElementById('historyFilterToggleArrow');
+      let isHistoryFilterDrawerOpen = false;
+
       const historyFromDate = document.getElementById('historyFromDate');
       const historyToDate = document.getElementById('historyToDate');
       const dateFilterActiveBar = document.getElementById('dateFilterActiveBar');
       const dateFilterActiveText = document.getElementById('dateFilterActiveText');
       const clearHistoryDateBtn = document.getElementById('clearHistoryDateBtn');
-      let historyPeriodFilter = 'day'; // Default to 'day' (Today) whenever opening history
+      let historyPeriodFilter = 'yesterday'; // Default to 'yesterday' when opening history from nav
       const exportCsvBtn = document.getElementById('exportCsvBtn');
       const filteredSummaryText = document.getElementById('filteredSummaryText');
       const filteredTotalText = document.getElementById('filteredTotalText');
@@ -1905,19 +1995,45 @@
       function setHistoryPeriodUI(activePeriod) {
         historyPeriodFilter = activePeriod;
         const btns = [
-          { id: 'day', el: historyBtnDay },
+          { id: 'today', el: historyBtnToday },
+          { id: 'yesterday', el: historyBtnYesterday },
           { id: 'week', el: historyBtnWeek },
+          { id: 'last_week', el: historyBtnLastWeek },
           { id: 'month', el: historyBtnMonth },
+          { id: 'last_month', el: historyBtnLastMonth },
           { id: 'all', el: historyBtnAll },
         ];
         btns.forEach(b => {
           if (!b.el) return;
-          if (b.id === activePeriod) {
-            b.el.className = 'history-filter-btn py-1.5 px-2 rounded-xl text-xs font-black transition-all bg-red-600 text-white shadow-sm shadow-red-950 active:scale-95 cursor-pointer text-center';
+          const isActive = (b.id === activePeriod) || (activePeriod === 'day' && b.id === 'today');
+          if (isActive) {
+            b.el.className = 'history-period-btn py-1.5 px-1.5 rounded-xl text-xs font-black transition-all bg-red-600 text-white shadow-sm shadow-red-950 active:scale-95 cursor-pointer text-center';
           } else {
-            b.el.className = 'history-filter-btn py-1.5 px-2 rounded-xl text-xs font-bold transition-all text-slate-300 hover:text-white hover:bg-slate-800 active:scale-95 cursor-pointer text-center';
+            b.el.className = 'history-period-btn py-1.5 px-1.5 rounded-xl text-xs font-bold transition-all text-slate-300 hover:text-white hover:bg-slate-800 active:scale-95 cursor-pointer text-center';
           }
         });
+      }
+
+      function toggleHistoryFilterDrawer(forceState) {
+        if (typeof forceState === 'boolean') {
+          isHistoryFilterDrawerOpen = forceState;
+        } else {
+          isHistoryFilterDrawerOpen = !isHistoryFilterDrawerOpen;
+        }
+
+        if (historyFilterDrawer) {
+          historyFilterDrawer.classList.toggle('hidden', !isHistoryFilterDrawerOpen);
+        }
+        if (historyFilterToggleArrow) {
+          historyFilterToggleArrow.textContent = isHistoryFilterDrawerOpen ? '▲' : '▼';
+        }
+        if (historyToggleFilterBtn) {
+          if (isHistoryFilterDrawerOpen) {
+            historyToggleFilterBtn.classList.add('border-red-500/50', 'bg-slate-800');
+          } else {
+            historyToggleFilterBtn.classList.remove('border-red-500/50', 'bg-slate-800');
+          }
+        }
       }
 
       function renderHistory() {
@@ -1934,6 +2050,17 @@
           dateFilterActiveText.classList.toggle('hidden', !hasCustomDate);
         }
 
+        // Update active filter badge on drawer toggle button
+        const activeFilterCount = selectedTags.size + (hasCustomDate ? 1 : 0);
+        if (historyActiveFilterBadge) {
+          if (activeFilterCount > 0) {
+            historyActiveFilterBadge.textContent = String(activeFilterCount);
+            historyActiveFilterBadge.classList.remove('hidden');
+          } else {
+            historyActiveFilterBadge.classList.add('hidden');
+          }
+        }
+
         const now = new Date();
         const currentMonthKey = getMonthKey(now);
 
@@ -1946,7 +2073,19 @@
         startOfWeekSun.setDate(now.getDate() - now.getDay());
         startOfWeekSun.setHours(0, 0, 0, 0);
 
-        const weekBoundary = new Date(Math.min(sevenDaysAgo.getTime(), startOfWeekSun.getTime()));
+        const thisWeekStart = new Date(Math.min(sevenDaysAgo.getTime(), startOfWeekSun.getTime()));
+
+        // Last Week boundary (7 days before thisWeekStart)
+        const lastWeekStart = new Date(thisWeekStart);
+        lastWeekStart.setDate(lastWeekStart.getDate() - 7);
+
+        // Yesterday
+        const yesterdayDate = new Date(now);
+        yesterdayDate.setDate(now.getDate() - 1);
+
+        // Last Month Key
+        const prevMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+        const prevMonthKey = getMonthKey(prevMonthDate);
 
         const sorted = [...expenses].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
@@ -1958,15 +2097,15 @@
           const d = new Date(item.createdAt);
           if (isNaN(d.getTime())) return false;
 
-          // Quick Period Filter (Day, Week, Month)
-          if (historyPeriodFilter === 'day') {
-            if (!isSameDay(d, now)) return false;
-          } else if (historyPeriodFilter === 'week') {
-            if (!(isSameDay(d, now) || isYesterday(d, now) || (d >= weekBoundary && d <= now))) return false;
-          } else if (historyPeriodFilter === 'month') {
-            if (getMonthKey(d) !== currentMonthKey) return false;
-          } else if (hasCustomDate || historyPeriodFilter === 'custom') {
-            // Custom Date Range Filtering (From Date & To Date)
+          const isToday = isSameDay(d, now);
+          const isYest = isSameDay(d, yesterdayDate);
+          const isThisWeek = isToday || isYest || (d >= thisWeekStart && d <= now);
+          const isLastWeek = (d >= lastWeekStart && d < thisWeekStart);
+          const isThisMonth = (getMonthKey(d) === currentMonthKey);
+          const isLastMonth = (getMonthKey(d) === prevMonthKey);
+
+          // Quick Period Filter (Today, Yesterday, This Week, Last Week, This Month, Last Month, All)
+          if (hasCustomDate || historyPeriodFilter === 'custom') {
             const year = d.getFullYear();
             const month = String(d.getMonth() + 1).padStart(2, '0');
             const day = String(d.getDate()).padStart(2, '0');
@@ -1981,6 +2120,20 @@
             } else if (toVal) {
               if (itemDate > toVal) return false;
             }
+          } else if (historyPeriodFilter === 'today' || historyPeriodFilter === 'day') {
+            if (!isToday) return false;
+          } else if (historyPeriodFilter === 'yesterday') {
+            if (!isYest) return false;
+          } else if (historyPeriodFilter === 'week' || historyPeriodFilter === 'this_week') {
+            if (!isThisWeek) return false;
+          } else if (historyPeriodFilter === 'last_week') {
+            if (!isLastWeek) return false;
+          } else if (historyPeriodFilter === 'month' || historyPeriodFilter === 'this_month') {
+            if (!isThisMonth) return false;
+          } else if (historyPeriodFilter === 'last_month') {
+            if (!isLastMonth) return false;
+          } else if (historyPeriodFilter === 'all') {
+            // Keep all records
           }
 
           if (!query) return true;
@@ -1990,10 +2143,14 @@
 
         const totalFiltered = filtered.reduce((acc, cur) => acc + (Number(cur.amount) || 0), 0);
         let periodLabel = '';
-        if (historyPeriodFilter === 'day') periodLabel = ' (Today)';
-        else if (historyPeriodFilter === 'week') periodLabel = ' (This Week)';
-        else if (historyPeriodFilter === 'month') periodLabel = ' (This Month)';
-        else if (hasCustomDate) periodLabel = ' (Custom Range)';
+        if (hasCustomDate) periodLabel = ' (Custom Range)';
+        else if (historyPeriodFilter === 'today' || historyPeriodFilter === 'day') periodLabel = ' (Today)';
+        else if (historyPeriodFilter === 'yesterday') periodLabel = ' (Yesterday)';
+        else if (historyPeriodFilter === 'week' || historyPeriodFilter === 'this_week') periodLabel = ' (This Week)';
+        else if (historyPeriodFilter === 'last_week') periodLabel = ' (Last Week)';
+        else if (historyPeriodFilter === 'month' || historyPeriodFilter === 'this_month') periodLabel = ' (This Month)';
+        else if (historyPeriodFilter === 'last_month') periodLabel = ' (Last Month)';
+        else if (historyPeriodFilter === 'all') periodLabel = ' (All Records)';
 
         filteredSummaryText.textContent = `Showing ${filtered.length} of ${expenses.length} records${periodLabel}`;
         filteredTotalText.textContent = `Total: ${formatINR(totalFiltered)}`;
@@ -2329,7 +2486,7 @@
       }
 
       // Tab Navigation Switcher
-      function switchTab(tab) {
+      function switchTab(tab, requestedPeriod) {
         currentTab = tab;
         const tabs = [
           { name: 'add', btn: navAddBtn, view: viewQuickAdd },
@@ -2354,10 +2511,10 @@
         });
 
         if (tab === 'history') {
-          // Whenever opening history, default filter is Day (today's transactions)
           if (historyFromDate) historyFromDate.value = '';
           if (historyToDate) historyToDate.value = '';
-          setHistoryPeriodUI('day');
+          const targetPeriod = requestedPeriod || 'yesterday';
+          setHistoryPeriodUI(targetPeriod);
           renderHistory();
         } else if (tab === 'analytics') {
           setTimeout(renderAnalytics, 50);
@@ -2367,7 +2524,7 @@
       }
 
       navAddBtn.addEventListener('click', () => switchTab('add'));
-      navHistoryBtn.addEventListener('click', () => switchTab('history'));
+      navHistoryBtn.addEventListener('click', () => switchTab('history', 'yesterday'));
       navAnalyticsBtn.addEventListener('click', () => switchTab('analytics'));
 
       // Budget Planner Logic
@@ -3534,43 +3691,67 @@
       // Filters & Search
       searchFilterInput.addEventListener('input', renderHistory);
 
-      // Date Range & Period Filter Listeners
-      if (historyBtnDay) {
-        historyBtnDay.addEventListener('click', () => {
+      // Spending Summary Touch Cards -> Drill down directly into History
+      if (summaryCardToday) {
+        summaryCardToday.addEventListener('click', () => {
+          switchTab('history', 'today');
+          if (navigator.vibrate) navigator.vibrate(20);
+        });
+      }
+      if (summaryCardWeek) {
+        summaryCardWeek.addEventListener('click', () => {
+          switchTab('history', 'week');
+          if (navigator.vibrate) navigator.vibrate(20);
+        });
+      }
+      if (summaryCardMonth) {
+        summaryCardMonth.addEventListener('click', () => {
+          switchTab('history', 'month');
+          if (navigator.vibrate) navigator.vibrate(20);
+        });
+      }
+      if (summaryViewAllBtn) {
+        summaryViewAllBtn.addEventListener('click', () => {
+          switchTab('history', 'all');
+          if (navigator.vibrate) navigator.vibrate(20);
+        });
+      }
+
+      // History Quick Period Filter Buttons (Today, Yesterday, This Week, Last Week, This Month, Last Month, All)
+      function bindPeriodBtn(btn, periodKey) {
+        if (!btn) return;
+        btn.addEventListener('click', () => {
           if (historyFromDate) historyFromDate.value = '';
           if (historyToDate) historyToDate.value = '';
-          setHistoryPeriodUI('day');
+          setHistoryPeriodUI(periodKey);
           renderHistory();
           if (navigator.vibrate) navigator.vibrate(20);
         });
       }
 
-      if (historyBtnWeek) {
-        historyBtnWeek.addEventListener('click', () => {
-          if (historyFromDate) historyFromDate.value = '';
-          if (historyToDate) historyToDate.value = '';
-          setHistoryPeriodUI('week');
-          renderHistory();
-          if (navigator.vibrate) navigator.vibrate(20);
-        });
-      }
+      bindPeriodBtn(historyBtnToday, 'today');
+      bindPeriodBtn(historyBtnYesterday, 'yesterday');
+      bindPeriodBtn(historyBtnWeek, 'week');
+      bindPeriodBtn(historyBtnLastWeek, 'last_week');
+      bindPeriodBtn(historyBtnMonth, 'month');
+      bindPeriodBtn(historyBtnLastMonth, 'last_month');
+      bindPeriodBtn(historyBtnAll, 'all');
 
-      if (historyBtnMonth) {
-        historyBtnMonth.addEventListener('click', () => {
-          if (historyFromDate) historyFromDate.value = '';
-          if (historyToDate) historyToDate.value = '';
-          setHistoryPeriodUI('month');
-          renderHistory();
-          if (navigator.vibrate) navigator.vibrate(20);
-        });
+      // Collapsible Filter Drawer Listeners
+      if (historyToggleFilterBtn) {
+        historyToggleFilterBtn.addEventListener('click', () => toggleHistoryFilterDrawer());
       }
-
-      if (historyBtnAll) {
-        historyBtnAll.addEventListener('click', () => {
+      if (historyCollapseDrawerBtn) {
+        historyCollapseDrawerBtn.addEventListener('click', () => toggleHistoryFilterDrawer(false));
+      }
+      if (historyResetAllFiltersBtn) {
+        historyResetAllFiltersBtn.addEventListener('click', () => {
+          selectedTags.clear();
           if (historyFromDate) historyFromDate.value = '';
           if (historyToDate) historyToDate.value = '';
-          setHistoryPeriodUI('all');
+          updateTagFilterOptions();
           renderHistory();
+          toggleHistoryFilterDrawer(false);
           if (navigator.vibrate) navigator.vibrate(20);
         });
       }
@@ -3677,8 +3858,11 @@
 
       function openExportCsvModal() {
         let initialPeriod = historyPeriodFilter;
-        if (initialPeriod !== 'day' && initialPeriod !== 'week' && initialPeriod !== 'month' && initialPeriod !== 'custom') {
-          initialPeriod = 'day';
+        if (initialPeriod === 'today') initialPeriod = 'day';
+        else if (initialPeriod === 'this_week') initialPeriod = 'week';
+        else if (initialPeriod === 'this_month') initialPeriod = 'month';
+        else if (initialPeriod !== 'day' && initialPeriod !== 'week' && initialPeriod !== 'month' && initialPeriod !== 'custom' && initialPeriod !== 'all') {
+          initialPeriod = 'all';
         }
         exportSelectedPeriod = initialPeriod;
 
