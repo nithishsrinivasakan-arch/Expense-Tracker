@@ -733,31 +733,28 @@
           </button>
         </form>
 
-        <!-- TOP LIST: Pending / Not Completed Expenses -->
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 shadow-md space-y-2">
-          <div class="flex items-center justify-between pb-1.5 border-b border-slate-800/80">
-            <div>
-              <span class="text-xs font-bold text-slate-100 block">Things to Spend (Pending)</span>
-              <span class="text-[10px] text-slate-400">Tap Paid to complete • Long press to edit</span>
-            </div>
+        <!-- TOP LIST: Pending / Things to Spend -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-md overflow-hidden">
+          <div class="flex items-center justify-between px-3.5 py-2.5 border-b border-slate-800/80 bg-slate-900/60">
+            <span class="text-xs font-black uppercase tracking-wider text-slate-200">Things to Spend</span>
             <span id="budgetPendingCountBadge" class="text-[10px] font-bold text-amber-400">0 pending</span>
           </div>
 
-          <div id="budgetPendingListContainer" class="space-y-2 pt-0.5">
+          <div id="budgetPendingListContainer" class="divide-y divide-slate-800/70">
             <!-- Dynamically populated pending budget items -->
           </div>
         </div>
 
-        <!-- BOTTOM BUTTON & SECTION: Completed / Scratched Items -->
-        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-2.5 shadow-sm space-y-2">
+        <!-- BOTTOM BUTTON & SECTION: Completed Items -->
+        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl shadow-sm overflow-hidden">
           <!-- Toggle Button to Show/Hide Completed Items -->
           <button
             id="toggleCompletedBudgetBtn"
             type="button"
-            class="w-full py-2 px-3 rounded-xl bg-slate-950 border border-slate-800/90 hover:bg-slate-800 active:scale-[0.99] flex items-center justify-between text-xs font-bold text-slate-300 transition-all cursor-pointer"
+            class="w-full py-2.5 px-3.5 bg-slate-950/80 hover:bg-slate-800/80 active:scale-[0.99] flex items-center justify-between text-xs font-bold text-slate-300 transition-all cursor-pointer"
           >
             <div class="flex items-center gap-2">
-              <span class="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-[10px]">✓</span>
+              <span class="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-[10px] font-bold">✓</span>
               <span>Completed Tasks</span>
               <span id="budgetCompletedCountBadge" class="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded-full">0</span>
             </div>
@@ -765,8 +762,8 @@
           </button>
 
           <!-- Collapsible Completed Items List -->
-          <div id="budgetCompletedSection" class="hidden space-y-2 pt-1">
-            <div id="budgetCompletedListContainer" class="space-y-2">
+          <div id="budgetCompletedSection" class="hidden border-t border-slate-800">
+            <div id="budgetCompletedListContainer" class="divide-y divide-slate-800/60">
               <!-- Dynamically populated completed items with restore option -->
             </div>
           </div>
@@ -2523,64 +2520,50 @@
               return `
                 <div
                   data-budget-item-id="${escapeHtml(item.id)}"
-                  class="budget-item-card p-3 rounded-2xl bg-slate-950/80 border border-slate-800 hover:border-slate-700 transition-all select-none cursor-pointer space-y-2 shadow-sm active:scale-[0.99]"
+                  class="budget-item-card px-3.5 py-3 hover:bg-slate-850/60 active:bg-slate-800/60 transition-colors flex items-center justify-between gap-3 select-none cursor-pointer"
                 >
-                  <!-- Row 1 (Top): Start Button, Title, and Amount -->
-                  <div class="flex items-center justify-between gap-2.5">
-                    <div class="flex items-center gap-2 min-w-0 flex-1">
-                      <!-- Start Portion: Round Quick Paid Button -->
-                      <button
-                        type="button"
-                        data-paid-budget-id="${escapeHtml(item.id)}"
-                        class="w-6 h-6 rounded-full border-2 border-slate-600 hover:border-emerald-500 hover:bg-emerald-950/30 text-slate-400 hover:text-emerald-400 flex items-center justify-center shrink-0 transition-all cursor-pointer active:scale-95"
-                        title="Mark as Paid / Completed"
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                        </svg>
-                      </button>
-                      <span class="budget-item-title text-xs sm:text-sm font-bold text-slate-100 truncate">
-                        ${escapeHtml(item.reason)}
-                      </span>
-                    </div>
-                    <span class="text-xs sm:text-sm font-black text-white tabular-nums shrink-0">
-                      ${formatINR(item.amount)}
-                    </span>
-                  </div>
+                  <!-- Start Portion: Round Quick Paid Button -->
+                  <button
+                    type="button"
+                    data-paid-budget-id="${escapeHtml(item.id)}"
+                    class="w-6 h-6 rounded-full border-2 border-slate-600 hover:border-emerald-500 hover:bg-emerald-950/30 text-slate-400 hover:text-emerald-400 flex items-center justify-center shrink-0 transition-all cursor-pointer active:scale-95"
+                    title="Mark as Paid / Done"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </button>
 
-                  <!-- Row 2 (Bottom): Category Tag, Due Date, and End Action Buttons -->
-                  <div class="flex items-center justify-between gap-2 pt-1 border-t border-slate-900">
-                    <div class="flex items-center gap-2 min-w-0 flex-1 overflow-hidden">
+                  <!-- Center: Reason (break-words with minimal cutting!), Tag & Due Date -->
+                  <div class="min-w-0 flex-1">
+                    <p class="budget-item-title text-xs sm:text-sm font-bold text-slate-100 leading-snug break-words">
+                      ${escapeHtml(item.reason)}
+                    </p>
+                    <div class="flex items-center gap-1.5 mt-1 flex-wrap">
                       <span class="text-[9px] font-bold px-2 py-0.5 rounded-md border shrink-0 ${tagClass}">
                         ${escapeHtml(item.tag || 'Bills')}
                       </span>
-                      <span class="text-[10px] text-slate-400 tabular-nums whitespace-nowrap truncate">
+                      <span class="text-[10px] text-slate-400 tabular-nums">
                         Due: ${escapeHtml(item.date)}
                       </span>
                     </div>
-                    <div class="flex items-center gap-1.5 shrink-0">
-                      <!-- End Portion: Small Paid Button -->
-                      <button
-                        type="button"
-                        data-paid-budget-id="${escapeHtml(item.id)}"
-                        class="px-2.5 py-1 rounded-xl bg-emerald-600/20 hover:bg-emerald-600 text-emerald-400 hover:text-white border border-emerald-500/30 text-[10px] font-bold transition-all cursor-pointer flex items-center gap-1 active:scale-95"
-                        title="Mark as Paid"
-                      >
-                        <span>Paid</span>
-                        <span>✓</span>
-                      </button>
-                      <!-- End Portion: Separate Delete Button -->
-                      <button
-                        type="button"
-                        data-delete-budget-id="${escapeHtml(item.id)}"
-                        class="delete-budget-btn w-7 h-7 rounded-xl bg-slate-900 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 border border-slate-800 flex items-center justify-center transition-colors cursor-pointer active:scale-95"
-                        title="Delete"
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                      </button>
-                    </div>
+                  </div>
+
+                  <!-- End Portion: Amount and Separate Delete Button (Small Paid button removed) -->
+                  <div class="flex items-center gap-2 shrink-0">
+                    <span class="text-xs sm:text-sm font-black text-white tabular-nums">
+                      ${formatINR(item.amount)}
+                    </span>
+                    <button
+                      type="button"
+                      data-delete-budget-id="${escapeHtml(item.id)}"
+                      class="delete-budget-btn w-7 h-7 rounded-xl bg-slate-950/60 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 border border-slate-800 flex items-center justify-center transition-colors cursor-pointer active:scale-95"
+                      title="Delete"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
                   </div>
                 </div>
               `;
@@ -2593,7 +2576,7 @@
           if (completedItems.length === 0) {
             budgetCompletedListContainer.innerHTML = `
               <div class="h-16 flex items-center justify-center text-xs text-slate-500 text-center">
-                No completed tasks yet. Tap Paid on items above to complete tasks.
+                No completed tasks yet. Tap the circle button above to mark tasks as paid.
               </div>
             `;
           } else {
@@ -2603,45 +2586,46 @@
               return `
                 <div
                   data-budget-item-id="${escapeHtml(item.id)}"
-                  class="p-2.5 rounded-2xl bg-slate-950/60 border border-slate-800/80 transition-all opacity-75 space-y-1.5"
+                  class="px-3.5 py-2.5 transition-all opacity-75 flex items-center justify-between gap-3 hover:bg-slate-850/40"
                 >
-                  <div class="flex items-center justify-between gap-2">
-                    <span class="text-xs sm:text-sm font-bold line-through text-slate-400 truncate decoration-emerald-500 decoration-2">
+                  <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 text-xs font-black">
+                    ✓
+                  </span>
+                  <div class="min-w-0 flex-1">
+                    <p class="text-xs sm:text-sm font-bold line-through text-slate-400 leading-snug break-words decoration-emerald-500 decoration-2">
                       ${escapeHtml(item.reason)}
-                    </span>
-                    <span class="text-xs sm:text-sm font-black line-through text-slate-400 tabular-nums shrink-0">
-                      ${formatINR(item.amount)}
-                    </span>
-                  </div>
-                  <div class="flex items-center justify-between gap-2 pt-1 border-t border-slate-900">
-                    <div class="flex items-center gap-2 min-w-0 flex-1 overflow-hidden">
+                    </p>
+                    <div class="flex items-center gap-1.5 mt-0.5 flex-wrap">
                       <span class="text-[9px] font-bold px-2 py-0.5 rounded-md border bg-slate-800/80 text-slate-400 border-slate-700 shrink-0">
                         ${escapeHtml(item.tag || 'Bills')}
                       </span>
-                      <span class="text-[10px] text-emerald-400 font-medium shrink-0">✓ Paid</span>
-                      <span class="text-[10px] text-slate-500 tabular-nums whitespace-nowrap truncate">Due: ${escapeHtml(item.date)}</span>
+                      <span class="text-[10px] text-emerald-400 font-medium">✓ Paid</span>
+                      <span class="text-[10px] text-slate-500 tabular-nums">Due: ${escapeHtml(item.date)}</span>
                     </div>
-                    <div class="flex items-center gap-1.5 shrink-0">
-                      <button
-                        type="button"
-                        data-restore-budget-id="${escapeHtml(item.id)}"
-                        class="px-2 py-1 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[10px] font-bold transition-all cursor-pointer flex items-center gap-1 active:scale-95"
-                        title="Restore to Pending"
-                      >
-                        <span>↩</span>
-                        <span>Restore</span>
-                      </button>
-                      <button
-                        type="button"
-                        data-delete-budget-id="${escapeHtml(item.id)}"
-                        class="delete-budget-btn w-7 h-7 rounded-xl bg-slate-900 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 border border-slate-800 flex items-center justify-center transition-colors cursor-pointer active:scale-95"
-                        title="Delete"
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                      </button>
-                    </div>
+                  </div>
+                  <div class="flex items-center gap-2 shrink-0">
+                    <span class="text-xs sm:text-sm font-black line-through text-slate-400 tabular-nums">
+                      ${formatINR(item.amount)}
+                    </span>
+                    <button
+                      type="button"
+                      data-restore-budget-id="${escapeHtml(item.id)}"
+                      class="px-2 py-1 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[10px] font-bold transition-all cursor-pointer flex items-center gap-1 active:scale-95"
+                      title="Restore to Pending"
+                    >
+                      <span>↩</span>
+                      <span>Restore</span>
+                    </button>
+                    <button
+                      type="button"
+                      data-delete-budget-id="${escapeHtml(item.id)}"
+                      class="delete-budget-btn w-7 h-7 rounded-xl bg-slate-900 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 border border-slate-800 flex items-center justify-center transition-colors cursor-pointer active:scale-95"
+                      title="Delete"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
                   </div>
                 </div>
               `;
