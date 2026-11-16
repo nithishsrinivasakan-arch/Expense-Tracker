@@ -127,12 +127,12 @@
          TOP MOBILE APP BAR (EXACT MATCH TO LAYOUT)
          ========================================== -->
     <header class="shrink-0 flex items-center justify-between py-1.5 px-0.5 border-b border-slate-800/80 mb-1">
-      <!-- App Brand (Click logo or title to open Budgeting) -->
+      <!-- App Brand (Click logo or title to return to Add Expense) -->
       <button
         id="brandBudgetBtn"
         type="button"
         class="flex items-center gap-2 min-w-0 text-left cursor-pointer group active:scale-95 transition-all"
-        title="Open Monthly Budget Planner"
+        title="Back to Add Expense"
       >
         <div class="w-8 h-8 rounded-xl bg-red-950/60 border border-red-500/40 group-hover:border-red-500 flex items-center justify-center text-red-400 font-black text-sm shadow-md shadow-red-950/50 shrink-0 transition-colors">
           ₹
@@ -3993,7 +3993,7 @@
         budgetDateInput.value = new Date().toISOString().slice(0, 10);
       }
 
-      if (brandBudgetBtn) brandBudgetBtn.addEventListener('click', () => switchTab('budget'));
+      if (brandBudgetBtn) brandBudgetBtn.addEventListener('click', () => switchTab('add'));
       if (openBudgetBtn) openBudgetBtn.addEventListener('click', () => switchTab('budget'));
       if (budgetCloseBtn) budgetCloseBtn.addEventListener('click', () => switchTab('add'));
 
