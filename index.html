@@ -230,7 +230,7 @@
               autocomplete="off"
               autocorrect="on"
               autocapitalize="sentences"
-              spellcheck="false"
+              spellcheck="true"
               data-form-type="other"
               data-lpignore="true"
               data-1p-ignore="true"
@@ -255,7 +255,7 @@
               autocomplete="off"
               autocorrect="on"
               autocapitalize="words"
-              spellcheck="false"
+              spellcheck="true"
               data-form-type="other"
               data-lpignore="true"
               data-1p-ignore="true"
@@ -378,42 +378,50 @@
             </button>
           </div>
 
-          <!-- Row 3: Category Filter -->
-          <div>
-            <select
-              id="tagFilterSelect"
-              aria-label="Filter by Tag"
-              class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-red-500"
-            >
-              <option value="ALL">All Categories</option>
-            </select>
+          <!-- Row 3: Multi-Select Category Filter -->
+          <div class="space-y-1">
+            <div class="flex items-center justify-between px-0.5">
+              <span class="text-[9px] font-bold uppercase tracking-wider text-slate-400">Filter by Category (Multi-select)</span>
+              <span id="tagFilterStatusText" class="text-[10px] font-bold text-red-400">All</span>
+            </div>
+            <!-- Horizontal scrollable multi-select chips -->
+            <div id="categoryChipsContainer" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
+              <!-- Dynamically populated chips -->
+            </div>
           </div>
 
-          <!-- Row 4: Custom From Date & To Date Selection -->
-          <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-2.5 space-y-2">
+          <!-- Row 4: Custom From Date & To Date Selection (Clean, Organized Typography) -->
+          <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-2.5 space-y-2 shadow-sm">
             <div class="flex items-center justify-between px-0.5">
-              <span class="text-[9px] font-bold uppercase tracking-wider text-slate-400">Custom Date Range</span>
+              <div class="flex items-center gap-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-300">Custom Date Range</span>
+              </div>
               <span id="dateFilterActiveText" class="text-[10px] font-bold text-red-400 hidden">Filtered</span>
             </div>
             <div class="grid grid-cols-2 gap-2">
-              <div>
-                <label for="historyFromDate" class="text-[9px] font-bold uppercase tracking-wider text-slate-400 block px-0.5 mb-1">
-                  From Date
+              <div class="space-y-1">
+                <label for="historyFromDate" class="text-[10px] font-bold text-slate-400 block px-0.5 flex items-center justify-between">
+                  <span>From Date</span>
+                  <span class="text-[9px] text-slate-500 font-medium">Start</span>
                 </label>
                 <input
                   id="historyFromDate"
                   type="date"
-                  class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-red-500 cursor-pointer"
+                  class="w-full h-9 bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl px-2.5 text-xs font-semibold text-slate-100 focus:outline-none focus:ring-1 focus:ring-red-500/30 cursor-pointer tabular-nums"
                 />
               </div>
-              <div>
-                <label for="historyToDate" class="text-[9px] font-bold uppercase tracking-wider text-slate-400 block px-0.5 mb-1">
-                  To Date
+              <div class="space-y-1">
+                <label for="historyToDate" class="text-[10px] font-bold text-slate-400 block px-0.5 flex items-center justify-between">
+                  <span>To Date</span>
+                  <span class="text-[9px] text-slate-500 font-medium">End</span>
                 </label>
                 <input
                   id="historyToDate"
                   type="date"
-                  class="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-red-500 cursor-pointer"
+                  class="w-full h-9 bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl px-2.5 text-xs font-semibold text-slate-100 focus:outline-none focus:ring-1 focus:ring-red-500/30 cursor-pointer tabular-nums"
                 />
               </div>
             </div>
@@ -612,6 +620,255 @@
     </div>
   </div>
 
+  <!-- ==========================================
+       EDIT EXPENSE MODAL SCREEN
+       ========================================== -->
+  <div
+    id="editExpenseModal"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200"
+    role="dialog"
+    aria-modal="true"
+  >
+    <div
+      id="editExpenseCard"
+      class="w-full max-w-sm bg-slate-900 border border-slate-700/80 rounded-3xl p-5 shadow-2xl shadow-rose-950/90 flex flex-col text-left transform scale-90 transition-all duration-200"
+    >
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-red-600/20 text-red-400 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-sm font-extrabold text-white">Edit Expense</h3>
+            <p class="text-[10px] text-slate-400">Update amount, reason, tag, or date</p>
+          </div>
+        </div>
+        <button id="editModalCloseX" type="button" class="w-7 h-7 rounded-lg bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center cursor-pointer">
+          ✕
+        </button>
+      </div>
+
+      <form id="editExpenseForm" class="space-y-3 mt-3.5">
+        <input type="hidden" id="editModalId" />
+
+        <!-- Amount -->
+        <div class="space-y-1">
+          <label for="editModalAmount" class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block px-0.5">
+            Amount (₹)
+          </label>
+          <input
+            id="editModalAmount"
+            type="number"
+            step="any"
+            min="0.01"
+            required
+            class="w-full h-11 px-3.5 bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl text-lg font-black text-white focus:outline-none tabular-nums"
+          />
+        </div>
+
+        <!-- Reason -->
+        <div class="space-y-1">
+          <label for="editModalReason" class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block px-0.5">
+            Why did you spend?
+          </label>
+          <input
+            id="editModalReason"
+            type="text"
+            required
+            autocomplete="off"
+            autocorrect="on"
+            autocapitalize="sentences"
+            spellcheck="true"
+            class="w-full h-10 px-3.5 bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl text-xs sm:text-sm text-white focus:outline-none"
+          />
+        </div>
+
+        <!-- Category Tag -->
+        <div class="space-y-1">
+          <label for="editModalTag" class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block px-0.5">
+            Category Tag
+          </label>
+          <input
+            id="editModalTag"
+            type="text"
+            list="categoryKeywordsList"
+            autocomplete="off"
+            autocorrect="on"
+            autocapitalize="words"
+            spellcheck="true"
+            class="w-full h-10 px-3.5 bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl text-xs sm:text-sm text-white focus:outline-none"
+          />
+        </div>
+
+        <!-- Date & Time -->
+        <div class="space-y-1">
+          <label for="editModalDate" class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block px-0.5">
+            Date & Time
+          </label>
+          <input
+            id="editModalDate"
+            type="datetime-local"
+            class="w-full h-10 px-3.5 bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl text-xs text-white focus:outline-none tabular-nums cursor-pointer"
+          />
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="grid grid-cols-2 gap-2 pt-2">
+          <button
+            id="editModalCancelBtn"
+            type="button"
+            class="py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-xs font-bold text-slate-300 transition-all text-center cursor-pointer"
+          >
+            Cancel
+          </button>
+          <button
+            id="editModalSaveBtn"
+            type="submit"
+            class="py-2.5 px-3 rounded-xl bg-red-600 hover:bg-red-500 active:scale-95 text-xs font-black text-white shadow-md shadow-red-950 transition-all cursor-pointer text-center"
+          >
+            Save Changes
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       EXPORT CSV FILTER SELECTION MODAL
+       ========================================== -->
+  <div
+    id="exportCsvModal"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200"
+    role="dialog"
+    aria-modal="true"
+  >
+    <div
+      id="exportCsvCard"
+      class="w-full max-w-sm bg-slate-900 border border-slate-700/80 rounded-3xl p-5 shadow-2xl shadow-rose-950/90 flex flex-col text-left transform scale-90 transition-all duration-200"
+    >
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-red-600/20 text-red-400 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-sm font-extrabold text-white">Export to CSV</h3>
+            <p class="text-[10px] text-slate-400">Select filter period for download</p>
+          </div>
+        </div>
+        <button id="exportCsvCloseX" type="button" class="w-7 h-7 rounded-lg bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center cursor-pointer">
+          ✕
+        </button>
+      </div>
+
+      <!-- Filter Selection Options -->
+      <div class="space-y-2 mt-3.5">
+        <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Choose Filter Period</p>
+
+        <!-- Option: Day -->
+        <label class="csv-option-label flex items-center justify-between p-2.5 rounded-2xl bg-slate-950/80 border border-slate-800 hover:border-slate-700 cursor-pointer transition-all">
+          <div class="flex items-center gap-2.5">
+            <input type="radio" name="csvPeriodOption" value="day" class="accent-red-600 w-4 h-4" />
+            <div>
+              <p class="text-xs font-bold text-white">Today (Day)</p>
+              <p class="text-[10px] text-slate-400">Today's transactions only</p>
+            </div>
+          </div>
+          <span id="csvCountDay" class="text-[10px] font-bold text-red-400 tabular-nums">0 records</span>
+        </label>
+
+        <!-- Option: Week -->
+        <label class="csv-option-label flex items-center justify-between p-2.5 rounded-2xl bg-slate-950/80 border border-slate-800 hover:border-slate-700 cursor-pointer transition-all">
+          <div class="flex items-center gap-2.5">
+            <input type="radio" name="csvPeriodOption" value="week" class="accent-red-600 w-4 h-4" />
+            <div>
+              <p class="text-xs font-bold text-white">This Week</p>
+              <p class="text-[10px] text-slate-400">Yesterday + today rolling week</p>
+            </div>
+          </div>
+          <span id="csvCountWeek" class="text-[10px] font-bold text-red-400 tabular-nums">0 records</span>
+        </label>
+
+        <!-- Option: Month -->
+        <label class="csv-option-label flex items-center justify-between p-2.5 rounded-2xl bg-slate-950/80 border border-slate-800 hover:border-slate-700 cursor-pointer transition-all">
+          <div class="flex items-center gap-2.5">
+            <input type="radio" name="csvPeriodOption" value="month" class="accent-red-600 w-4 h-4" />
+            <div>
+              <p class="text-xs font-bold text-white">This Month</p>
+              <p class="text-[10px] text-slate-400">Current calendar month</p>
+            </div>
+          </div>
+          <span id="csvCountMonth" class="text-[10px] font-bold text-red-400 tabular-nums">0 records</span>
+        </label>
+
+        <!-- Option: All -->
+        <label class="csv-option-label flex items-center justify-between p-2.5 rounded-2xl bg-slate-950/80 border border-slate-800 hover:border-slate-700 cursor-pointer transition-all">
+          <div class="flex items-center gap-2.5">
+            <input type="radio" name="csvPeriodOption" value="all" class="accent-red-600 w-4 h-4" />
+            <div>
+              <p class="text-xs font-bold text-white">All Records</p>
+              <p class="text-[10px] text-slate-400">Complete expense history</p>
+            </div>
+          </div>
+          <span id="csvCountAll" class="text-[10px] font-bold text-red-400 tabular-nums">0 records</span>
+        </label>
+
+        <!-- Option: Custom Date Range -->
+        <label class="csv-option-label flex flex-col p-2.5 rounded-2xl bg-slate-950/80 border border-slate-800 hover:border-slate-700 cursor-pointer transition-all space-y-2">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <input type="radio" name="csvPeriodOption" value="custom" class="accent-red-600 w-4 h-4" />
+              <div>
+                <p class="text-xs font-bold text-white">Custom Date Range</p>
+                <p class="text-[10px] text-slate-400">Filter by specific From/To dates</p>
+              </div>
+            </div>
+            <span id="csvCountCustom" class="text-[10px] font-bold text-red-400 tabular-nums">0 records</span>
+          </div>
+          <!-- Custom Date Inputs inside modal -->
+          <div id="csvCustomDateInputs" class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-800">
+            <div>
+              <label for="csvFromDate" class="text-[9px] font-bold uppercase text-slate-400 block px-0.5 mb-0.5">From Date</label>
+              <input id="csvFromDate" type="date" class="w-full h-8 bg-slate-900 border border-slate-800 focus:border-red-500 rounded-lg px-2 text-[11px] font-medium text-white focus:outline-none tabular-nums" />
+            </div>
+            <div>
+              <label for="csvToDate" class="text-[9px] font-bold uppercase text-slate-400 block px-0.5 mb-0.5">To Date</label>
+              <input id="csvToDate" type="date" class="w-full h-8 bg-slate-900 border border-slate-800 focus:border-red-500 rounded-lg px-2 text-[11px] font-medium text-white focus:outline-none tabular-nums" />
+            </div>
+          </div>
+        </label>
+      </div>
+
+      <!-- Summary Info Badge -->
+      <div class="my-3 px-3 py-2 rounded-xl bg-red-600/10 border border-red-500/20 flex items-center justify-between">
+        <span class="text-[11px] font-medium text-slate-300">Ready to export:</span>
+        <span id="csvSelectedSummary" class="text-xs font-black text-red-400 tabular-nums">0 records (₹0)</span>
+      </div>
+
+      <!-- Modal Action Buttons -->
+      <div class="grid grid-cols-2 gap-2">
+        <button
+          id="exportCsvCancelBtn"
+          type="button"
+          class="py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-xs font-bold text-slate-300 transition-all text-center cursor-pointer"
+        >
+          Cancel
+        </button>
+        <button
+          id="exportCsvConfirmBtn"
+          type="button"
+          class="py-2.5 px-3 rounded-xl bg-red-600 hover:bg-red-500 active:scale-95 text-xs font-black text-white shadow-md shadow-red-950 transition-all cursor-pointer text-center"
+        >
+          Download CSV
+        </button>
+      </div>
+    </div>
+  </div>
+
   
   </div>
 
@@ -668,7 +925,10 @@
             const saveFeedbackBadge = document.getElementById('saveFeedbackBadge');
 
       const searchFilterInput = document.getElementById('searchFilterInput');
-      const tagFilterSelect = document.getElementById('tagFilterSelect');
+      const categoryChipsContainer = document.getElementById('categoryChipsContainer');
+      const tagFilterStatusText = document.getElementById('tagFilterStatusText');
+      let selectedTags = new Set(); // Multi-select tags set
+
       const historyBtnDay = document.getElementById('historyBtnDay');
       const historyBtnWeek = document.getElementById('historyBtnWeek');
       const historyBtnMonth = document.getElementById('historyBtnMonth');
@@ -683,6 +943,34 @@
       const filteredSummaryText = document.getElementById('filteredSummaryText');
       const filteredTotalText = document.getElementById('filteredTotalText');
       const expenseListContainer = document.getElementById('expenseListContainer');
+
+      // Edit Expense Modal Elements
+      const editExpenseModal = document.getElementById('editExpenseModal');
+      const editExpenseCard = document.getElementById('editExpenseCard');
+      const editModalCloseX = document.getElementById('editModalCloseX');
+      const editExpenseForm = document.getElementById('editExpenseForm');
+      const editModalId = document.getElementById('editModalId');
+      const editModalAmount = document.getElementById('editModalAmount');
+      const editModalReason = document.getElementById('editModalReason');
+      const editModalTag = document.getElementById('editModalTag');
+      const editModalDate = document.getElementById('editModalDate');
+      const editModalCancelBtn = document.getElementById('editModalCancelBtn');
+
+      // Export CSV Filter Modal Elements
+      const exportCsvModal = document.getElementById('exportCsvModal');
+      const exportCsvCard = document.getElementById('exportCsvCard');
+      const exportCsvCloseX = document.getElementById('exportCsvCloseX');
+      const exportCsvCancelBtn = document.getElementById('exportCsvCancelBtn');
+      const exportCsvConfirmBtn = document.getElementById('exportCsvConfirmBtn');
+      const csvCountDay = document.getElementById('csvCountDay');
+      const csvCountWeek = document.getElementById('csvCountWeek');
+      const csvCountMonth = document.getElementById('csvCountMonth');
+      const csvCountAll = document.getElementById('csvCountAll');
+      const csvCountCustom = document.getElementById('csvCountCustom');
+      const csvFromDate = document.getElementById('csvFromDate');
+      const csvToDate = document.getElementById('csvToDate');
+      const csvSelectedSummary = document.getElementById('csvSelectedSummary');
+      let exportSelectedPeriod = 'day';
 
       const drilldownTitle = document.getElementById('drilldownTitle');
       const drilldownSubtitle = document.getElementById('drilldownSubtitle');
@@ -852,28 +1140,84 @@
       }
 
       function updateTagFilterOptions() {
-        const previousValue = tagFilterSelect.value || 'ALL';
-        const tags = new Set(['Food', 'Travel', 'Shopping', 'Bills', 'Utilities', 'Health', 'Fuel', 'Misc']);
+        if (!categoryChipsContainer) return;
+        const defaultTags = ['Food', 'Travel', 'Shopping', 'Bills', 'Utilities', 'Health', 'Fuel', 'Misc'];
+        const tags = new Set(defaultTags);
         expenses.forEach(e => {
-          if (e.tag) tags.add(e.tag);
+          if (e.tag && e.tag.trim()) tags.add(e.tag.trim());
         });
 
-        tagFilterSelect.innerHTML = '<option value="ALL">All Tags</option>';
-        Array.from(tags).sort().forEach(tag => {
-          const opt = document.createElement('option');
-          opt.value = tag;
-          opt.textContent = tag;
-          tagFilterSelect.appendChild(opt);
+        const sortedTags = Array.from(tags).sort();
+        const isAllActive = selectedTags.size === 0;
+
+        let chipsHTML = `
+          <button
+            type="button"
+            data-tag-chip="ALL"
+            class="tag-filter-chip shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              isAllActive
+                ? 'bg-red-600 text-white shadow-sm shadow-red-950 font-black'
+                : 'bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800'
+            }"
+          >
+            All
+          </button>
+        `;
+
+        sortedTags.forEach(tag => {
+          const isSelected = selectedTags.has(tag);
+          chipsHTML += `
+            <button
+              type="button"
+              data-tag-chip="${escapeHtml(tag)}"
+              class="tag-filter-chip shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                isSelected
+                  ? 'bg-red-600 text-white shadow-sm shadow-red-950 font-black ring-1 ring-red-400'
+                  : 'bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800'
+              }"
+            >
+              ${escapeHtml(tag)}
+            </button>
+          `;
         });
 
-        if (Array.from(tags).includes(previousValue)) {
-          tagFilterSelect.value = previousValue;
+        categoryChipsContainer.innerHTML = chipsHTML;
+        updateTagFilterStatusText();
+      }
+
+      function updateTagFilterStatusText() {
+        if (!tagFilterStatusText) return;
+        if (selectedTags.size === 0) {
+          tagFilterStatusText.textContent = 'All';
+        } else if (selectedTags.size === 1) {
+          tagFilterStatusText.textContent = Array.from(selectedTags)[0];
         } else {
-          tagFilterSelect.value = 'ALL';
+          tagFilterStatusText.textContent = `${selectedTags.size} selected`;
         }
       }
 
-      // Expense Item HTML Template
+      // Multi-select Category Chip Bar Interaction
+      if (categoryChipsContainer) {
+        categoryChipsContainer.addEventListener('click', e => {
+          const chip = e.target.closest('[data-tag-chip]');
+          if (!chip) return;
+          const tag = chip.getAttribute('data-tag-chip');
+          if (tag === 'ALL') {
+            selectedTags.clear();
+          } else {
+            if (selectedTags.has(tag)) {
+              selectedTags.delete(tag);
+            } else {
+              selectedTags.add(tag);
+            }
+          }
+          updateTagFilterOptions();
+          renderHistory();
+          if (navigator.vibrate) navigator.vibrate(15);
+        });
+      }
+
+      // Expense Item HTML Template with Edit & Delete Options
       function createExpenseItemHTML(item) {
         const tagClass = TAG_COLORS[item.tag] || 'bg-rose-500/15 text-rose-300 border-rose-500/30';
         const hasRemark = item.remark && item.remark.trim().length > 0;
@@ -890,12 +1234,24 @@
               ${hasRemark ? `<p class="text-[11px] text-slate-400 mt-1 italic break-words">"${escapeHtml(item.remark)}"</p>` : ''}
               <p class="text-[10px] text-slate-500 mt-1 tabular-nums">${formatExpenseDate(item.createdAt)}</p>
             </div>
-            <div class="flex items-center gap-2 shrink-0">
+            <div class="flex items-center gap-1.5 shrink-0">
               <span class="text-xs sm:text-sm font-black text-rose-400 tabular-nums">- ${formatINR(item.amount)}</span>
+              <!-- Edit Expense Button -->
+              <button
+                type="button"
+                data-edit-id="${escapeHtml(item.id)}"
+                class="edit-expense-btn w-7 h-7 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-slate-300 hover:text-white flex items-center justify-center transition-all cursor-pointer"
+                title="Edit Expense"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                </svg>
+              </button>
+              <!-- Delete Expense Button -->
               <button
                 type="button"
                 data-delete-id="${escapeHtml(item.id)}"
-                class="delete-expense-btn w-7 h-7 rounded-xl bg-slate-800 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 flex items-center justify-center transition-colors"
+                class="delete-expense-btn w-7 h-7 rounded-xl bg-slate-800 hover:bg-rose-500/20 active:scale-95 text-slate-400 hover:text-rose-400 flex items-center justify-center transition-colors cursor-pointer"
                 title="Delete"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -927,7 +1283,6 @@
 
       function renderHistory() {
         const query = (searchFilterInput.value || '').trim().toLowerCase();
-        const selectedTag = tagFilterSelect.value || 'ALL';
 
         const fromVal = historyFromDate ? historyFromDate.value : '';
         const toVal = historyToDate ? historyToDate.value : '';
@@ -957,7 +1312,8 @@
         const sorted = [...expenses].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
         const filtered = sorted.filter(item => {
-          const matchesTag = selectedTag === 'ALL' || (item.tag || '').toLowerCase() === selectedTag.toLowerCase();
+          // Multi-Select Category Tag Filter
+          const matchesTag = selectedTags.size === 0 || selectedTags.has(item.tag || 'Misc');
           if (!matchesTag) return false;
 
           const d = new Date(item.createdAt);
@@ -1371,12 +1727,102 @@
         }
       }
 
+      // Edit Expense Modal Functions
+      function openEditModal(item) {
+        if (!item) return;
+        editModalId.value = item.id;
+        editModalAmount.value = item.amount;
+        editModalReason.value = item.reason;
+        editModalTag.value = item.tag || 'Misc';
+
+        try {
+          const d = new Date(item.createdAt);
+          if (!isNaN(d.getTime())) {
+            const tzOffset = d.getTimezoneOffset() * 60000;
+            const localISOTime = new Date(d.getTime() - tzOffset).toISOString().slice(0, 16);
+            editModalDate.value = localISOTime;
+          } else {
+            editModalDate.value = '';
+          }
+        } catch {
+          editModalDate.value = '';
+        }
+
+        editExpenseModal.classList.remove('opacity-0', 'pointer-events-none');
+        editExpenseCard.classList.remove('scale-90');
+        editExpenseCard.classList.add('scale-100');
+      }
+
+      function closeEditModal() {
+        editExpenseModal.classList.add('opacity-0', 'pointer-events-none');
+        editExpenseCard.classList.remove('scale-100');
+        editExpenseCard.classList.add('scale-90');
+      }
+
+      if (editModalCloseX) editModalCloseX.addEventListener('click', closeEditModal);
+      if (editModalCancelBtn) editModalCancelBtn.addEventListener('click', closeEditModal);
+      if (editExpenseModal) {
+        editExpenseModal.addEventListener('click', e => {
+          if (e.target === editExpenseModal) closeEditModal();
+        });
+      }
+
+      if (editExpenseForm) {
+        editExpenseForm.addEventListener('submit', e => {
+          e.preventDefault();
+          const id = editModalId.value;
+          const target = expenses.find(i => i.id === id);
+          if (!target) return;
+
+          const newAmount = parseFloat(editModalAmount.value);
+          if (isNaN(newAmount) || newAmount <= 0) return;
+
+          const newReason = editModalReason.value.trim();
+          if (!newReason) return;
+
+          const newTag = editModalTag.value.trim() || 'Misc';
+
+          target.amount = Math.round(newAmount * 100) / 100;
+          target.reason = newReason;
+          target.tag = newTag;
+
+          if (editModalDate && editModalDate.value) {
+            const parsedDate = new Date(editModalDate.value);
+            if (!isNaN(parsedDate.getTime())) {
+              target.createdAt = parsedDate.toISOString();
+            }
+          }
+
+          saveExpenses();
+          refreshUI();
+          if (navigator.vibrate) navigator.vibrate(30);
+          closeEditModal();
+        });
+      }
+
+      enforceFirstLetterCapital(editModalReason);
+      enforceFirstLetterCapital(editModalTag);
+
+      // Edit Expense Handler
+      function handleEditClick(e) {
+        const btn = e.target.closest('.edit-expense-btn');
+        if (!btn) return;
+        const id = btn.getAttribute('data-edit-id');
+        if (!id) return;
+
+        const target = expenses.find(i => i.id === id);
+        if (target) {
+          openEditModal(target);
+        }
+      }
+
       expenseListContainer.addEventListener('click', handleDeleteClick);
+      expenseListContainer.addEventListener('click', handleEditClick);
       drilldownListContainer.addEventListener('click', handleDeleteClick);
+      drilldownListContainer.addEventListener('click', handleEditClick);
 
       // Filters & Search
       searchFilterInput.addEventListener('input', renderHistory);
-      tagFilterSelect.addEventListener('change', renderHistory);
 
       // Date Range & Period Filter Listeners
       if (historyBtnDay) {
@@ -1443,33 +1889,177 @@
         });
       }
 
-      // Export CSV
-      exportCsvBtn.addEventListener('click', () => {
-        if (expenses.length === 0) {
-          alert('No expenses to export.');
-          return;
-        }
-        const sorted = [...expenses].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        const headers = ['Date', 'Time', 'Amount (INR)', 'Reason', 'Tag', 'Remark'];
-        const rows = sorted.map(item => {
+      // Export CSV Modal Functions & Filter Logic
+      function getExpensesForPeriod(period, customFrom, customTo) {
+        const now = new Date();
+        const currentMonthKey = getMonthKey(now);
+
+        const sevenDaysAgo = new Date(now);
+        sevenDaysAgo.setDate(now.getDate() - 6);
+        sevenDaysAgo.setHours(0, 0, 0, 0);
+
+        const startOfWeekSun = new Date(now);
+        startOfWeekSun.setDate(now.getDate() - now.getDay());
+        startOfWeekSun.setHours(0, 0, 0, 0);
+
+        const weekBoundary = new Date(Math.min(sevenDaysAgo.getTime(), startOfWeekSun.getTime()));
+
+        return expenses.filter(item => {
           const d = new Date(item.createdAt);
-          const dateStr = isNaN(d.getTime()) ? '' : d.toLocaleDateString('en-IN');
-          const timeStr = isNaN(d.getTime()) ? '' : d.toLocaleTimeString('en-IN');
-          const esc = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
-          return [esc(dateStr), esc(timeStr), esc(item.amount), esc(item.reason), esc(item.tag), esc(item.remark)].join(',');
+          if (isNaN(d.getTime())) return false;
+
+          if (period === 'day') {
+            return isSameDay(d, now);
+          } else if (period === 'week') {
+            return isSameDay(d, now) || isYesterday(d, now) || (d >= weekBoundary && d <= now);
+          } else if (period === 'month') {
+            return getMonthKey(d) === currentMonthKey;
+          } else if (period === 'all') {
+            return true;
+          } else if (period === 'custom') {
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            const itemDate = `${year}-${month}-${day}`;
+            if (customFrom && customTo) {
+              const start = customFrom <= customTo ? customFrom : customTo;
+              const end = customFrom <= customTo ? customTo : customFrom;
+              return itemDate >= start && itemDate <= end;
+            } else if (customFrom) {
+              return itemDate >= customFrom;
+            } else if (customTo) {
+              return itemDate <= customTo;
+            }
+            return true;
+          }
+          return true;
+        });
+      }
+
+      function updateCsvModalCounts() {
+        const dayItems = getExpensesForPeriod('day');
+        const weekItems = getExpensesForPeriod('week');
+        const monthItems = getExpensesForPeriod('month');
+        const allItems = getExpensesForPeriod('all');
+
+        const fromVal = csvFromDate ? csvFromDate.value : '';
+        const toVal = csvToDate ? csvToDate.value : '';
+        const customItems = getExpensesForPeriod('custom', fromVal, toVal);
+
+        if (csvCountDay) csvCountDay.textContent = `${dayItems.length} records`;
+        if (csvCountWeek) csvCountWeek.textContent = `${weekItems.length} records`;
+        if (csvCountMonth) csvCountMonth.textContent = `${monthItems.length} records`;
+        if (csvCountAll) csvCountAll.textContent = `${allItems.length} records`;
+        if (csvCountCustom) csvCountCustom.textContent = `${customItems.length} records`;
+
+        let selectedItems = [];
+        if (exportSelectedPeriod === 'day') selectedItems = dayItems;
+        else if (exportSelectedPeriod === 'week') selectedItems = weekItems;
+        else if (exportSelectedPeriod === 'month') selectedItems = monthItems;
+        else if (exportSelectedPeriod === 'all') selectedItems = allItems;
+        else if (exportSelectedPeriod === 'custom') selectedItems = customItems;
+
+        const totalAmt = selectedItems.reduce((acc, cur) => acc + (Number(cur.amount) || 0), 0);
+        if (csvSelectedSummary) {
+          csvSelectedSummary.textContent = `${selectedItems.length} records (${formatINR(totalAmt)})`;
+        }
+      }
+
+      function openExportCsvModal() {
+        let initialPeriod = historyPeriodFilter;
+        if (initialPeriod !== 'day' && initialPeriod !== 'week' && initialPeriod !== 'month' && initialPeriod !== 'custom') {
+          initialPeriod = 'day';
+        }
+        exportSelectedPeriod = initialPeriod;
+
+        if (historyFromDate && historyFromDate.value && csvFromDate) {
+          csvFromDate.value = historyFromDate.value;
+        } else if (csvFromDate) {
+          csvFromDate.value = new Date().toISOString().slice(0, 10);
+        }
+        if (historyToDate && historyToDate.value && csvToDate) {
+          csvToDate.value = historyToDate.value;
+        } else if (csvToDate) {
+          csvToDate.value = new Date().toISOString().slice(0, 10);
+        }
+
+        const radios = document.querySelectorAll('input[name="csvPeriodOption"]');
+        radios.forEach(r => {
+          r.checked = (r.value === exportSelectedPeriod);
         });
 
-        const csvContent = '\uFEFF' + [headers.join(','), ...rows].join('\r\n');
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `expenses-${new Date().toISOString().slice(0, 10)}.csv`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        updateCsvModalCounts();
+
+        exportCsvModal.classList.remove('opacity-0', 'pointer-events-none');
+        exportCsvCard.classList.remove('scale-90');
+        exportCsvCard.classList.add('scale-100');
+      }
+
+      function closeExportCsvModal() {
+        exportCsvModal.classList.add('opacity-0', 'pointer-events-none');
+        exportCsvCard.classList.remove('scale-100');
+        exportCsvCard.classList.add('scale-90');
+      }
+
+      if (exportCsvBtn) exportCsvBtn.addEventListener('click', openExportCsvModal);
+      if (exportCsvCloseX) exportCsvCloseX.addEventListener('click', closeExportCsvModal);
+      if (exportCsvCancelBtn) exportCsvCancelBtn.addEventListener('click', closeExportCsvModal);
+      if (exportCsvModal) {
+        exportCsvModal.addEventListener('click', e => {
+          if (e.target === exportCsvModal) closeExportCsvModal();
+        });
+      }
+
+      document.querySelectorAll('input[name="csvPeriodOption"]').forEach(r => {
+        r.addEventListener('change', e => {
+          exportSelectedPeriod = e.target.value;
+          updateCsvModalCounts();
+        });
       });
+
+      if (csvFromDate) csvFromDate.addEventListener('change', updateCsvModalCounts);
+      if (csvToDate) csvToDate.addEventListener('change', updateCsvModalCounts);
+
+      if (exportCsvConfirmBtn) {
+        exportCsvConfirmBtn.addEventListener('click', () => {
+          const fromVal = csvFromDate ? csvFromDate.value : '';
+          const toVal = csvToDate ? csvToDate.value : '';
+          const targetItems = getExpensesForPeriod(exportSelectedPeriod, fromVal, toVal);
+
+          if (targetItems.length === 0) {
+            alert('No expenses match the selected filter period to export.');
+            return;
+          }
+
+          const sorted = [...targetItems].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+          const headers = ['Date', 'Time', 'Amount (INR)', 'Reason', 'Tag', 'Remark'];
+          const rows = sorted.map(item => {
+            const d = new Date(item.createdAt);
+            const dateStr = isNaN(d.getTime()) ? '' : d.toLocaleDateString('en-IN');
+            const timeStr = isNaN(d.getTime()) ? '' : d.toLocaleTimeString('en-IN');
+            const esc = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
+            return [esc(dateStr), esc(timeStr), esc(item.amount), esc(item.reason), esc(item.tag), esc(item.remark)].join(',');
+          });
+
+          const csvContent = '\uFEFF' + [headers.join(','), ...rows].join('\r\n');
+          const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+
+          let filename = `expenses-${exportSelectedPeriod}-${new Date().toISOString().slice(0, 10)}.csv`;
+          if (exportSelectedPeriod === 'custom' && fromVal && toVal) {
+            filename = `expenses-${fromVal}-to-${toVal}.csv`;
+          }
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+
+          closeExportCsvModal();
+        });
+      }
 
       // PWA Install Prompt
       window.addEventListener('beforeinstallprompt', e => {
