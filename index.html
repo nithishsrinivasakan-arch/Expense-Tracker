@@ -451,38 +451,69 @@
       </section>
 
       <!-- ====================================================
-           VIEW 3: COMPACT MONTHLY ANALYTICS (DOES NOT COVER SCREEN)
+           VIEW 3: VISUAL SPENDING & TAG ANALYTICS (GRAPHS ONLY)
            ==================================================== -->
-      <section id="viewAnalytics" class="hidden flex-1 flex flex-col overflow-hidden py-1 space-y-2.5">
+      <section id="viewAnalytics" class="hidden flex-1 flex flex-col overflow-y-auto py-1 space-y-3 pr-0.5">
         
-        <!-- Compact Bar Chart Widget (Fixed Small Height ~135px) -->
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-2.5 shrink-0 shadow-md">
-          <div class="flex items-center justify-between mb-1">
-            <span class="text-xs font-bold text-slate-200">Monthly Spending (₹)</span>
-            <span class="text-[10px] text-slate-400">Tap bar to drill down</span>
+        <!-- Top Insight Card: Where You're Spending Extra -->
+        <div id="analyticsTopSpendCard" class="bg-gradient-to-r from-red-950/70 via-slate-900 to-slate-900 border border-red-500/30 rounded-2xl p-3.5 shadow-lg shadow-red-950/30">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <div class="w-7 h-7 rounded-xl bg-red-600/20 text-red-400 flex items-center justify-center font-black text-xs">
+                ⚡
+              </div>
+              <span class="text-[10px] font-black uppercase tracking-wider text-red-400">Spending Insight</span>
+            </div>
+            <span id="analyticsTotalSpendBadge" class="text-[10px] font-bold text-slate-400">Total: ₹0</span>
           </div>
-          <!-- Chart is deliberately kept compact (h-32 = 128px) so it never covers the screen -->
-          <div class="relative w-full h-32">
+
+          <div class="mt-2.5">
+            <div class="flex items-baseline justify-between">
+              <h4 id="analyticsTopCategoryName" class="text-base font-black text-white truncate">No expenses yet</h4>
+              <span id="analyticsTopCategoryAmount" class="text-sm font-black text-rose-400 tabular-nums">₹0</span>
+            </div>
+            <p id="analyticsTopCategorySub" class="text-[11px] text-slate-400 mt-0.5">
+              Record expenses to analyze where you are spending extra.
+            </p>
+          </div>
+        </div>
+
+        <!-- Chart 1: Monthly Spending Bar Chart -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 shadow-md">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-xs font-bold text-slate-200">Monthly Spending (₹)</span>
+            <span id="analyticsMonthCount" class="text-[10px] text-slate-400">Trends</span>
+          </div>
+          <div class="relative w-full h-36">
             <canvas id="monthlyBarChart"></canvas>
           </div>
         </div>
 
-        <!-- Monthly Drill-Down Transaction List -->
-        <div class="flex-1 flex flex-col overflow-hidden bg-slate-900/60 border border-slate-800 rounded-2xl p-2.5">
-          <div class="flex items-center justify-between pb-2 mb-1.5 border-b border-slate-800/80 shrink-0">
-            <div>
-              <h3 id="drilldownTitle" class="text-xs font-bold text-rose-400">Select a month</h3>
-              <p id="drilldownSubtitle" class="text-[10px] text-slate-400">Tap any month bar to inspect its transactions</p>
-            </div>
-            <span id="drilldownTotalBadge" class="text-xs font-extrabold px-2.5 py-0.5 rounded-lg bg-rose-500/15 text-rose-400 border border-rose-500/30 tabular-nums hidden">
-              ₹0
-            </span>
+        <!-- Chart 2: Category Distribution Doughnut Chart -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 shadow-md">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-xs font-bold text-slate-200">Category Breakdown (Tags)</span>
+            <span id="analyticsTagCount" class="text-[10px] text-slate-400">0 categories</span>
           </div>
-
-          <div id="drilldownListContainer" class="flex-1 overflow-y-auto space-y-2 pr-0.5 select-text">
-            <!-- Populated by JS -->
+          <div class="relative w-full h-48 flex items-center justify-center">
+            <canvas id="categoryDoughnutChart"></canvas>
           </div>
         </div>
+
+        <!-- Category Spending Ranking List with Visual Progress Bars -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 shadow-md space-y-2.5">
+          <div class="flex items-center justify-between pb-1.5 border-b border-slate-800/80">
+            <div>
+              <span class="text-xs font-bold text-slate-200 block">Category Ranking</span>
+              <span class="text-[10px] text-slate-400">Where your money goes</span>
+            </div>
+            <span class="text-[10px] font-bold text-slate-400">% of Total</span>
+          </div>
+          <div id="categoryBreakdownContainer" class="space-y-2.5 pt-0.5">
+            <!-- Dynamically populated with category rankings & progress bars -->
+          </div>
+        </div>
+
       </section>
 
     </div>
@@ -972,10 +1003,15 @@
       const csvSelectedSummary = document.getElementById('csvSelectedSummary');
       let exportSelectedPeriod = 'day';
 
-      const drilldownTitle = document.getElementById('drilldownTitle');
-      const drilldownSubtitle = document.getElementById('drilldownSubtitle');
-      const drilldownTotalBadge = document.getElementById('drilldownTotalBadge');
-      const drilldownListContainer = document.getElementById('drilldownListContainer');
+      // Analytics DOM Elements
+      let categoryChartInstance = null;
+      const analyticsTopCategoryName = document.getElementById('analyticsTopCategoryName');
+      const analyticsTopCategoryAmount = document.getElementById('analyticsTopCategoryAmount');
+      const analyticsTopCategorySub = document.getElementById('analyticsTopCategorySub');
+      const analyticsTotalSpendBadge = document.getElementById('analyticsTotalSpendBadge');
+      const analyticsMonthCount = document.getElementById('analyticsMonthCount');
+      const analyticsTagCount = document.getElementById('analyticsTagCount');
+      const categoryBreakdownContainer = document.getElementById('categoryBreakdownContainer');
 
       // Expense Recorded Confirmation Screen Elements
       const recordConfirmModal = document.getElementById('recordConfirmModal');
@@ -1416,6 +1452,10 @@
           m.monthKey === selectedMonthKey ? '#fb7185' : 'rgba(244, 63, 94, 0.6)'
         );
 
+        if (analyticsMonthCount) {
+          analyticsMonthCount.textContent = `${monthlyData.length} ${monthlyData.length === 1 ? 'month' : 'months'}`;
+        }
+
         if (monthlyChartInstance) {
           monthlyChartInstance.destroy();
           monthlyChartInstance = null;
@@ -1445,7 +1485,6 @@
                 if (target) {
                   selectedMonthKey = target.monthKey;
                   renderMonthlyChart();
-                  renderDrilldownList();
                 }
               }
             },
@@ -1482,34 +1521,196 @@
             }
           }
         });
-
-        renderDrilldownList();
       }
 
-      function renderDrilldownList() {
-        const monthlyData = getMonthlyAggregates();
-        if (!selectedMonthKey || monthlyData.length === 0) {
-          drilldownTitle.textContent = 'No records yet';
-          drilldownSubtitle.textContent = 'Record expenses to see monthly chart';
-          drilldownTotalBadge.classList.add('hidden');
-          drilldownListContainer.innerHTML = `
-            <div class="h-24 flex items-center justify-center text-xs text-slate-500">
-              No transactions recorded yet.
-            </div>
-          `;
+      // Visual Tag & Category Spending Analytics
+      const TAG_CHART_COLORS = {
+        Food: '#f43f5e',
+        Travel: '#0ea5e9',
+        Shopping: '#ec4899',
+        Bills: '#dc2626',
+        Utilities: '#f59e0b',
+        Health: '#10b981',
+        Fuel: '#f97316',
+        Groceries: '#84cc16',
+        Entertainment: '#a855f7',
+        Misc: '#64748b'
+      };
+      const FALLBACK_PALETTE = ['#f43f5e', '#0ea5e9', '#ec4899', '#dc2626', '#f59e0b', '#10b981', '#f97316', '#84cc16', '#a855f7', '#06b6d4', '#6366f1'];
+
+      function getCategoryAggregates() {
+        const map = new Map();
+        let totalAll = 0;
+        for (const item of expenses) {
+          const tag = (item.tag && item.tag.trim()) || 'Misc';
+          const amt = Number(item.amount) || 0;
+          totalAll += amt;
+          if (!map.has(tag)) {
+            map.set(tag, { tag, total: 0, count: 0 });
+          }
+          const entry = map.get(tag);
+          entry.total += amt;
+          entry.count += 1;
+        }
+
+        const list = Array.from(map.values()).sort((a, b) => b.total - a.total);
+        return { categories: list, totalAll };
+      }
+
+      function renderCategoryChart() {
+        const canvas = document.getElementById('categoryDoughnutChart');
+        if (!canvas) return;
+
+        const { categories, totalAll } = getCategoryAggregates();
+        if (analyticsTagCount) {
+          analyticsTagCount.textContent = `${categories.length} ${categories.length === 1 ? 'category' : 'categories'}`;
+        }
+
+        if (categoryChartInstance) {
+          categoryChartInstance.destroy();
+          categoryChartInstance = null;
+        }
+
+        if (categories.length === 0) {
           return;
         }
 
-        const target = monthlyData.find(m => m.monthKey === selectedMonthKey);
-        if (!target) return;
+        const labels = categories.map(c => c.tag);
+        const dataValues = categories.map(c => c.total);
+        const bgColors = categories.map((c, i) => TAG_CHART_COLORS[c.tag] || FALLBACK_PALETTE[i % FALLBACK_PALETTE.length]);
 
-        const sortedItems = [...target.items].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        drilldownTitle.textContent = `${formatMonthLabel(target.monthKey)} Breakdown`;
-        drilldownSubtitle.textContent = `${sortedItems.length} expenses`;
-        drilldownTotalBadge.textContent = formatINR(target.total);
-        drilldownTotalBadge.classList.remove('hidden');
+        categoryChartInstance = new Chart(canvas, {
+          type: 'doughnut',
+          data: {
+            labels,
+            datasets: [{
+              data: dataValues,
+              backgroundColor: bgColors,
+              borderColor: '#0f172a',
+              borderWidth: 2,
+              hoverOffset: 6
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '65%',
+            plugins: {
+              legend: {
+                position: 'right',
+                labels: {
+                  color: '#cbd5e1',
+                  boxWidth: 10,
+                  boxHeight: 10,
+                  usePointStyle: true,
+                  pointStyle: 'circle',
+                  font: { size: 10, weight: '600' },
+                  padding: 8
+                }
+              },
+              tooltip: {
+                backgroundColor: '#0b0f19',
+                borderColor: '#e11d48',
+                borderWidth: 1,
+                titleColor: '#f8fafc',
+                bodyColor: '#fb7185',
+                callbacks: {
+                  label: ctx => {
+                    const val = ctx.parsed;
+                    const pct = totalAll > 0 ? Math.round((val / totalAll) * 100) : 0;
+                    return ` ${ctx.label}: ₹${Number(val).toLocaleString('en-IN')} (${pct}%)`;
+                  }
+                }
+              }
+            }
+          }
+        });
+      }
 
-        drilldownListContainer.innerHTML = sortedItems.map(createExpenseItemHTML).join('');
+      function renderCategoryBreakdown() {
+        const { categories, totalAll } = getCategoryAggregates();
+
+        if (analyticsTotalSpendBadge) {
+          analyticsTotalSpendBadge.textContent = `Total: ${formatINR(totalAll)}`;
+        }
+
+        if (categories.length === 0) {
+          if (analyticsTopCategoryName) analyticsTopCategoryName.textContent = 'No expenses yet';
+          if (analyticsTopCategoryAmount) analyticsTopCategoryAmount.textContent = '₹0';
+          if (analyticsTopCategorySub) analyticsTopCategorySub.textContent = 'Record expenses to analyze where you are spending extra.';
+          if (categoryBreakdownContainer) {
+            categoryBreakdownContainer.innerHTML = `
+              <div class="h-20 flex items-center justify-center text-xs text-slate-500">
+                No expense data recorded yet.
+              </div>
+            `;
+          }
+          return;
+        }
+
+        // Top Spending Category Insight ("Where I'm spending extra")
+        const top = categories[0];
+        const topPct = totalAll > 0 ? Math.round((top.total / totalAll) * 100) : 0;
+
+        if (analyticsTopCategoryName) {
+          analyticsTopCategoryName.textContent = top.tag;
+        }
+        if (analyticsTopCategoryAmount) {
+          analyticsTopCategoryAmount.textContent = `${formatINR(top.total)} (${topPct}%)`;
+        }
+        if (analyticsTopCategorySub) {
+          let subText = `Highest spending area! ${topPct}% of all your money went to ${escapeHtml(top.tag)}.`;
+          if (categories.length > 1) {
+            const second = categories[1];
+            const secPct = totalAll > 0 ? Math.round((second.total / totalAll) * 100) : 0;
+            subText += ` Next highest is ${escapeHtml(second.tag)} (${secPct}%).`;
+          }
+          analyticsTopCategorySub.innerHTML = subText;
+        }
+
+        // Render ranked progress bars for each category tag
+        if (categoryBreakdownContainer) {
+          categoryBreakdownContainer.innerHTML = categories.map((cat, idx) => {
+            const pct = totalAll > 0 ? Math.round((cat.total / totalAll) * 100) : 0;
+            const color = TAG_CHART_COLORS[cat.tag] || FALLBACK_PALETTE[idx % FALLBACK_PALETTE.length];
+            const isHighest = idx === 0;
+
+            return `
+              <div class="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800/80 space-y-1.5">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-1.5 min-w-0">
+                    <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background-color: ${color}"></span>
+                    <span class="text-xs font-bold text-slate-100 truncate">${escapeHtml(cat.tag)}</span>
+                    ${isHighest ? '<span class="text-[9px] font-black uppercase px-1.5 py-0.5 rounded-full bg-red-600/20 text-red-400 border border-red-500/30">Top Spend</span>' : ''}
+                  </div>
+                  <div class="text-right shrink-0">
+                    <span class="text-xs font-black text-rose-400 tabular-nums">${formatINR(cat.total)}</span>
+                    <span class="text-[10px] font-bold text-slate-400 ml-1.5 tabular-nums">${pct}%</span>
+                  </div>
+                </div>
+
+                <!-- Visual Spending Progress Bar -->
+                <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+                  <div
+                    class="h-full rounded-full transition-all duration-500"
+                    style="width: ${Math.max(pct, 3)}%; background-color: ${color};"
+                  ></div>
+                </div>
+
+                <div class="flex items-center justify-between text-[10px] text-slate-500 pt-0.5">
+                  <span>${cat.count} ${cat.count === 1 ? 'transaction' : 'transactions'}</span>
+                  <span>${pct}% of all spending</span>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+      }
+
+      function renderAnalytics() {
+        renderMonthlyChart();
+        renderCategoryChart();
+        renderCategoryBreakdown();
       }
 
       // Master Refresh
@@ -1518,7 +1719,7 @@
         updateTagFilterOptions();
         renderHistory();
         if (currentTab === 'analytics') {
-          renderMonthlyChart();
+          renderAnalytics();
         }
       }
 
@@ -1549,7 +1750,7 @@
           setHistoryPeriodUI('day');
           renderHistory();
         } else if (tab === 'analytics') {
-          setTimeout(renderMonthlyChart, 50);
+          setTimeout(renderAnalytics, 50);
         }
       }
 
@@ -1818,8 +2019,10 @@
 
       expenseListContainer.addEventListener('click', handleDeleteClick);
       expenseListContainer.addEventListener('click', handleEditClick);
-      drilldownListContainer.addEventListener('click', handleDeleteClick);
-      drilldownListContainer.addEventListener('click', handleEditClick);
+      if (drilldownListContainer) {
+        drilldownListContainer.addEventListener('click', handleDeleteClick);
+        drilldownListContainer.addEventListener('click', handleEditClick);
+      }
 
       // Filters & Search
       searchFilterInput.addEventListener('input', renderHistory);
