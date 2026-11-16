@@ -310,9 +310,42 @@
            VIEW 2: FULL HISTORY & TRANSACTIONS (WITH CALENDAR FILTER)
            ==================================================== -->
       <section id="viewHistory" class="hidden flex-1 flex flex-col overflow-hidden py-1 space-y-2">
-        <!-- Controls Bar with Calendar Date Filter -->
+        <!-- Controls Bar with Quick Buttons (Day, Week, Month, All) & Custom Date Range -->
         <div class="space-y-1.5 shrink-0">
-          <!-- Row 1: Search + CSV Export -->
+          
+          <!-- Top Row: Quick Period Filter Buttons (Day, Week, Month, All) -->
+          <div class="grid grid-cols-4 gap-1.5 p-1 bg-slate-900/90 border border-slate-800 rounded-2xl shadow-sm">
+            <button
+              id="historyBtnDay"
+              type="button"
+              class="history-filter-btn py-1.5 px-2 rounded-xl text-xs font-bold transition-all text-slate-300 hover:text-white hover:bg-slate-800 active:scale-95 cursor-pointer text-center"
+            >
+              Day
+            </button>
+            <button
+              id="historyBtnWeek"
+              type="button"
+              class="history-filter-btn py-1.5 px-2 rounded-xl text-xs font-bold transition-all text-slate-300 hover:text-white hover:bg-slate-800 active:scale-95 cursor-pointer text-center"
+            >
+              Week
+            </button>
+            <button
+              id="historyBtnMonth"
+              type="button"
+              class="history-filter-btn py-1.5 px-2 rounded-xl text-xs font-bold transition-all text-slate-300 hover:text-white hover:bg-slate-800 active:scale-95 cursor-pointer text-center"
+            >
+              Month
+            </button>
+            <button
+              id="historyBtnAll"
+              type="button"
+              class="history-filter-btn py-1.5 px-2 rounded-xl text-xs font-black transition-all bg-red-600 text-white shadow-sm shadow-red-950 active:scale-95 cursor-pointer text-center"
+            >
+              All
+            </button>
+          </div>
+
+          <!-- Row 2: Search + CSV Export -->
           <div class="flex items-center gap-1.5">
             <div class="relative flex-1">
               <input
@@ -320,7 +353,7 @@
                 type="text"
                 placeholder="Search reason, tag, amount..."
                 autocomplete="off"
-                class="w-full bg-slate-900 border border-slate-800 rounded-xl pl-8 pr-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-[#ff5c5c]"
+                class="w-full bg-slate-900 border border-slate-800 rounded-xl pl-8 pr-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-red-500"
               />
               <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-slate-500 absolute left-2.5 top-1/2 -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -337,7 +370,7 @@
             </button>
           </div>
 
-          <!-- Row 2: Category Filter -->
+          <!-- Row 3: Category Filter -->
           <div>
             <select
               id="tagFilterSelect"
@@ -348,8 +381,12 @@
             </select>
           </div>
 
-          <!-- Row 3: From and To Date Selection -->
+          <!-- Row 4: Custom From Date & To Date Selection -->
           <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-2.5 space-y-2">
+            <div class="flex items-center justify-between px-0.5">
+              <span class="text-[9px] font-bold uppercase tracking-wider text-slate-400">Custom Date Range</span>
+              <span id="dateFilterActiveText" class="text-[10px] font-bold text-red-400 hidden">Filtered</span>
+            </div>
             <div class="grid grid-cols-2 gap-2">
               <div>
                 <label for="historyFromDate" class="text-[9px] font-bold uppercase tracking-wider text-slate-400 block px-0.5 mb-1">
@@ -373,7 +410,7 @@
               </div>
             </div>
             <div id="dateFilterActiveBar" class="hidden flex items-center justify-between pt-1.5 border-t border-slate-800/80">
-              <span id="dateFilterActiveText" class="text-[10px] font-bold text-red-400">Date filter active</span>
+              <span class="text-[10px] font-bold text-red-400">Custom range applied</span>
               <button
                 id="clearHistoryDateBtn"
                 type="button"
@@ -624,10 +661,16 @@
 
       const searchFilterInput = document.getElementById('searchFilterInput');
       const tagFilterSelect = document.getElementById('tagFilterSelect');
+      const historyBtnDay = document.getElementById('historyBtnDay');
+      const historyBtnWeek = document.getElementById('historyBtnWeek');
+      const historyBtnMonth = document.getElementById('historyBtnMonth');
+      const historyBtnAll = document.getElementById('historyBtnAll');
       const historyFromDate = document.getElementById('historyFromDate');
       const historyToDate = document.getElementById('historyToDate');
       const dateFilterActiveBar = document.getElementById('dateFilterActiveBar');
+      const dateFilterActiveText = document.getElementById('dateFilterActiveText');
       const clearHistoryDateBtn = document.getElementById('clearHistoryDateBtn');
+      let historyPeriodFilter = 'all'; // 'all' | 'day' | 'week' | 'month' | 'custom'
       const exportCsvBtn = document.getElementById('exportCsvBtn');
       const filteredSummaryText = document.getElementById('filteredSummaryText');
       const filteredTotalText = document.getElementById('filteredTotalText');
@@ -856,17 +899,52 @@
         `;
       }
 
+      function setHistoryPeriodUI(activePeriod) {
+        historyPeriodFilter = activePeriod;
+        const btns = [
+          { id: 'day', el: historyBtnDay },
+          { id: 'week', el: historyBtnWeek },
+          { id: 'month', el: historyBtnMonth },
+          { id: 'all', el: historyBtnAll },
+        ];
+        btns.forEach(b => {
+          if (!b.el) return;
+          if (b.id === activePeriod) {
+            b.el.className = 'history-filter-btn py-1.5 px-2 rounded-xl text-xs font-black transition-all bg-red-600 text-white shadow-sm shadow-red-950 active:scale-95 cursor-pointer text-center';
+          } else {
+            b.el.className = 'history-filter-btn py-1.5 px-2 rounded-xl text-xs font-bold transition-all text-slate-300 hover:text-white hover:bg-slate-800 active:scale-95 cursor-pointer text-center';
+          }
+        });
+      }
+
       function renderHistory() {
         const query = (searchFilterInput.value || '').trim().toLowerCase();
         const selectedTag = tagFilterSelect.value || 'ALL';
 
         const fromVal = historyFromDate ? historyFromDate.value : '';
         const toVal = historyToDate ? historyToDate.value : '';
-        const isDateFiltered = !!(fromVal || toVal);
+        const hasCustomDate = !!(fromVal || toVal);
 
         if (dateFilterActiveBar) {
-          dateFilterActiveBar.classList.toggle('hidden', !isDateFiltered);
+          dateFilterActiveBar.classList.toggle('hidden', !hasCustomDate);
         }
+        if (dateFilterActiveText) {
+          dateFilterActiveText.classList.toggle('hidden', !hasCustomDate);
+        }
+
+        const now = new Date();
+        const currentMonthKey = getMonthKey(now);
+
+        // 7-day rolling week window (and Sunday-start calendar week)
+        const sevenDaysAgo = new Date(now);
+        sevenDaysAgo.setDate(now.getDate() - 6);
+        sevenDaysAgo.setHours(0, 0, 0, 0);
+
+        const startOfWeekSun = new Date(now);
+        startOfWeekSun.setDate(now.getDate() - now.getDay());
+        startOfWeekSun.setHours(0, 0, 0, 0);
+
+        const weekBoundary = new Date(Math.min(sevenDaysAgo.getTime(), startOfWeekSun.getTime()));
 
         const sorted = [...expenses].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
@@ -874,10 +952,18 @@
           const matchesTag = selectedTag === 'ALL' || (item.tag || '').toLowerCase() === selectedTag.toLowerCase();
           if (!matchesTag) return false;
 
-          // Date Range Filtering (From Date & To Date)
-          if (fromVal || toVal) {
-            const d = new Date(item.createdAt);
-            if (isNaN(d.getTime())) return false;
+          const d = new Date(item.createdAt);
+          if (isNaN(d.getTime())) return false;
+
+          // Quick Period Filter (Day, Week, Month)
+          if (historyPeriodFilter === 'day') {
+            if (!isSameDay(d, now)) return false;
+          } else if (historyPeriodFilter === 'week') {
+            if (!(isSameDay(d, now) || isYesterday(d, now) || (d >= weekBoundary && d <= now))) return false;
+          } else if (historyPeriodFilter === 'month') {
+            if (getMonthKey(d) !== currentMonthKey) return false;
+          } else if (hasCustomDate || historyPeriodFilter === 'custom') {
+            // Custom Date Range Filtering (From Date & To Date)
             const year = d.getFullYear();
             const month = String(d.getMonth() + 1).padStart(2, '0');
             const day = String(d.getDate()).padStart(2, '0');
@@ -900,7 +986,13 @@
         });
 
         const totalFiltered = filtered.reduce((acc, cur) => acc + (Number(cur.amount) || 0), 0);
-        filteredSummaryText.textContent = `Showing ${filtered.length} of ${expenses.length} records`;
+        let periodLabel = '';
+        if (historyPeriodFilter === 'day') periodLabel = ' (Today)';
+        else if (historyPeriodFilter === 'week') periodLabel = ' (This Week)';
+        else if (historyPeriodFilter === 'month') periodLabel = ' (This Month)';
+        else if (hasCustomDate) periodLabel = ' (Custom Range)';
+
+        filteredSummaryText.textContent = `Showing ${filtered.length} of ${expenses.length} records${periodLabel}`;
         filteredTotalText.textContent = `Total: ${formatINR(totalFiltered)}`;
 
         if (filtered.length === 0) {
@@ -909,8 +1001,8 @@
               <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 mb-2 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" />
               </svg>
-              <p class="text-xs font-semibold text-slate-400">No expenses recorded yet</p>
-              <p class="text-[11px] text-slate-600 mt-0.5">Use the "Add Expense" tab to record your daily spending.</p>
+              <p class="text-xs font-semibold text-slate-400">No expenses found</p>
+              <p class="text-[11px] text-slate-600 mt-0.5">Try selecting another period or clearing filters.</p>
             </div>
           `;
           return;
@@ -1253,19 +1345,68 @@
       searchFilterInput.addEventListener('input', renderHistory);
       tagFilterSelect.addEventListener('change', renderHistory);
 
-      // Date Range Filter Listeners
+      // Date Range & Period Filter Listeners
+      if (historyBtnDay) {
+        historyBtnDay.addEventListener('click', () => {
+          if (historyFromDate) historyFromDate.value = '';
+          if (historyToDate) historyToDate.value = '';
+          setHistoryPeriodUI('day');
+          renderHistory();
+          if (navigator.vibrate) navigator.vibrate(20);
+        });
+      }
+
+      if (historyBtnWeek) {
+        historyBtnWeek.addEventListener('click', () => {
+          if (historyFromDate) historyFromDate.value = '';
+          if (historyToDate) historyToDate.value = '';
+          setHistoryPeriodUI('week');
+          renderHistory();
+          if (navigator.vibrate) navigator.vibrate(20);
+        });
+      }
+
+      if (historyBtnMonth) {
+        historyBtnMonth.addEventListener('click', () => {
+          if (historyFromDate) historyFromDate.value = '';
+          if (historyToDate) historyToDate.value = '';
+          setHistoryPeriodUI('month');
+          renderHistory();
+          if (navigator.vibrate) navigator.vibrate(20);
+        });
+      }
+
+      if (historyBtnAll) {
+        historyBtnAll.addEventListener('click', () => {
+          if (historyFromDate) historyFromDate.value = '';
+          if (historyToDate) historyToDate.value = '';
+          setHistoryPeriodUI('all');
+          renderHistory();
+          if (navigator.vibrate) navigator.vibrate(20);
+        });
+      }
 
       if (historyFromDate) {
-        historyFromDate.addEventListener('change', () => renderHistory());
+        historyFromDate.addEventListener('change', () => {
+          setHistoryPeriodUI('custom');
+          renderHistory();
+        });
       }
+
       if (historyToDate) {
-        historyToDate.addEventListener('change', () => renderHistory());
+        historyToDate.addEventListener('change', () => {
+          setHistoryPeriodUI('custom');
+          renderHistory();
+        });
       }
+
       if (clearHistoryDateBtn) {
         clearHistoryDateBtn.addEventListener('click', () => {
           if (historyFromDate) historyFromDate.value = '';
           if (historyToDate) historyToDate.value = '';
+          setHistoryPeriodUI('all');
           renderHistory();
+          if (navigator.vibrate) navigator.vibrate(20);
         });
       }
 
