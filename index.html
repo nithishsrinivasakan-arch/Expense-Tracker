@@ -737,14 +737,14 @@
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 shadow-md space-y-2">
           <div class="flex items-center justify-between pb-1.5 border-b border-slate-800/80">
             <div>
-              <span class="text-xs font-bold text-slate-100 block">Not Completed</span>
-              <span class="text-[10px] text-slate-400">Swipe left or tap scratch to complete</span>
+              <span class="text-xs font-bold text-slate-100 block">Things to Spend (Pending)</span>
+              <span class="text-[10px] text-slate-400">Tap Paid to complete • Long press to edit</span>
             </div>
             <span id="budgetPendingCountBadge" class="text-[10px] font-bold text-amber-400">0 pending</span>
           </div>
 
           <div id="budgetPendingListContainer" class="space-y-2 pt-0.5">
-            <!-- Dynamically populated pending budget items with swipe-left -->
+            <!-- Dynamically populated pending budget items -->
           </div>
         </div>
 
@@ -1014,6 +1014,122 @@
           </button>
           <button
             id="editModalSaveBtn"
+            type="submit"
+            class="py-2.5 px-3 rounded-xl bg-red-600 hover:bg-red-500 active:scale-95 text-xs font-black text-white shadow-md shadow-red-950 transition-all cursor-pointer text-center"
+          >
+            Save Changes
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       EDIT BUDGET ITEM MODAL SCREEN
+       ========================================== -->
+  <div
+    id="editBudgetModal"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200"
+    role="dialog"
+    aria-modal="true"
+  >
+    <div
+      id="editBudgetCard"
+      class="w-full max-w-sm bg-slate-900 border border-slate-700/80 rounded-3xl p-5 shadow-2xl shadow-rose-950/90 flex flex-col text-left transform scale-90 transition-all duration-200"
+    >
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-sm font-extrabold text-white">Edit Planned Expense</h3>
+            <p class="text-[10px] text-slate-400">Update amount, reason, tag, or due date</p>
+          </div>
+        </div>
+        <button id="editBudgetModalCloseX" type="button" class="w-7 h-7 rounded-lg bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center cursor-pointer">
+          ✕
+        </button>
+      </div>
+
+      <form id="editBudgetForm" class="space-y-3 mt-3.5">
+        <input type="hidden" id="editBudgetModalId" />
+
+        <!-- Amount -->
+        <div class="space-y-1">
+          <label for="editBudgetModalAmount" class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block px-0.5">
+            Planned Amount (₹)
+          </label>
+          <input
+            id="editBudgetModalAmount"
+            type="number"
+            step="any"
+            min="0.01"
+            required
+            class="w-full h-11 px-3.5 bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl text-lg font-black text-white focus:outline-none tabular-nums"
+          />
+        </div>
+
+        <!-- Reason -->
+        <div class="space-y-1">
+          <label for="editBudgetModalReason" class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block px-0.5">
+            What is it for?
+          </label>
+          <input
+            id="editBudgetModalReason"
+            type="text"
+            required
+            autocomplete="off"
+            autocorrect="on"
+            autocapitalize="sentences"
+            spellcheck="true"
+            class="w-full h-10 px-3.5 bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl text-xs sm:text-sm text-white focus:outline-none"
+          />
+        </div>
+
+        <!-- Category Tag -->
+        <div class="space-y-1">
+          <label for="editBudgetModalTag" class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block px-0.5">
+            Category Tag
+          </label>
+          <input
+            id="editBudgetModalTag"
+            type="text"
+            list="categoryKeywordsList"
+            autocomplete="off"
+            autocorrect="on"
+            autocapitalize="words"
+            spellcheck="true"
+            class="w-full h-10 px-3.5 bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl text-xs sm:text-sm text-white focus:outline-none"
+          />
+        </div>
+
+        <!-- Target Due Date -->
+        <div class="space-y-1">
+          <label for="editBudgetModalDate" class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block px-0.5">
+            Due Date
+          </label>
+          <input
+            id="editBudgetModalDate"
+            type="date"
+            required
+            class="w-full h-10 px-3.5 bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl text-xs text-white focus:outline-none tabular-nums cursor-pointer"
+          />
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="grid grid-cols-2 gap-2 pt-2">
+          <button
+            id="editBudgetModalCancelBtn"
+            type="button"
+            class="py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-xs font-bold text-slate-300 transition-all text-center cursor-pointer"
+          >
+            Cancel
+          </button>
+          <button
+            id="editBudgetModalSaveBtn"
             type="submit"
             class="py-2.5 px-3 rounded-xl bg-red-600 hover:bg-red-500 active:scale-95 text-xs font-black text-white shadow-md shadow-red-950 transition-all cursor-pointer text-center"
           >
@@ -2407,41 +2523,56 @@
               return `
                 <div
                   data-budget-item-id="${escapeHtml(item.id)}"
-                  class="budget-swipe-card p-3 rounded-2xl bg-slate-950/80 border border-slate-800 flex items-center justify-between gap-2.5 shadow-sm relative overflow-hidden transition-all select-none cursor-pointer"
+                  class="budget-item-card p-3 rounded-2xl bg-slate-950/80 border border-slate-800 flex items-center justify-between gap-2.5 shadow-sm transition-all select-none cursor-pointer hover:border-slate-700 active:scale-[0.99]"
                 >
-                  <div class="min-w-0 flex-1 pointer-events-none">
-                    <div class="flex items-center gap-1.5 flex-wrap">
-                      <span class="budget-item-title text-xs sm:text-sm font-bold text-slate-100 truncate">
-                        ${escapeHtml(item.reason)}
-                      </span>
-                      <span class="text-[9px] font-bold px-2 py-0.5 rounded-full border ${tagClass}">
+                  <!-- Start: Round Checkbox / Completed Button -->
+                  <button
+                    type="button"
+                    data-paid-budget-id="${escapeHtml(item.id)}"
+                    class="w-8 h-8 rounded-xl bg-slate-900 border border-slate-750 hover:border-emerald-500 hover:bg-emerald-950/30 text-slate-400 hover:text-emerald-400 flex items-center justify-center shrink-0 transition-all cursor-pointer active:scale-95"
+                    title="Mark as Completed / Paid"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </button>
+
+                  <!-- Center: Title and Tag + Due Date on 2 distinct lines (No awkward wrapping!) -->
+                  <div class="min-w-0 flex-1">
+                    <p class="budget-item-title text-xs sm:text-sm font-bold text-slate-100 truncate">
+                      ${escapeHtml(item.reason)}
+                    </p>
+                    <div class="flex items-center gap-1.5 mt-1 flex-wrap">
+                      <span class="text-[9px] font-bold px-2 py-0.5 rounded-md border ${tagClass}">
                         ${escapeHtml(item.tag || 'Bills')}
                       </span>
+                      <span class="text-[10px] text-slate-400 tabular-nums">
+                        Due: ${escapeHtml(item.date)}
+                      </span>
                     </div>
-                    <p class="text-[10px] text-slate-400 mt-1 tabular-nums flex items-center gap-1">
-                      <span>Due: ${escapeHtml(item.date)}</span>
-                      <span class="text-slate-600">•</span>
-                      <span class="text-slate-500">Swipe ‹ to scratch</span>
-                    </p>
                   </div>
-                  <div class="flex items-center gap-2 shrink-0">
-                    <span class="text-xs sm:text-sm font-black text-white tabular-nums">${formatINR(item.amount)}</span>
-                    <!-- Tap Scratch Action Button -->
+
+                  <!-- End: Amount + Action Buttons -->
+                  <div class="flex items-center gap-1.5 shrink-0">
+                    <span class="text-xs sm:text-sm font-black text-white tabular-nums mr-0.5">${formatINR(item.amount)}</span>
+
+                    <!-- Small Paid Button -->
                     <button
                       type="button"
-                      data-scratch-budget-id="${escapeHtml(item.id)}"
-                      class="px-2 py-1 rounded-xl bg-red-600/15 hover:bg-red-600 text-red-400 hover:text-white border border-red-500/30 text-[10px] font-bold transition-all cursor-pointer flex items-center gap-1 active:scale-95"
-                      title="Scratch & Complete"
+                      data-paid-budget-id="${escapeHtml(item.id)}"
+                      class="px-2 py-1 rounded-xl bg-emerald-600/15 hover:bg-emerald-600 text-emerald-400 hover:text-white border border-emerald-500/30 text-[10px] font-bold transition-all cursor-pointer flex items-center gap-1 active:scale-95"
+                      title="Mark as Paid"
                     >
-                      <span>Scratch</span>
+                      <span>Paid</span>
                       <span>✓</span>
                     </button>
-                    <!-- Delete Button -->
+
+                    <!-- Dedicated Delete Button -->
                     <button
                       type="button"
                       data-delete-budget-id="${escapeHtml(item.id)}"
-                      class="w-7 h-7 rounded-xl bg-slate-800 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 flex items-center justify-center transition-colors cursor-pointer"
-                      title="Delete"
+                      class="delete-budget-btn w-7 h-7 rounded-xl bg-slate-900 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 border border-slate-800 flex items-center justify-center transition-colors cursor-pointer active:scale-95"
+                      title="Delete Planned Expense"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -2459,35 +2590,36 @@
           if (completedItems.length === 0) {
             budgetCompletedListContainer.innerHTML = `
               <div class="h-16 flex items-center justify-center text-xs text-slate-500 text-center">
-                No completed tasks yet. Swipe left or tap scratch to complete tasks.
+                No completed tasks yet. Tap Paid on items above to complete tasks.
               </div>
             `;
           } else {
             const sortedCompleted = [...completedItems].sort((a, b) => new Date(b.completedAt || b.date) - new Date(a.completedAt || a.date));
             budgetCompletedListContainer.innerHTML = sortedCompleted.map(item => {
+              const tagClass = TAG_COLORS[item.tag] || 'bg-slate-800 text-slate-300 border-slate-700';
               return `
                 <div
                   data-budget-item-id="${escapeHtml(item.id)}"
-                  class="p-2.5 rounded-xl bg-slate-950/60 border border-slate-800/80 flex items-center justify-between gap-2 shadow-sm transition-all opacity-70"
+                  class="p-2.5 rounded-xl bg-slate-950/60 border border-slate-800/80 flex items-center justify-between gap-2.5 shadow-sm transition-all opacity-75"
                 >
                   <div class="min-w-0 flex-1">
-                    <div class="flex items-center gap-1.5 flex-wrap">
-                      <span class="text-xs font-bold line-through text-slate-400 truncate decoration-red-500 decoration-2">
-                        ${escapeHtml(item.reason)}
-                      </span>
-                      <span class="text-[9px] font-bold px-2 py-0.5 rounded-full border bg-slate-800/80 text-slate-400 border-slate-700">
+                    <p class="text-xs font-bold line-through text-slate-400 truncate decoration-emerald-500 decoration-2">
+                      ${escapeHtml(item.reason)}
+                    </p>
+                    <div class="flex items-center gap-1.5 mt-1 flex-wrap">
+                      <span class="text-[9px] font-bold px-2 py-0.5 rounded-md border bg-slate-800/80 text-slate-400 border-slate-700">
                         ${escapeHtml(item.tag || 'Bills')}
                       </span>
+                      <span class="text-[10px] text-emerald-400 font-medium">✓ Paid</span>
                     </div>
-                    <p class="text-[10px] text-emerald-500 mt-0.5 tabular-nums">✓ Completed</p>
                   </div>
-                  <div class="flex items-center gap-2 shrink-0">
-                    <span class="text-xs font-black line-through text-slate-400 tabular-nums">${formatINR(item.amount)}</span>
+                  <div class="flex items-center gap-1.5 shrink-0">
+                    <span class="text-xs font-black line-through text-slate-400 tabular-nums mr-0.5">${formatINR(item.amount)}</span>
                     <!-- Restore Button -->
                     <button
                       type="button"
                       data-restore-budget-id="${escapeHtml(item.id)}"
-                      class="px-2.5 py-1 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[10px] font-bold transition-all cursor-pointer flex items-center gap-1 active:scale-95"
+                      class="px-2 py-1 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[10px] font-bold transition-all cursor-pointer flex items-center gap-1 active:scale-95"
                       title="Restore to Pending"
                     >
                       <span>↩</span>
@@ -2497,7 +2629,7 @@
                     <button
                       type="button"
                       data-delete-budget-id="${escapeHtml(item.id)}"
-                      class="w-7 h-7 rounded-xl bg-slate-800 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 flex items-center justify-center transition-colors cursor-pointer"
+                      class="delete-budget-btn w-7 h-7 rounded-xl bg-slate-900 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 border border-slate-800 flex items-center justify-center transition-colors cursor-pointer active:scale-95"
                       title="Delete"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -2512,12 +2644,17 @@
         }
       }
 
-      // Budget Container Click Handlers (Scratch, Restore, Delete)
+      // Budget Container Click Handlers (Paid, Restore, Delete)
       if (budgetPendingListContainer) {
         budgetPendingListContainer.addEventListener('click', e => {
-          const scratchBtn = e.target.closest('[data-scratch-budget-id]');
-          if (scratchBtn) {
-            const id = scratchBtn.getAttribute('data-scratch-budget-id');
+          if (isBudgetLongPressTriggered) {
+            isBudgetLongPressTriggered = false;
+            return;
+          }
+
+          const paidBtn = e.target.closest('[data-paid-budget-id]');
+          if (paidBtn) {
+            const id = paidBtn.getAttribute('data-paid-budget-id');
             scratchAndCompleteBudgetItem(id);
             return;
           }
@@ -2549,63 +2686,143 @@
         });
       }
 
-      // Swipe Left on Budget Card to Scratch & Complete
-      let budgetTouchStartX = 0;
-      let budgetTouchStartY = 0;
-      let budgetTouchTargetCard = null;
+      // Long-Press to Edit Budget Item
+      let budgetLongPressTimer = null;
+      let activeBudgetLongPressCard = null;
+      let isBudgetLongPressTriggered = false;
+
+      function cancelBudgetLongPress() {
+        if (budgetLongPressTimer) {
+          clearTimeout(budgetLongPressTimer);
+          budgetLongPressTimer = null;
+        }
+        if (activeBudgetLongPressCard) {
+          activeBudgetLongPressCard.classList.remove('ring-2', 'ring-red-500', 'bg-slate-800/90');
+          activeBudgetLongPressCard = null;
+        }
+      }
+
+      function initiateBudgetLongPress(e, card) {
+        if (!card) return;
+        // Don't trigger long press if user tapped paid or delete buttons
+        if (e.target && (e.target.closest('[data-paid-budget-id]') || e.target.closest('[data-delete-budget-id]'))) return;
+
+        cancelBudgetLongPress();
+        activeBudgetLongPressCard = card;
+        isBudgetLongPressTriggered = false;
+
+        card.classList.add('ring-2', 'ring-red-500', 'bg-slate-800/90');
+
+        budgetLongPressTimer = setTimeout(() => {
+          isBudgetLongPressTriggered = true;
+          const id = card.getAttribute('data-budget-item-id');
+          cancelBudgetLongPress();
+
+          if (id) {
+            const target = budgetItems.find(i => i.id === id);
+            if (target) {
+              if (navigator.vibrate) navigator.vibrate([50, 40, 50]);
+              openEditBudgetModal(target);
+            }
+          }
+        }, 450);
+      }
 
       if (budgetPendingListContainer) {
         budgetPendingListContainer.addEventListener('touchstart', e => {
-          const card = e.target.closest('.budget-swipe-card');
-          if (!card || e.target.closest('button')) {
-            budgetTouchTargetCard = null;
-            return;
-          }
-          budgetTouchTargetCard = card;
-          if (e.touches && e.touches[0]) {
-            budgetTouchStartX = e.touches[0].clientX;
-            budgetTouchStartY = e.touches[0].clientY;
-          }
+          const card = e.target.closest('.budget-item-card');
+          if (card) initiateBudgetLongPress(e, card);
         }, { passive: true });
 
-        budgetPendingListContainer.addEventListener('touchmove', e => {
-          if (!budgetTouchTargetCard || !e.touches || !e.touches[0]) return;
-          const currentX = e.touches[0].clientX;
-          const currentY = e.touches[0].clientY;
-          const dx = currentX - budgetTouchStartX;
-          const dy = currentY - budgetTouchStartY;
+        budgetPendingListContainer.addEventListener('touchmove', () => cancelBudgetLongPress(), { passive: true });
+        budgetPendingListContainer.addEventListener('touchend', () => cancelBudgetLongPress(), { passive: true });
+        budgetPendingListContainer.addEventListener('touchcancel', () => cancelBudgetLongPress(), { passive: true });
 
-          // If swiping horizontally to the left
-          if (dx < -10 && Math.abs(dx) > Math.abs(dy)) {
-            budgetTouchTargetCard.style.transform = `translateX(${dx}px)`;
-            const title = budgetTouchTargetCard.querySelector('.budget-item-title');
-            if (title && dx < -35) {
-              title.classList.add('line-through', 'decoration-red-500', 'decoration-2', 'text-slate-400');
-            }
-          }
-        }, { passive: true });
+        // Desktop mouse support for long press
+        budgetPendingListContainer.addEventListener('mousedown', e => {
+          const card = e.target.closest('.budget-item-card');
+          if (card) initiateBudgetLongPress(e, card);
+        });
+        budgetPendingListContainer.addEventListener('mouseup', () => cancelBudgetLongPress());
+        budgetPendingListContainer.addEventListener('mouseleave', () => cancelBudgetLongPress());
+      }
 
-        budgetPendingListContainer.addEventListener('touchend', e => {
-          if (!budgetTouchTargetCard) return;
-          const card = budgetTouchTargetCard;
-          budgetTouchTargetCard = null;
+      // Edit Budget Item Modal Handlers
+      const editBudgetModal = document.getElementById('editBudgetModal');
+      const editBudgetCard = document.getElementById('editBudgetCard');
+      const editBudgetModalCloseX = document.getElementById('editBudgetModalCloseX');
+      const editBudgetForm = document.getElementById('editBudgetForm');
+      const editBudgetModalId = document.getElementById('editBudgetModalId');
+      const editBudgetModalAmount = document.getElementById('editBudgetModalAmount');
+      const editBudgetModalReason = document.getElementById('editBudgetModalReason');
+      const editBudgetModalTag = document.getElementById('editBudgetModalTag');
+      const editBudgetModalDate = document.getElementById('editBudgetModalDate');
+      const editBudgetModalCancelBtn = document.getElementById('editBudgetModalCancelBtn');
 
-          const changedTouch = e.changedTouches ? e.changedTouches[0] : null;
-          if (changedTouch) {
-            const dx = changedTouch.clientX - budgetTouchStartX;
-            if (dx < -55) {
-              const id = card.getAttribute('data-budget-item-id');
-              scratchAndCompleteBudgetItem(id);
-              return;
-            }
-          }
-          card.style.transform = '';
-          const title = card.querySelector('.budget-item-title');
-          if (title) {
-            title.classList.remove('line-through', 'decoration-red-500', 'decoration-2', 'text-slate-400');
-          }
+      function openEditBudgetModal(item) {
+        if (!item || !editBudgetModal) return;
+        editBudgetModalId.value = item.id;
+        editBudgetModalAmount.value = item.amount;
+        editBudgetModalReason.value = item.reason;
+        editBudgetModalTag.value = item.tag || 'Bills';
+        editBudgetModalDate.value = item.date || new Date().toISOString().slice(0, 10);
+
+        editBudgetModal.classList.remove('opacity-0', 'pointer-events-none');
+        if (editBudgetCard) {
+          editBudgetCard.classList.remove('scale-90');
+          editBudgetCard.classList.add('scale-100');
+        }
+      }
+
+      function closeEditBudgetModal() {
+        if (!editBudgetModal) return;
+        if (editBudgetCard) {
+          editBudgetCard.classList.remove('scale-100');
+          editBudgetCard.classList.add('scale-90');
+        }
+        editBudgetModal.classList.add('opacity-0', 'pointer-events-none');
+      }
+
+      if (editBudgetModalCloseX) editBudgetModalCloseX.addEventListener('click', closeEditBudgetModal);
+      if (editBudgetModalCancelBtn) editBudgetModalCancelBtn.addEventListener('click', closeEditBudgetModal);
+      if (editBudgetModal) {
+        editBudgetModal.addEventListener('click', e => {
+          if (e.target === editBudgetModal) closeEditBudgetModal();
         });
       }
+
+      if (editBudgetForm) {
+        editBudgetForm.addEventListener('submit', e => {
+          e.preventDefault();
+          const id = editBudgetModalId.value;
+          const target = budgetItems.find(b => b.id === id);
+          if (!target) return;
+
+          const rawAmt = parseFloat(editBudgetModalAmount.value);
+          if (isNaN(rawAmt) || rawAmt <= 0) return;
+
+          const reason = editBudgetModalReason.value.trim();
+          if (!reason) return;
+
+          const tag = editBudgetModalTag.value.trim() || 'Bills';
+          const date = editBudgetModalDate.value || new Date().toISOString().slice(0, 10);
+          const monthKey = getMonthKey(new Date(date));
+
+          target.amount = Math.round(rawAmt * 100) / 100;
+          target.reason = reason;
+          target.tag = tag;
+          target.date = date;
+          target.monthKey = monthKey;
+
+          saveBudgets();
+          closeEditBudgetModal();
+          renderBudget();
+          if (navigator.vibrate) navigator.vibrate([40, 20, 40]);
+        });
+      }
+
+      enforceFirstLetterCapital(editBudgetModalReason);
+      enforceFirstLetterCapital(editBudgetModalTag);
 
       // Budget Form Submit
       if (budgetForm) {
