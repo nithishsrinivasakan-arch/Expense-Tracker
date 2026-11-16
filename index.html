@@ -107,6 +107,14 @@
     .tabular-nums {
       font-variant-numeric: tabular-nums;
     }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+    .animate-shake {
+      animation: shake 0.35s cubic-bezier(.36,.07,.19,.97) both;
+    }
   </style>
 </head>
 
@@ -138,8 +146,20 @@
         </div>
       </button>
 
-      <!-- Header Actions (Top-right corner with Budget Button) -->
+      <!-- Header Actions (Top-right corner with Lock & Budget Buttons) -->
       <div class="flex items-center gap-1.5 shrink-0">
+        <!-- App PIN Lock Button -->
+        <button
+          id="lockAppBtn"
+          type="button"
+          class="flex items-center justify-center w-8 h-8 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-750 active:scale-95 text-slate-300 hover:text-white transition-all cursor-pointer shadow-sm"
+          title="App PIN Lock & Security"
+        >
+          <svg id="lockAppIcon" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+        </button>
+
         <!-- Budget Button on Top Right Corner -->
         <button
           id="openBudgetBtn"
@@ -1133,6 +1153,214 @@
           class="py-2.5 px-3 rounded-xl bg-red-600 hover:bg-red-500 active:scale-95 text-xs font-black text-white shadow-md shadow-red-950 transition-all cursor-pointer text-center"
         >
           Download CSV
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL: PIN SETTINGS & SECURITY CONTROLS
+       ========================================== -->
+  <div
+    id="pinSettingsModal"
+    class="fixed inset-0 z-40 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 transition-all duration-200 opacity-0 pointer-events-none"
+  >
+    <div
+      id="pinSettingsCard"
+      class="w-full max-w-sm rounded-3xl bg-slate-900 border border-slate-800 p-5 shadow-2xl shadow-slate-950/90 transition-all duration-200 scale-95"
+    >
+      <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-800">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-sm font-black text-white">App Lock & PIN</h3>
+            <p id="pinSettingsStatusText" class="text-[10px] text-slate-400">Manage 4-digit PIN security</p>
+          </div>
+        </div>
+        <button id="pinSettingsCloseBtn" type="button" class="w-7 h-7 rounded-lg bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center cursor-pointer">
+          ✕
+        </button>
+      </div>
+
+      <div class="space-y-2 py-1">
+        <!-- Action: Lock App Now (Shown when PIN is set) -->
+        <button
+          id="pinActionLockNowBtn"
+          type="button"
+          class="w-full py-3 px-3.5 rounded-2xl bg-slate-850 hover:bg-slate-800 border border-slate-750 active:scale-98 flex items-center justify-between text-left transition-all cursor-pointer"
+        >
+          <div class="flex items-center gap-2.5">
+            <span class="text-base">🔒</span>
+            <div>
+              <p class="text-xs font-bold text-white">Lock App Now</p>
+              <p class="text-[10px] text-slate-400">Requires 4-digit PIN to re-enter</p>
+            </div>
+          </div>
+          <span class="text-slate-500 text-xs">›</span>
+        </button>
+
+        <!-- Action: Set PIN or Change PIN -->
+        <button
+          id="pinActionSetOrChangeBtn"
+          type="button"
+          class="w-full py-3 px-3.5 rounded-2xl bg-slate-850 hover:bg-slate-800 border border-slate-750 active:scale-98 flex items-center justify-between text-left transition-all cursor-pointer"
+        >
+          <div class="flex items-center gap-2.5">
+            <span class="text-base">🔑</span>
+            <div>
+              <p id="pinActionSetOrChangeLabel" class="text-xs font-bold text-white">Set 4-Digit PIN</p>
+              <p class="text-[10px] text-slate-400">Protect privacy from friends & prying eyes</p>
+            </div>
+          </div>
+          <span class="text-slate-500 text-xs">›</span>
+        </button>
+
+        <!-- Action: Turn Off PIN (Shown when PIN is set) -->
+        <button
+          id="pinActionDisableBtn"
+          type="button"
+          class="hidden w-full py-3 px-3.5 rounded-2xl bg-slate-850 hover:bg-red-950/30 border border-slate-750 hover:border-red-500/30 active:scale-98 flex items-center justify-between text-left transition-all cursor-pointer"
+        >
+          <div class="flex items-center gap-2.5">
+            <span class="text-base">🔓</span>
+            <div>
+              <p class="text-xs font-bold text-red-400">Turn Off PIN Protection</p>
+              <p class="text-[10px] text-slate-400">App will open directly without a PIN</p>
+            </div>
+          </div>
+          <span class="text-red-400 text-xs">›</span>
+        </button>
+      </div>
+
+      <div class="pt-3 border-t border-slate-800 mt-2">
+        <p class="text-[10px] text-slate-500 text-center">
+          💡 If you share this link with friends, each phone automatically has its own 100% private expense data.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL: RESET PIN CONFIRMATION
+       ========================================== -->
+  <div
+    id="pinResetConfirmModal"
+    class="fixed inset-0 z-55 bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-4 transition-all duration-200 opacity-0 pointer-events-none"
+  >
+    <div
+      id="pinResetConfirmCard"
+      class="w-full max-w-xs rounded-3xl bg-slate-900 border border-slate-800 p-5 shadow-2xl shadow-slate-950/90 transition-all duration-200 scale-95 text-center"
+    >
+      <div class="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center mx-auto mb-3 text-xl">
+        🔑
+      </div>
+      <h3 class="text-sm font-black text-white">Reset 4-Digit PIN?</h3>
+      <p class="text-xs text-slate-300 mt-1 mb-1">
+        This will remove the PIN lock so you can access your app.
+      </p>
+      <div class="p-2.5 rounded-xl bg-slate-950/80 border border-slate-800 my-3 text-[11px] text-emerald-400 font-medium">
+        ✓ Your existing expense records and budgets will remain 100% intact!
+      </div>
+      <div class="grid grid-cols-2 gap-2 mt-4">
+        <button
+          id="pinResetCancelBtn"
+          type="button"
+          class="py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-xs font-bold text-slate-300 transition-all cursor-pointer"
+        >
+          Cancel
+        </button>
+        <button
+          id="pinResetConfirmBtn"
+          type="button"
+          class="py-2.5 px-3 rounded-xl bg-red-600 hover:bg-red-500 active:scale-95 text-xs font-black text-white shadow-md shadow-red-950 transition-all cursor-pointer"
+        >
+          Reset PIN
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       FULLSCREEN 4-DIGIT PIN LOCK OVERLAY
+       ========================================== -->
+  <div
+    id="pinLockOverlay"
+    class="fixed inset-0 z-50 bg-slate-950 flex flex-col justify-between items-center px-6 py-6 transition-all duration-300 opacity-0 pointer-events-none select-none"
+  >
+    <!-- Top Bar with status & Cancel (when in setup mode) -->
+    <div class="w-full max-w-xs flex items-center justify-between pt-safe">
+      <div class="flex items-center gap-1.5">
+        <div class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
+        <span class="text-[10px] font-black uppercase tracking-wider text-slate-400">Expense Tracker Lock</span>
+      </div>
+      <button
+        id="pinCancelSetupBtn"
+        type="button"
+        class="hidden text-[10px] font-bold text-slate-300 hover:text-white px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 cursor-pointer transition-colors"
+      >
+        Cancel
+      </button>
+    </div>
+
+    <!-- Center Section: Brand Icon, Title, Subtitle, and 4 PIN Dots -->
+    <div class="w-full max-w-xs flex flex-col items-center text-center my-auto space-y-4">
+      <div class="w-14 h-14 rounded-2xl bg-red-950/80 border border-red-500/50 flex items-center justify-center text-red-400 font-black text-2xl shadow-xl shadow-red-950/70">
+        ₹
+      </div>
+      <div>
+        <h2 id="pinLockTitle" class="text-lg font-black text-white tracking-tight">Enter 4-Digit PIN</h2>
+        <p id="pinLockSubtitle" class="text-xs text-slate-400 mt-1">Unlock your expense records</p>
+      </div>
+
+      <!-- 4 PIN Indicator Dots -->
+      <div id="pinDotsContainer" class="flex items-center justify-center gap-4 py-2">
+        <div class="pin-dot w-4 h-4 rounded-full border-2 border-slate-700 bg-slate-900 transition-all duration-150"></div>
+        <div class="pin-dot w-4 h-4 rounded-full border-2 border-slate-700 bg-slate-900 transition-all duration-150"></div>
+        <div class="pin-dot w-4 h-4 rounded-full border-2 border-slate-700 bg-slate-900 transition-all duration-150"></div>
+        <div class="pin-dot w-4 h-4 rounded-full border-2 border-slate-700 bg-slate-900 transition-all duration-150"></div>
+      </div>
+    </div>
+
+    <!-- Numeric Keypad (Bottom) -->
+    <div class="w-full max-w-xs pb-safe">
+      <div class="grid grid-cols-3 gap-2.5 text-center">
+        <!-- 1 to 9 -->
+        <button type="button" class="pin-key h-13 sm:h-14 rounded-2xl bg-slate-900 border border-slate-800 hover:bg-slate-800 active:scale-95 text-white font-black text-xl flex items-center justify-center transition-all cursor-pointer shadow-sm select-none" data-key="1">1</button>
+        <button type="button" class="pin-key h-13 sm:h-14 rounded-2xl bg-slate-900 border border-slate-800 hover:bg-slate-800 active:scale-95 text-white font-black text-xl flex items-center justify-center transition-all cursor-pointer shadow-sm select-none" data-key="2">2</button>
+        <button type="button" class="pin-key h-13 sm:h-14 rounded-2xl bg-slate-900 border border-slate-800 hover:bg-slate-800 active:scale-95 text-white font-black text-xl flex items-center justify-center transition-all cursor-pointer shadow-sm select-none" data-key="3">3</button>
+
+        <button type="button" class="pin-key h-13 sm:h-14 rounded-2xl bg-slate-900 border border-slate-800 hover:bg-slate-800 active:scale-95 text-white font-black text-xl flex items-center justify-center transition-all cursor-pointer shadow-sm select-none" data-key="4">4</button>
+        <button type="button" class="pin-key h-13 sm:h-14 rounded-2xl bg-slate-900 border border-slate-800 hover:bg-slate-800 active:scale-95 text-white font-black text-xl flex items-center justify-center transition-all cursor-pointer shadow-sm select-none" data-key="5">5</button>
+        <button type="button" class="pin-key h-13 sm:h-14 rounded-2xl bg-slate-900 border border-slate-800 hover:bg-slate-800 active:scale-95 text-white font-black text-xl flex items-center justify-center transition-all cursor-pointer shadow-sm select-none" data-key="6">6</button>
+
+        <button type="button" class="pin-key h-13 sm:h-14 rounded-2xl bg-slate-900 border border-slate-800 hover:bg-slate-800 active:scale-95 text-white font-black text-xl flex items-center justify-center transition-all cursor-pointer shadow-sm select-none" data-key="7">7</button>
+        <button type="button" class="pin-key h-13 sm:h-14 rounded-2xl bg-slate-900 border border-slate-800 hover:bg-slate-800 active:scale-95 text-white font-black text-xl flex items-center justify-center transition-all cursor-pointer shadow-sm select-none" data-key="8">8</button>
+        <button type="button" class="pin-key h-13 sm:h-14 rounded-2xl bg-slate-900 border border-slate-800 hover:bg-slate-800 active:scale-95 text-white font-black text-xl flex items-center justify-center transition-all cursor-pointer shadow-sm select-none" data-key="9">9</button>
+
+        <!-- Bottom Row: Clear, 0, Backspace -->
+        <button type="button" id="pinClearBtn" class="h-13 sm:h-14 rounded-2xl bg-slate-950 border border-slate-800 hover:bg-slate-800 active:scale-95 text-slate-400 font-bold text-xs uppercase tracking-wider flex items-center justify-center transition-all cursor-pointer select-none">
+          Clear
+        </button>
+        <button type="button" class="pin-key h-13 sm:h-14 rounded-2xl bg-slate-900 border border-slate-800 hover:bg-slate-800 active:scale-95 text-white font-black text-xl flex items-center justify-center transition-all cursor-pointer shadow-sm select-none" data-key="0">0</button>
+        <button type="button" id="pinBackspaceBtn" class="h-13 sm:h-14 rounded-2xl bg-slate-950 border border-slate-800 hover:bg-slate-800 active:scale-95 text-slate-300 font-black text-lg flex items-center justify-center transition-all cursor-pointer select-none">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414-6.414a2 2 0 011.414-.586H19a2 2 0 012 2v10a2 2 0 01-2 2h-9.172a2 2 0 01-1.414-.586L3 12z" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Forgot / Reset PIN Link -->
+      <div class="mt-3 text-center">
+        <button
+          id="pinForgotBtn"
+          type="button"
+          class="text-[11px] text-slate-500 hover:text-slate-300 underline underline-offset-2 transition-colors cursor-pointer"
+        >
+          Forgot PIN?
         </button>
       </div>
     </div>
@@ -2427,6 +2655,333 @@
       if (openBudgetBtn) openBudgetBtn.addEventListener('click', () => switchTab('budget'));
       if (budgetCloseBtn) budgetCloseBtn.addEventListener('click', () => switchTab('add'));
 
+      // ==========================================
+      // 4-DIGIT PIN SECURITY & LOCK SYSTEM
+      // ==========================================
+      const PIN_STORAGE_KEY = 'rupee_app_pin_v1';
+      let currentPinInput = '';
+      let pinMode = 'UNLOCK'; // 'UNLOCK' | 'CREATE_STEP1' | 'CREATE_STEP2' | 'CONFIRM_DISABLE'
+      let tempCreatedPin = '';
+      let isPinOverlayActive = false;
+      let lastHiddenTimestamp = 0;
+
+      const lockAppBtn = document.getElementById('lockAppBtn');
+      const lockAppIcon = document.getElementById('lockAppIcon');
+      const pinSettingsModal = document.getElementById('pinSettingsModal');
+      const pinSettingsCard = document.getElementById('pinSettingsCard');
+      const pinSettingsCloseBtn = document.getElementById('pinSettingsCloseBtn');
+      const pinSettingsStatusText = document.getElementById('pinSettingsStatusText');
+      const pinActionLockNowBtn = document.getElementById('pinActionLockNowBtn');
+      const pinActionSetOrChangeBtn = document.getElementById('pinActionSetOrChangeBtn');
+      const pinActionSetOrChangeLabel = document.getElementById('pinActionSetOrChangeLabel');
+      const pinActionDisableBtn = document.getElementById('pinActionDisableBtn');
+
+      const pinLockOverlay = document.getElementById('pinLockOverlay');
+      const pinLockTitle = document.getElementById('pinLockTitle');
+      const pinLockSubtitle = document.getElementById('pinLockSubtitle');
+      const pinDotsContainer = document.getElementById('pinDotsContainer');
+      const pinCancelSetupBtn = document.getElementById('pinCancelSetupBtn');
+      const pinClearBtn = document.getElementById('pinClearBtn');
+      const pinBackspaceBtn = document.getElementById('pinBackspaceBtn');
+      const pinForgotBtn = document.getElementById('pinForgotBtn');
+
+      const pinResetConfirmModal = document.getElementById('pinResetConfirmModal');
+      const pinResetConfirmCard = document.getElementById('pinResetConfirmCard');
+      const pinResetCancelBtn = document.getElementById('pinResetCancelBtn');
+      const pinResetConfirmBtn = document.getElementById('pinResetConfirmBtn');
+
+      function getSavedPin() {
+        try {
+          return localStorage.getItem(PIN_STORAGE_KEY) || null;
+        } catch {
+          return null;
+        }
+      }
+
+      function updateLockIconState() {
+        const pin = getSavedPin();
+        if (pin && lockAppIcon && lockAppBtn) {
+          lockAppIcon.classList.remove('text-slate-400');
+          lockAppIcon.classList.add('text-amber-400');
+          lockAppBtn.classList.add('border-amber-500/30', 'bg-amber-950/20');
+          lockAppBtn.title = 'App PIN Protection: Active (Tap to Lock or Manage)';
+        } else if (lockAppIcon && lockAppBtn) {
+          lockAppIcon.classList.remove('text-amber-400');
+          lockAppIcon.classList.add('text-slate-400');
+          lockAppBtn.classList.remove('border-amber-500/30', 'bg-amber-950/20');
+          lockAppBtn.title = 'Set 4-Digit PIN Lock';
+        }
+      }
+
+      function openPinSettingsModal() {
+        const pin = getSavedPin();
+        if (pin) {
+          pinSettingsStatusText.textContent = 'Protection Active • 4-Digit PIN';
+          pinSettingsStatusText.className = 'text-[10px] text-amber-400 font-bold';
+          pinActionLockNowBtn.classList.remove('hidden');
+          pinActionDisableBtn.classList.remove('hidden');
+          pinActionSetOrChangeLabel.textContent = 'Change 4-Digit PIN';
+        } else {
+          pinSettingsStatusText.textContent = 'Not Protected • Tap below to enable';
+          pinSettingsStatusText.className = 'text-[10px] text-slate-400';
+          pinActionLockNowBtn.classList.add('hidden');
+          pinActionDisableBtn.classList.add('hidden');
+          pinActionSetOrChangeLabel.textContent = 'Set 4-Digit PIN';
+        }
+
+        pinSettingsModal.classList.remove('opacity-0', 'pointer-events-none');
+        pinSettingsCard.classList.remove('scale-95');
+      }
+
+      function closePinSettingsModal() {
+        pinSettingsCard.classList.add('scale-95');
+        pinSettingsModal.classList.add('opacity-0', 'pointer-events-none');
+      }
+
+      function showPinLockOverlay(mode) {
+        pinMode = mode;
+        currentPinInput = '';
+        isPinOverlayActive = true;
+
+        if (mode === 'UNLOCK') {
+          pinLockTitle.textContent = 'Enter 4-Digit PIN';
+          pinLockSubtitle.textContent = 'Unlock your expense records';
+          pinLockSubtitle.className = 'text-xs text-slate-400 mt-1';
+          pinForgotBtn.classList.remove('hidden');
+          pinCancelSetupBtn.classList.add('hidden');
+        } else if (mode === 'CREATE_STEP1') {
+          pinLockTitle.textContent = 'Create 4-Digit PIN';
+          pinLockSubtitle.textContent = 'Enter 4 numbers you will remember';
+          pinLockSubtitle.className = 'text-xs text-slate-400 mt-1';
+          pinForgotBtn.classList.add('hidden');
+          pinCancelSetupBtn.classList.remove('hidden');
+        } else if (mode === 'CREATE_STEP2') {
+          pinLockTitle.textContent = 'Confirm 4-Digit PIN';
+          pinLockSubtitle.textContent = 'Re-enter the 4 numbers to confirm';
+          pinLockSubtitle.className = 'text-xs text-slate-400 mt-1';
+          pinForgotBtn.classList.add('hidden');
+          pinCancelSetupBtn.classList.remove('hidden');
+        } else if (mode === 'CONFIRM_DISABLE') {
+          pinLockTitle.textContent = 'Enter Current PIN';
+          pinLockSubtitle.textContent = 'Verify your PIN to turn off lock';
+          pinLockSubtitle.className = 'text-xs text-slate-400 mt-1';
+          pinForgotBtn.classList.remove('hidden');
+          pinCancelSetupBtn.classList.remove('hidden');
+        }
+
+        updatePinDots();
+        pinLockOverlay.classList.remove('opacity-0', 'pointer-events-none');
+      }
+
+      function hidePinLockOverlay() {
+        isPinOverlayActive = false;
+        currentPinInput = '';
+        pinLockOverlay.classList.add('opacity-0', 'pointer-events-none');
+      }
+
+      function updatePinDots() {
+        if (!pinDotsContainer) return;
+        const dots = pinDotsContainer.querySelectorAll('.pin-dot');
+        dots.forEach((dot, idx) => {
+          if (idx < currentPinInput.length) {
+            dot.className = 'pin-dot w-4 h-4 rounded-full border-2 border-red-500 bg-red-500 shadow-md shadow-red-500/50 scale-110 transition-all duration-150';
+          } else {
+            dot.className = 'pin-dot w-4 h-4 rounded-full border-2 border-slate-700 bg-slate-900 transition-all duration-150';
+          }
+        });
+      }
+
+      function triggerPinShake(message) {
+        if (pinDotsContainer) {
+          pinDotsContainer.classList.add('animate-shake');
+        }
+        if (pinLockSubtitle) {
+          pinLockSubtitle.textContent = message;
+          pinLockSubtitle.className = 'text-xs text-red-400 mt-1 font-bold';
+        }
+        if (navigator.vibrate) navigator.vibrate([60, 40, 60]);
+
+        setTimeout(() => {
+          if (pinDotsContainer) pinDotsContainer.classList.remove('animate-shake');
+          currentPinInput = '';
+          updatePinDots();
+        }, 400);
+      }
+
+      function handlePinDigit(digit) {
+        if (!isPinOverlayActive || currentPinInput.length >= 4) return;
+        currentPinInput += digit;
+        if (navigator.vibrate) navigator.vibrate(15);
+        updatePinDots();
+
+        if (currentPinInput.length === 4) {
+          setTimeout(() => {
+            processCompletePinInput();
+          }, 120);
+        }
+      }
+
+      function handlePinBackspace() {
+        if (!isPinOverlayActive || currentPinInput.length === 0) return;
+        currentPinInput = currentPinInput.slice(0, -1);
+        if (navigator.vibrate) navigator.vibrate(15);
+        updatePinDots();
+      }
+
+      function handlePinClear() {
+        if (!isPinOverlayActive) return;
+        currentPinInput = '';
+        updatePinDots();
+      }
+
+      function processCompletePinInput() {
+        const saved = getSavedPin();
+
+        if (pinMode === 'UNLOCK') {
+          if (currentPinInput === saved) {
+            pinDotsContainer.querySelectorAll('.pin-dot').forEach(d => {
+              d.className = 'pin-dot w-4 h-4 rounded-full border-2 border-emerald-500 bg-emerald-500 shadow-md shadow-emerald-500/50 scale-110';
+            });
+            pinLockSubtitle.textContent = '✓ Unlocked!';
+            pinLockSubtitle.className = 'text-xs text-emerald-400 mt-1 font-bold';
+            if (navigator.vibrate) navigator.vibrate(30);
+            setTimeout(() => {
+              hidePinLockOverlay();
+            }, 250);
+          } else {
+            triggerPinShake('Incorrect PIN. Try again.');
+          }
+        } else if (pinMode === 'CREATE_STEP1') {
+          tempCreatedPin = currentPinInput;
+          showPinLockOverlay('CREATE_STEP2');
+        } else if (pinMode === 'CREATE_STEP2') {
+          if (currentPinInput === tempCreatedPin) {
+            localStorage.setItem(PIN_STORAGE_KEY, currentPinInput);
+            pinDotsContainer.querySelectorAll('.pin-dot').forEach(d => {
+              d.className = 'pin-dot w-4 h-4 rounded-full border-2 border-emerald-500 bg-emerald-500 shadow-md shadow-emerald-500/50 scale-110';
+            });
+            pinLockSubtitle.textContent = '✓ 4-Digit PIN Set!';
+            pinLockSubtitle.className = 'text-xs text-emerald-400 mt-1 font-bold';
+            updateLockIconState();
+            if (navigator.vibrate) navigator.vibrate([30, 40, 30]);
+            setTimeout(() => {
+              hidePinLockOverlay();
+            }, 300);
+          } else {
+            triggerPinShake('PINs do not match. Start again.');
+            setTimeout(() => {
+              showPinLockOverlay('CREATE_STEP1');
+            }, 500);
+          }
+        } else if (pinMode === 'CONFIRM_DISABLE') {
+          if (currentPinInput === saved) {
+            localStorage.removeItem(PIN_STORAGE_KEY);
+            updateLockIconState();
+            pinDotsContainer.querySelectorAll('.pin-dot').forEach(d => {
+              d.className = 'pin-dot w-4 h-4 rounded-full border-2 border-slate-500 bg-slate-500';
+            });
+            pinLockSubtitle.textContent = 'PIN Lock Removed';
+            pinLockSubtitle.className = 'text-xs text-slate-300 mt-1 font-bold';
+            setTimeout(() => {
+              hidePinLockOverlay();
+            }, 250);
+          } else {
+            triggerPinShake('Incorrect PIN. Try again.');
+          }
+        }
+      }
+
+      // PIN Keypad Button Click Listeners
+      document.querySelectorAll('.pin-key').forEach(btn => {
+        btn.addEventListener('click', e => {
+          const key = e.currentTarget.getAttribute('data-key');
+          if (key !== null) handlePinDigit(key);
+        });
+      });
+
+      if (pinClearBtn) pinClearBtn.addEventListener('click', handlePinClear);
+      if (pinBackspaceBtn) pinBackspaceBtn.addEventListener('click', handlePinBackspace);
+      if (pinCancelSetupBtn) pinCancelSetupBtn.addEventListener('click', hidePinLockOverlay);
+
+      // Keyboard support for desktop / mobile physical keyboard
+      window.addEventListener('keydown', e => {
+        if (!isPinOverlayActive) return;
+        if (e.key >= '0' && e.key <= '9') {
+          handlePinDigit(e.key);
+        } else if (e.key === 'Backspace') {
+          handlePinBackspace();
+        } else if (e.key === 'Escape' || e.key === 'c' || e.key === 'C') {
+          handlePinClear();
+        }
+      });
+
+      // Lock App Header Button Listener
+      if (lockAppBtn) {
+        lockAppBtn.addEventListener('click', () => {
+          const pin = getSavedPin();
+          if (!pin) {
+            // First time: launch Setup directly
+            showPinLockOverlay('CREATE_STEP1');
+          } else {
+            openPinSettingsModal();
+          }
+        });
+      }
+
+      // PIN Settings Modal Listeners
+      if (pinSettingsCloseBtn) pinSettingsCloseBtn.addEventListener('click', closePinSettingsModal);
+      if (pinSettingsModal) {
+        pinSettingsModal.addEventListener('click', e => {
+          if (e.target === pinSettingsModal) closePinSettingsModal();
+        });
+      }
+
+      if (pinActionLockNowBtn) {
+        pinActionLockNowBtn.addEventListener('click', () => {
+          closePinSettingsModal();
+          showPinLockOverlay('UNLOCK');
+        });
+      }
+
+      if (pinActionSetOrChangeBtn) {
+        pinActionSetOrChangeBtn.addEventListener('click', () => {
+          closePinSettingsModal();
+          showPinLockOverlay('CREATE_STEP1');
+        });
+      }
+
+      if (pinActionDisableBtn) {
+        pinActionDisableBtn.addEventListener('click', () => {
+          closePinSettingsModal();
+          showPinLockOverlay('CONFIRM_DISABLE');
+        });
+      }
+
+      // Forgot PIN & Reset PIN Listeners
+      if (pinForgotBtn) {
+        pinForgotBtn.addEventListener('click', () => {
+          pinResetConfirmModal.classList.remove('opacity-0', 'pointer-events-none');
+          pinResetConfirmCard.classList.remove('scale-95');
+        });
+      }
+
+      if (pinResetCancelBtn) {
+        pinResetCancelBtn.addEventListener('click', () => {
+          pinResetConfirmCard.classList.add('scale-95');
+          pinResetConfirmModal.classList.add('opacity-0', 'pointer-events-none');
+        });
+      }
+
+      if (pinResetConfirmBtn) {
+        pinResetConfirmBtn.addEventListener('click', () => {
+          localStorage.removeItem(PIN_STORAGE_KEY);
+          updateLockIconState();
+          pinResetConfirmCard.classList.add('scale-95');
+          pinResetConfirmModal.classList.add('opacity-0', 'pointer-events-none');
+          hidePinLockOverlay();
+        });
+      }
+
       // Automatically capitalize the first letter on "Why did you spend?" and "Category Tag" inputs
       function enforceFirstLetterCapital(el) {
         if (!el) return;
@@ -3039,8 +3594,14 @@
 
         // Whenever user re-opens or switches back to the app, check for update and recalculate
         window.addEventListener('visibilitychange', () => {
-          if (document.visibilityState === 'visible') {
+          if (document.visibilityState === 'hidden') {
+            lastHiddenTimestamp = Date.now();
+          } else if (document.visibilityState === 'visible') {
             refreshUI();
+            const pin = getSavedPin();
+            if (pin && lastHiddenTimestamp > 0 && (Date.now() - lastHiddenTimestamp > 60000)) {
+              showPinLockOverlay('UNLOCK');
+            }
           }
         });
       }
@@ -3048,7 +3609,13 @@
       // Initialize
       loadExpenses();
       loadBudgets();
+      updateLockIconState();
       refreshUI();
+
+      // Check PIN lock on launch
+      if (getSavedPin()) {
+        showPinLockOverlay('UNLOCK');
+      }
     })();
   </script>
 </body>
