@@ -619,12 +619,12 @@
       <!-- ====================================================
            VIEW 4: MONTHLY BUDGET PLANNER
            ==================================================== -->
-      <section id="viewBudget" class="hidden flex-1 flex flex-col overflow-y-auto py-1 space-y-2.5 pr-0.5 no-scrollbar">
+      <section id="viewBudget" class="hidden flex-1 flex flex-col overflow-y-auto py-1 space-y-3 pr-0.5 no-scrollbar">
         
         <!-- Budget Header & Close Bar -->
-        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-2.5 shadow-md flex items-center justify-between">
+        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-2.5 shadow-md flex items-center justify-between shrink-0">
           <div class="flex items-center gap-2">
-            <div class="w-7 h-7 rounded-xl bg-red-600/20 text-red-500 flex items-center justify-center font-black text-sm">
+            <div class="w-8 h-8 rounded-xl bg-red-600/20 text-red-500 flex items-center justify-center font-black text-base border border-red-500/30">
               ₹
             </div>
             <div>
@@ -636,39 +636,56 @@
           <button
             id="budgetCloseBtn"
             type="button"
-            class="px-2.5 py-1 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-[11px] font-bold text-slate-300 hover:text-white flex items-center gap-1 transition-all cursor-pointer"
+            class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-xs font-bold text-slate-200 hover:text-white flex items-center gap-1.5 transition-all cursor-pointer border border-slate-700/60"
           >
             <span>✕ Close</span>
           </button>
         </div>
 
-        <!-- 1. Top Area: Plan Upcoming Expense Form (Same layout style as Add Expense) -->
-        <form id="budgetForm" class="bg-slate-900 border border-slate-800 rounded-2xl p-3 space-y-2.5 shadow-md">
-          <div class="flex items-center justify-between pb-1 border-b border-slate-800/80">
-            <span class="text-[10px] font-black uppercase tracking-wider text-slate-300">Plan Upcoming Expense</span>
-            <span class="text-[9px] text-slate-400">Forecast Spends</span>
+        <!-- 1. Top Area: Plan Upcoming Expense Form (Styled identical to Add Expense) -->
+        <form id="budgetForm" class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 space-y-3 shadow-xl shadow-slate-950/60">
+          
+          <!-- Planned Amount Input Card (Matching Add Expense big area: Red Border, ₹ Prefix, Clear Button) -->
+          <div class="relative bg-slate-900 border-2 border-red-500/70 rounded-2xl p-3.5 shadow-xl shadow-red-950/40">
+            <!-- Top row: Red dot, PLANNED BUDGET label, and Red Clear Button -->
+            <div class="flex items-center justify-between pb-1.5 mb-1 border-b border-red-950/60">
+              <div class="flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                <span class="text-[10px] font-black uppercase tracking-wider text-red-400">PLANNED BUDGET</span>
+              </div>
+              <button
+                id="budgetClearBtn"
+                type="button"
+                class="px-2.5 py-0.5 rounded-full bg-red-600 hover:bg-red-500 active:scale-95 text-[10px] font-bold text-white transition-all shadow-sm cursor-pointer"
+                title="Clear Amount & Fields"
+              >
+                Clear
+              </button>
+            </div>
+
+            <!-- Bottom row: ₹ Prefix and Large Input Field -->
+            <div class="flex items-center min-w-0 flex-1">
+              <div class="flex items-center text-red-500 mr-2 select-none leading-none shrink-0">
+                <span class="text-3xl sm:text-4xl font-black leading-none">₹</span>
+              </div>
+              <input
+                id="budgetAmountInput"
+                type="number"
+                step="any"
+                inputmode="decimal"
+                placeholder="0"
+                required
+                aria-label="Planned Budget Amount in Rupees"
+                autocomplete="off"
+                class="w-full bg-transparent text-3xl sm:text-4xl font-black text-white placeholder-slate-600 focus:outline-none tabular-nums"
+              />
+            </div>
           </div>
 
-          <!-- Planned Amount -->
-          <div class="space-y-0.5">
-            <label for="budgetAmountInput" class="text-[9px] font-bold uppercase tracking-wider text-slate-400 block px-0.5">
-              Planned Amount (₹)
-            </label>
-            <input
-              id="budgetAmountInput"
-              type="number"
-              step="any"
-              min="1"
-              required
-              placeholder="e.g. 3500"
-              class="w-full h-10 px-3 bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl text-sm font-black text-white focus:outline-none tabular-nums"
-            />
-          </div>
-
-          <!-- What the expense was / Details -->
-          <div class="space-y-0.5">
-            <label for="budgetReasonInput" class="text-[9px] font-bold uppercase tracking-wider text-slate-400 block px-0.5">
-              What the expense was / Details
+          <!-- What is this expense for? / Details -->
+          <div class="space-y-1">
+            <label for="budgetReasonInput" class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block px-0.5">
+              What is this expense for?
             </label>
             <input
               id="budgetReasonInput"
@@ -679,14 +696,14 @@
               autocapitalize="sentences"
               spellcheck="true"
               placeholder="e.g. House Rent, Bike Insurance, Diwali Shopping"
-              class="w-full h-9.5 px-3 bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl text-xs sm:text-sm text-white focus:outline-none"
+              class="w-full h-11 px-3.5 bg-slate-950/80 border border-slate-800 focus:border-red-500 focus:ring-1 focus:ring-red-500/30 rounded-xl text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none transition-all"
             />
           </div>
 
-          <!-- Row: Category Tag & Target Date -->
+          <!-- Row: Category Tag & Target Due Date -->
           <div class="grid grid-cols-2 gap-2">
-            <div class="space-y-0.5">
-              <label for="budgetTagInput" class="text-[9px] font-bold uppercase tracking-wider text-slate-400 block px-0.5">
+            <div class="space-y-1">
+              <label for="budgetTagInput" class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block px-0.5">
                 Category Tag
               </label>
               <input
@@ -694,45 +711,45 @@
                 type="text"
                 list="categoryKeywordsList"
                 value="Bills"
-                placeholder="Category tag"
+                placeholder="Tag"
                 autocomplete="off"
                 autocorrect="on"
                 autocapitalize="words"
                 spellcheck="true"
-                class="w-full h-9 bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl px-2.5 text-xs text-white focus:outline-none"
+                class="w-full h-11 px-3 bg-slate-950/80 border border-slate-800 focus:border-red-500 focus:ring-1 focus:ring-red-500/30 rounded-xl text-xs sm:text-sm text-slate-200 placeholder-slate-500 focus:outline-none transition-all"
               />
             </div>
-            <div class="space-y-0.5">
-              <label for="budgetDateInput" class="text-[9px] font-bold uppercase tracking-wider text-slate-400 block px-0.5">
-                Target Date
+            <div class="space-y-1">
+              <label for="budgetDateInput" class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block px-0.5">
+                Target Due Date
               </label>
               <input
                 id="budgetDateInput"
                 type="date"
                 required
-                class="w-full h-9 bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl px-2 text-xs font-medium text-white focus:outline-none tabular-nums cursor-pointer"
+                class="w-full h-11 px-3 bg-slate-950/80 border border-slate-800 focus:border-red-500 focus:ring-1 focus:ring-red-500/30 rounded-xl text-xs sm:text-sm font-medium text-white focus:outline-none tabular-nums cursor-pointer transition-all"
               />
             </div>
           </div>
 
-          <!-- Red Submit Button -->
+          <!-- Red Submit Button (Big Bold Style) -->
           <button
             type="submit"
-            class="w-full h-10 rounded-xl bg-red-600 hover:bg-red-500 active:scale-95 text-white font-black text-xs shadow-md shadow-red-950/60 transition-all flex items-center justify-center cursor-pointer mt-1"
+            class="w-full h-12 rounded-2xl bg-red-600 hover:bg-red-500 active:scale-[0.98] text-white font-black text-sm sm:text-base tracking-wide shadow-xl shadow-red-950/60 transition-all flex items-center justify-center cursor-pointer mt-0.5"
           >
             <span>+ Add to Monthly Budget</span>
           </button>
         </form>
 
-        <!-- 2. Next to it: Monthly Budget Clarity Card -->
-        <div class="bg-gradient-to-r from-red-950/60 via-slate-900 to-slate-900 border border-slate-800 rounded-2xl p-3 shadow-lg space-y-2.5">
-          <!-- Month Forward & Backward Slider Bar -->
-          <div class="flex items-center justify-between pb-1.5 border-b border-slate-800/80">
+        <!-- 2. Monthly Budget Clarity Dashboard Panel (Matching Add Expense Summary UI Style) -->
+        <div class="w-full bg-slate-900/90 border border-slate-800 rounded-2xl p-3.5 shadow-xl shadow-slate-950/60 space-y-3">
+          <!-- Month Forward & Backward Slider Bar & Executed Status -->
+          <div class="flex items-center justify-between pb-2 border-b border-slate-800/80">
             <div class="flex items-center gap-1.5">
               <button
                 id="budgetPrevMonthBtn"
                 type="button"
-                class="w-7 h-7 rounded-xl bg-slate-950 border border-slate-800 text-slate-300 hover:text-white flex items-center justify-center text-xs font-bold active:scale-95 cursor-pointer"
+                class="w-7 h-7 rounded-xl bg-slate-950 border border-slate-800 text-slate-300 hover:text-white flex items-center justify-center text-xs font-bold active:scale-95 cursor-pointer transition-all"
                 title="Previous Month"
               >
                 ‹
@@ -743,13 +760,13 @@
               <button
                 id="budgetNextMonthBtn"
                 type="button"
-                class="w-7 h-7 rounded-xl bg-slate-950 border border-slate-800 text-slate-300 hover:text-white flex items-center justify-center text-xs font-bold active:scale-95 cursor-pointer"
+                class="w-7 h-7 rounded-xl bg-slate-950 border border-slate-800 text-slate-300 hover:text-white flex items-center justify-center text-xs font-bold active:scale-95 cursor-pointer transition-all"
                 title="Next Month"
               >
                 ›
               </button>
             </div>
-            <span id="budgetHealthStatus" class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">
+            <span id="budgetHealthStatus" class="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">
               0% Done
             </span>
           </div>
@@ -757,48 +774,59 @@
           <!-- Progress Bar & % completed -->
           <div class="space-y-1">
             <div class="flex items-center justify-between text-[10px]">
-              <span class="text-slate-400">Budget Executed</span>
+              <span class="text-slate-400 font-bold uppercase tracking-wider">Budget Executed</span>
               <span class="font-bold text-white tabular-nums"><span id="budgetUsagePercent">0%</span> completed</span>
             </div>
-            <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
-              <div id="budgetProgressBar" class="h-full rounded-full bg-emerald-500 transition-all duration-500" style="width: 0%"></div>
+            <div class="w-full h-2.5 rounded-full bg-slate-950 border border-slate-800 overflow-hidden">
+              <div id="budgetProgressBar" class="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-400 transition-all duration-500" style="width: 0%"></div>
             </div>
           </div>
 
-          <!-- 3 Clickable Summary Cards (Planned, Completed, Pending) - TAPPING OPENS POP-UP LIST -->
-          <div class="grid grid-cols-3 gap-1.5 text-center pt-1">
+          <!-- 3 Large Summary Cards: Planned Total, Completed, Pending (Big Size, Matching Spending Summary Style!) -->
+          <div class="grid grid-cols-3 text-center gap-1.5 pt-1">
             <!-- Planned Total Card -->
             <button
               id="budgetCardPlanned"
               type="button"
-              class="bg-slate-950/80 hover:bg-slate-850 active:scale-95 border border-slate-800 rounded-xl p-2 transition-all cursor-pointer group text-center"
+              class="p-2.5 flex flex-col justify-between rounded-xl bg-slate-950/80 border border-slate-800/80 hover:bg-slate-800/60 active:scale-95 transition-all cursor-pointer group select-none text-center"
               title="Click to view Planned Expenses pop-up list"
             >
-              <span class="text-[9px] font-bold text-slate-400 group-hover:text-red-400 uppercase tracking-wider block transition-colors">Planned Total</span>
-              <p id="budgetPlannedTotal" class="text-xs sm:text-sm font-black text-white mt-0.5 truncate tabular-nums">₹0</p>
-              <span class="text-[8px] text-slate-500 group-hover:text-slate-300 font-medium block mt-0.5">View list ›</span>
+              <span class="text-[10px] font-bold text-white uppercase tracking-wider group-hover:text-red-400 transition-colors">Planned</span>
+              <p id="budgetPlannedTotal" class="text-lg sm:text-xl font-black text-white my-1 truncate tabular-nums">₹0</p>
+              <span class="text-[9px] text-slate-400 group-hover:text-red-400 font-medium flex items-center justify-center gap-0.5">
+                <span>Total</span>
+                <span class="text-[8px]">›</span>
+              </span>
             </button>
+
             <!-- Completed Card -->
             <button
               id="budgetCardCompleted"
               type="button"
-              class="bg-slate-950/80 hover:bg-slate-850 active:scale-95 border border-slate-800 rounded-xl p-2 transition-all cursor-pointer group text-center"
+              class="p-2.5 border-x border-slate-800/80 flex flex-col justify-between rounded-xl bg-slate-950/80 border border-slate-800/80 hover:bg-slate-800/60 active:scale-95 transition-all cursor-pointer group select-none text-center"
               title="Click to view Completed Expenses pop-up list"
             >
-              <span class="text-[9px] font-bold text-emerald-400 group-hover:text-emerald-300 uppercase tracking-wider block transition-colors">Completed</span>
-              <p id="budgetCompletedTotal" class="text-xs sm:text-sm font-black text-emerald-400 mt-0.5 truncate tabular-nums">₹0</p>
-              <span class="text-[8px] text-emerald-500/80 group-hover:text-emerald-400 font-medium block mt-0.5">View list ›</span>
+              <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider group-hover:text-emerald-300 transition-colors">Completed</span>
+              <p id="budgetCompletedTotal" class="text-lg sm:text-xl font-black text-emerald-400 my-1 truncate tabular-nums">₹0</p>
+              <span class="text-[9px] text-emerald-500/80 group-hover:text-emerald-400 font-medium flex items-center justify-center gap-0.5">
+                <span>Paid</span>
+                <span class="text-[8px]">›</span>
+              </span>
             </button>
+
             <!-- Pending Card -->
             <button
               id="budgetCardPending"
               type="button"
-              class="bg-slate-950/80 hover:bg-slate-850 active:scale-95 border border-slate-800 rounded-xl p-2 transition-all cursor-pointer group text-center"
+              class="p-2.5 flex flex-col justify-between rounded-xl bg-slate-950/80 border border-slate-800/80 hover:bg-slate-800/60 active:scale-95 transition-all cursor-pointer group select-none text-center"
               title="Click to view Pending Expenses pop-up list"
             >
-              <span class="text-[9px] font-bold text-amber-400 group-hover:text-amber-300 uppercase tracking-wider block transition-colors">Pending</span>
-              <p id="budgetPendingTotal" class="text-xs sm:text-sm font-black text-amber-400 mt-0.5 truncate tabular-nums">₹0</p>
-              <span class="text-[8px] text-amber-500/80 group-hover:text-amber-400 font-medium block mt-0.5">View list ›</span>
+              <span class="text-[10px] font-bold text-amber-400 uppercase tracking-wider group-hover:text-amber-300 transition-colors">Pending</span>
+              <p id="budgetPendingTotal" class="text-lg sm:text-xl font-black text-amber-400 my-1 truncate tabular-nums">₹0</p>
+              <span class="text-[9px] text-amber-500/80 group-hover:text-amber-400 font-medium flex items-center justify-center gap-0.5">
+                <span>To Spend</span>
+                <span class="text-[8px]">›</span>
+              </span>
             </button>
           </div>
         </div>
@@ -810,7 +838,7 @@
     <!-- ==========================================
          BOTTOM NATIVE MOBILE NAVIGATION BAR
          ========================================== -->
-    <nav class="shrink-0 bg-slate-900/90 backdrop-blur-xl border border-slate-800/90 rounded-3xl p-1.5 shadow-2xl mt-1.5 grid grid-cols-3 gap-1.5 z-30">
+    <nav id="bottomNav" class="shrink-0 bg-slate-900/90 backdrop-blur-xl border border-slate-800/90 rounded-3xl p-1.5 shadow-2xl mt-1.5 grid grid-cols-3 gap-1.5 z-30">
       
       <!-- Tab 1: Quick Add (Matching Image: + above Add Expense) -->
       <button
@@ -894,7 +922,7 @@
        ========================================== -->
   <div
     id="deleteConfirmModal"
-    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200"
+    class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200"
     role="dialog"
     aria-modal="true"
   >
@@ -1150,39 +1178,147 @@
           />
         </div>
 
-        <!-- Action Buttons -->
-        <div class="grid grid-cols-2 gap-2 pt-2">
+        <!-- Action Buttons: Delete on left, Cancel & Save on right -->
+        <div class="flex items-center justify-between gap-2 pt-2 border-t border-slate-800/80">
           <button
-            id="editBudgetModalCancelBtn"
+            id="editBudgetModalDeleteBtn"
             type="button"
-            class="py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-xs font-bold text-slate-300 transition-all text-center cursor-pointer"
+            class="py-2 px-3 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 active:scale-95 border border-rose-500/30 text-rose-400 hover:text-rose-300 text-xs font-bold transition-all text-center cursor-pointer flex items-center gap-1.5"
+            title="Delete this planned expense"
           >
-            Cancel
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+            <span>Delete</span>
           </button>
-          <button
-            id="editBudgetModalSaveBtn"
-            type="submit"
-            class="py-2.5 px-3 rounded-xl bg-red-600 hover:bg-red-500 active:scale-95 text-xs font-black text-white shadow-md shadow-red-950 transition-all cursor-pointer text-center"
-          >
-            Save Changes
-          </button>
+          <div class="flex items-center gap-2">
+            <button
+              id="editBudgetModalCancelBtn"
+              type="button"
+              class="py-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-xs font-bold text-slate-300 transition-all text-center cursor-pointer"
+            >
+              Cancel
+            </button>
+            <button
+              id="editBudgetModalSaveBtn"
+              type="submit"
+              class="py-2 px-3.5 rounded-xl bg-red-600 hover:bg-red-500 active:scale-95 text-xs font-black text-white shadow-md shadow-red-950 transition-all cursor-pointer text-center"
+            >
+              Save Changes
+            </button>
+          </div>
         </div>
       </form>
     </div>
   </div>
 
   <!-- ==========================================
-       SPENDING SUMMARY DETAIL POP-UP MODAL (FREE FLOW)
+       BUDGET ITEM RECORDED CONFIRMATION SCREEN
+       ========================================== -->
+  <div
+    id="budgetRecordConfirmModal"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200"
+    role="dialog"
+    aria-modal="true"
+  >
+    <div
+      id="budgetRecordConfirmCard"
+      class="w-full max-w-xs bg-slate-900 border-2 border-red-500/60 rounded-3xl p-5 shadow-2xl shadow-red-950/90 flex flex-col items-center text-center transform scale-90 transition-all duration-200"
+    >
+      <!-- Glowing Red Checkmark Success Icon -->
+      <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-rose-600 to-red-500 flex items-center justify-center text-white shadow-xl shadow-rose-600/40 mb-2.5">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.8">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+        </svg>
+      </div>
+
+      <span class="text-[10px] font-black uppercase tracking-widest text-red-400">Planned Expense Added!</span>
+      <h3 id="budgetRecordModalAmount" class="text-3xl font-black text-white mt-1 tabular-nums">₹0</h3>
+      <p id="budgetRecordModalReason" class="text-sm font-bold text-slate-100 mt-1 truncate max-w-[220px]">Planned Expense</p>
+      
+      <div class="flex items-center gap-1.5 mt-2 flex-wrap justify-center">
+        <span id="budgetRecordModalTag" class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-red-500/20 text-red-300 border border-red-500/40">Bills</span>
+        <span id="budgetRecordModalDate" class="text-[10px] text-slate-400 font-medium">Target: 2026-11-25</span>
+      </div>
+
+      <p class="text-xs text-slate-400 mt-2.5">Saved successfully to your monthly budget.</p>
+
+      <!-- Dismiss Button (Leaves user ready to add more) -->
+      <button
+        id="budgetRecordDoneBtn"
+        type="button"
+        class="mt-4 w-full py-2.5 px-3 rounded-xl bg-red-600 hover:bg-red-500 active:scale-95 text-xs font-black text-white shadow-md shadow-red-950 transition-all cursor-pointer"
+      >
+        Done
+      </button>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       BUDGET DELETE CONFIRMATION MODAL SCREEN (2-STEP)
+       ========================================== -->
+  <div
+    id="budgetDeleteConfirmModal"
+    class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200"
+    role="dialog"
+    aria-modal="true"
+  >
+    <div
+      id="budgetDeleteConfirmCard"
+      class="w-full max-w-xs bg-slate-900 border border-slate-700/80 rounded-3xl p-5 shadow-2xl shadow-rose-950/90 flex flex-col items-center text-center transform scale-90 transition-all duration-200"
+    >
+      <!-- Red Trash Warning Icon -->
+      <div class="w-13 h-13 p-3 rounded-2xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-400 mb-3 shadow-lg shadow-rose-950/50">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+        </svg>
+      </div>
+
+      <h3 id="budgetDeleteModalTitle" class="text-base font-extrabold text-white">You want to delete?</h3>
+
+      <!-- Record Preview Card -->
+      <div id="budgetDeleteModalPreview" class="my-3 px-3.5 py-2.5 rounded-2xl bg-slate-950/80 border border-slate-800 w-full text-left">
+        <div class="flex items-center justify-between gap-2">
+          <span id="budgetDeleteModalReason" class="text-xs font-bold text-slate-100 truncate">Planned Item</span>
+          <span id="budgetDeleteModalAmount" class="text-xs font-black text-rose-400 tabular-nums shrink-0">₹0</span>
+        </div>
+        <p id="budgetDeleteModalMeta" class="text-[10px] text-slate-400 mt-1 truncate">Category • Target Date</p>
+      </div>
+
+      <p class="text-xs text-slate-400">This planned item will be permanently removed from your budget.</p>
+
+      <!-- Cancel / Yes, Delete Action Buttons -->
+      <div class="grid grid-cols-2 gap-2 mt-4 w-full">
+        <button
+          id="budgetDeleteCancelBtn"
+          type="button"
+          class="py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-xs font-bold text-slate-300 transition-all cursor-pointer"
+        >
+          Cancel
+        </button>
+        <button
+          id="budgetDeleteConfirmBtn"
+          type="button"
+          class="py-2.5 px-3 rounded-xl bg-red-600 hover:bg-red-500 active:scale-95 text-xs font-black text-white shadow-md shadow-red-950 transition-all cursor-pointer"
+        >
+          Yes, Delete
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       SPENDING SUMMARY DETAIL POP-UP MODAL (FREE FLOW - STARTS FROM TOP)
        ========================================== -->
   <div
     id="summaryDetailModal"
-    class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200"
+    class="fixed inset-0 z-50 flex items-start justify-center p-3 pt-5 sm:p-4 sm:pt-8 bg-black/80 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200 overflow-y-auto"
     role="dialog"
     aria-modal="true"
   >
     <div
       id="summaryDetailCard"
-      class="w-full max-w-md bg-slate-900 border border-slate-700/80 rounded-t-3xl sm:rounded-3xl p-4 sm:p-5 shadow-2xl shadow-rose-950/90 flex flex-col max-h-[85vh] text-left transform translate-y-8 sm:translate-y-0 sm:scale-95 transition-all duration-200"
+      class="w-full max-w-md bg-slate-900 border border-slate-700/80 rounded-3xl p-4 sm:p-5 shadow-2xl shadow-rose-950/90 flex flex-col min-h-[48vh] max-h-[85vh] text-left transform scale-95 transition-all duration-200"
     >
       <!-- Header with Tabs and Close Button -->
       <div class="flex items-center justify-between pb-3 border-b border-slate-800 shrink-0">
@@ -1246,17 +1382,17 @@
   </div>
 
   <!-- ==========================================
-       BUDGET DETAILS POP-UP MODAL (FREE FLOW)
+       BUDGET DETAILS POP-UP MODAL (FREE FLOW - STARTS FROM TOP)
        ========================================== -->
   <div
     id="budgetDetailModal"
-    class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200"
+    class="fixed inset-0 z-50 flex items-start justify-center p-3 pt-5 sm:p-4 sm:pt-8 bg-black/80 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200 overflow-y-auto"
     role="dialog"
     aria-modal="true"
   >
     <div
       id="budgetDetailCard"
-      class="w-full max-w-md bg-slate-900 border border-slate-700/80 rounded-t-3xl sm:rounded-3xl p-4 sm:p-5 shadow-2xl shadow-rose-950/90 flex flex-col max-h-[88vh] text-left transform translate-y-8 sm:translate-y-0 sm:scale-95 transition-all duration-200"
+      class="w-full max-w-md bg-slate-900 border border-slate-700/80 rounded-3xl p-4 sm:p-5 shadow-2xl shadow-rose-950/90 flex flex-col min-h-[48vh] max-h-[85vh] text-left transform scale-95 transition-all duration-200"
     >
       <!-- Header: Month Selector (Move forward/backward) & Close Button -->
       <div class="flex items-center justify-between pb-2.5 border-b border-slate-800 shrink-0">
@@ -1957,6 +2093,8 @@
       const budgetReasonInput = document.getElementById('budgetReasonInput');
       const budgetTagInput = document.getElementById('budgetTagInput');
       const budgetDateInput = document.getElementById('budgetDateInput');
+      const budgetClearBtn = document.getElementById('budgetClearBtn');
+      const bottomNav = document.getElementById('bottomNav');
 
       // Clickable Budget Clarity Cards (Open Pop-Up Modal)
       const budgetCardPlanned = document.getElementById('budgetCardPlanned');
@@ -1979,6 +2117,138 @@
       const budgetModalFilterTotal = document.getElementById('budgetModalFilterTotal');
       const budgetModalListContainer = document.getElementById('budgetModalListContainer');
       let currentBudgetModalTab = 'all'; // 'all', 'pending', 'completed'
+
+      // Budget Added Confirmation Screen Elements
+      const budgetRecordConfirmModal = document.getElementById('budgetRecordConfirmModal');
+      const budgetRecordConfirmCard = document.getElementById('budgetRecordConfirmCard');
+      const budgetRecordModalAmount = document.getElementById('budgetRecordModalAmount');
+      const budgetRecordModalReason = document.getElementById('budgetRecordModalReason');
+      const budgetRecordModalTag = document.getElementById('budgetRecordModalTag');
+      const budgetRecordModalDate = document.getElementById('budgetRecordModalDate');
+      const budgetRecordDoneBtn = document.getElementById('budgetRecordDoneBtn');
+
+      function showBudgetRecordedScreen(item) {
+        if (!budgetRecordConfirmModal) return;
+        budgetRecordModalAmount.textContent = formatINR(item.amount);
+        budgetRecordModalReason.textContent = item.reason;
+        budgetRecordModalTag.textContent = item.tag || 'Bills';
+        budgetRecordModalDate.textContent = `Target: ${item.date || 'Monthly'}`;
+
+        budgetRecordConfirmModal.classList.remove('opacity-0', 'pointer-events-none');
+        if (budgetRecordConfirmCard) {
+          budgetRecordConfirmCard.classList.remove('scale-90');
+          budgetRecordConfirmCard.classList.add('scale-100');
+        }
+      }
+
+      function closeBudgetRecordedScreen() {
+        if (!budgetRecordConfirmModal) return;
+        if (budgetRecordConfirmCard) {
+          budgetRecordConfirmCard.classList.remove('scale-100');
+          budgetRecordConfirmCard.classList.add('scale-90');
+        }
+        budgetRecordConfirmModal.classList.add('opacity-0', 'pointer-events-none');
+      }
+
+      if (budgetRecordDoneBtn) budgetRecordDoneBtn.addEventListener('click', closeBudgetRecordedScreen);
+      if (budgetRecordConfirmModal) {
+        budgetRecordConfirmModal.addEventListener('click', e => {
+          if (e.target === budgetRecordConfirmModal) closeBudgetRecordedScreen();
+        });
+      }
+
+      // Budget Delete Confirmation Screen Logic (2-Step "You want to delete?")
+      const budgetDeleteConfirmModal = document.getElementById('budgetDeleteConfirmModal');
+      const budgetDeleteConfirmCard = document.getElementById('budgetDeleteConfirmCard');
+      const budgetDeleteModalTitle = document.getElementById('budgetDeleteModalTitle');
+      const budgetDeleteModalReason = document.getElementById('budgetDeleteModalReason');
+      const budgetDeleteModalAmount = document.getElementById('budgetDeleteModalAmount');
+      const budgetDeleteModalMeta = document.getElementById('budgetDeleteModalMeta');
+      const budgetDeleteCancelBtn = document.getElementById('budgetDeleteCancelBtn');
+      const budgetDeleteConfirmBtn = document.getElementById('budgetDeleteConfirmBtn');
+      const editBudgetModalDeleteBtn = document.getElementById('editBudgetModalDeleteBtn');
+
+      let budgetItemPendingDeleteId = null;
+
+      function openBudgetDeleteModal(item) {
+        if (!item || !budgetDeleteConfirmModal) return;
+        budgetItemPendingDeleteId = item.id;
+
+        if (budgetDeleteModalTitle) budgetDeleteModalTitle.textContent = 'You want to delete?';
+        if (budgetDeleteModalReason) budgetDeleteModalReason.textContent = item.reason;
+        if (budgetDeleteModalAmount) budgetDeleteModalAmount.textContent = formatINR(item.amount);
+        if (budgetDeleteModalMeta) {
+          const status = item.completed ? 'Completed' : 'Pending';
+          budgetDeleteModalMeta.textContent = `${item.tag || 'Bills'} • Target: ${item.date || 'No date'} • ${status}`;
+        }
+
+        budgetDeleteConfirmModal.classList.remove('opacity-0', 'pointer-events-none');
+        if (budgetDeleteConfirmCard) {
+          budgetDeleteConfirmCard.classList.remove('scale-90');
+          budgetDeleteConfirmCard.classList.add('scale-100');
+        }
+      }
+
+      function closeBudgetDeleteModal() {
+        budgetItemPendingDeleteId = null;
+        if (!budgetDeleteConfirmModal) return;
+        if (budgetDeleteConfirmCard) {
+          budgetDeleteConfirmCard.classList.remove('scale-100');
+          budgetDeleteConfirmCard.classList.add('scale-90');
+        }
+        budgetDeleteConfirmModal.classList.add('opacity-0', 'pointer-events-none');
+      }
+
+      if (budgetDeleteCancelBtn) budgetDeleteCancelBtn.addEventListener('click', closeBudgetDeleteModal);
+      if (budgetDeleteConfirmModal) {
+        budgetDeleteConfirmModal.addEventListener('click', e => {
+          if (e.target === budgetDeleteConfirmModal) closeBudgetDeleteModal();
+        });
+      }
+
+      if (budgetDeleteConfirmBtn) {
+        budgetDeleteConfirmBtn.addEventListener('click', () => {
+          if (!budgetItemPendingDeleteId) return;
+          const targetId = budgetItemPendingDeleteId;
+          const target = budgetItems.find(b => b.id === targetId);
+
+          if (target && target.lockedExpenseId) {
+            expenses = expenses.filter(e => e.id !== target.lockedExpenseId);
+            saveExpenses();
+            refreshUI();
+          }
+
+          budgetItems = budgetItems.filter(b => b.id !== targetId);
+          saveBudgets();
+
+          closeBudgetDeleteModal();
+          closeEditBudgetModal();
+          renderBudget();
+          renderBudgetModalList();
+
+          if (navigator.vibrate) navigator.vibrate(35);
+          showToast('Budget item deleted');
+        });
+      }
+
+      if (editBudgetModalDeleteBtn) {
+        editBudgetModalDeleteBtn.addEventListener('click', () => {
+          const id = editBudgetModalId.value;
+          const target = budgetItems.find(b => b.id === id);
+          if (target) {
+            openBudgetDeleteModal(target);
+          }
+        });
+      }
+
+      if (budgetClearBtn) {
+        budgetClearBtn.addEventListener('click', () => {
+          budgetAmountInput.value = '';
+          budgetReasonInput.value = '';
+          budgetAmountInput.focus();
+          if (navigator.vibrate) navigator.vibrate(10);
+        });
+      }
 
       // Expense Recorded Confirmation Screen Elements
       const recordConfirmModal = document.getElementById('recordConfirmModal');
@@ -2779,6 +3049,15 @@
           }
         });
 
+        // Hide bottom navigation in Budget view as requested
+        if (bottomNav) {
+          if (tab === 'budget') {
+            bottomNav.classList.add('hidden');
+          } else {
+            bottomNav.classList.remove('hidden');
+          }
+        }
+
         if (tab === 'history') {
           if (historyFromDate) historyFromDate.value = '';
           if (historyToDate) historyToDate.value = '';
@@ -3019,31 +3298,73 @@
         summaryModalListContainer.addEventListener('click', e => {
           if (isLongPressTriggered) {
             isLongPressTriggered = false;
+            e.preventDefault();
+            e.stopPropagation();
             return;
           }
           const delBtn = e.target.closest('.delete-expense-btn');
           if (delBtn) {
             const id = delBtn.getAttribute('data-delete-id');
-            const amt = delBtn.getAttribute('data-delete-amount');
-            const reason = delBtn.getAttribute('data-delete-reason');
-            openDeleteModal(id, amt, reason);
+            const target = expenses.find(i => i.id === id);
+            if (target) {
+              openDeleteModal(target);
+            }
+            return;
+          }
+          const card = e.target.closest('.expense-item-card');
+          if (card) {
+            const id = card.getAttribute('data-expense-id');
+            const target = expenses.find(i => i.id === id);
+            if (target) {
+              openEditModal(target);
+            }
             return;
           }
         });
 
+        // Touch events for Mobile
         summaryModalListContainer.addEventListener('touchstart', e => {
           const card = e.target.closest('.expense-item-card');
           if (card) initiateLongPress(e, card);
         }, { passive: true });
-        summaryModalListContainer.addEventListener('touchmove', () => cancelLongPress(), { passive: true });
-        summaryModalListContainer.addEventListener('touchend', () => cancelLongPress(), { passive: true });
-        summaryModalListContainer.addEventListener('touchcancel', () => cancelLongPress(), { passive: true });
+
+        summaryModalListContainer.addEventListener('touchmove', e => {
+          if (!activeLongPressCard) return;
+          if (e.touches && e.touches[0]) {
+            const dx = Math.abs(e.touches[0].clientX - longPressStartX);
+            const dy = Math.abs(e.touches[0].clientY - longPressStartY);
+            if (dx > 8 || dy > 8) {
+              cancelLongPress();
+            }
+          }
+        }, { passive: true });
+
+        summaryModalListContainer.addEventListener('touchend', () => cancelLongPress());
+        summaryModalListContainer.addEventListener('touchcancel', () => cancelLongPress());
+
+        // Mouse events for Desktop
         summaryModalListContainer.addEventListener('mousedown', e => {
           const card = e.target.closest('.expense-item-card');
           if (card) initiateLongPress(e, card);
         });
+
+        summaryModalListContainer.addEventListener('mousemove', e => {
+          if (!activeLongPressCard) return;
+          const dx = Math.abs(e.clientX - longPressStartX);
+          const dy = Math.abs(e.clientY - longPressStartY);
+          if (dx > 8 || dy > 8) {
+            cancelLongPress();
+          }
+        });
+
         summaryModalListContainer.addEventListener('mouseup', () => cancelLongPress());
         summaryModalListContainer.addEventListener('mouseleave', () => cancelLongPress());
+
+        summaryModalListContainer.addEventListener('contextmenu', e => {
+          if (e.target.closest('.expense-item-card')) {
+            e.preventDefault();
+          }
+        });
       }
 
       // ==========================================
@@ -3398,6 +3719,8 @@
         budgetModalListContainer.addEventListener('click', e => {
           if (isBudgetLongPressTriggered) {
             isBudgetLongPressTriggered = false;
+            e.preventDefault();
+            e.stopPropagation();
             return;
           }
 
@@ -3411,7 +3734,10 @@
           const deleteBtn = e.target.closest('[data-delete-budget-id]');
           if (deleteBtn) {
             const id = deleteBtn.getAttribute('data-delete-budget-id');
-            deleteBudgetItem(id);
+            const target = budgetItems.find(b => b.id === id);
+            if (target) {
+              openBudgetDeleteModal(target);
+            }
             return;
           }
 
@@ -3419,18 +3745,26 @@
           if (card) {
             const id = card.getAttribute('data-budget-item-id');
             const target = budgetItems.find(b => b.id === id);
-            if (target && !target.completed) {
-              lockBudgetItemIntoExpenses(id);
+            if (target) {
+              if (target.completed) {
+                // Completed: tap opens edit modal
+                openEditBudgetModal(target);
+              } else {
+                // Pending: tap locks into expenses
+                lockBudgetItemIntoExpenses(id);
+              }
             }
             return;
           }
         });
       }
 
-      // Long-Press to Edit Budget Item
+      // Long-Press to Edit Budget Item (Pending & Completed)
       let budgetLongPressTimer = null;
       let activeBudgetLongPressCard = null;
       let isBudgetLongPressTriggered = false;
+      let budgetLongPressStartX = 0;
+      let budgetLongPressStartY = 0;
 
       function cancelBudgetLongPress() {
         if (budgetLongPressTimer) {
@@ -3445,11 +3779,15 @@
 
       function initiateBudgetLongPress(e, card) {
         if (!card) return;
-        if (e.target && (e.target.closest('[data-restore-budget-id]') || e.target.closest('[data-delete-budget-id]'))) return;
+        if (e.target && (e.target.closest('[data-restore-budget-id]') || e.target.closest('[data-delete-budget-id]') || e.target.closest('[data-lock-budget-id]'))) return;
 
         cancelBudgetLongPress();
         activeBudgetLongPressCard = card;
         isBudgetLongPressTriggered = false;
+
+        const touch = (e.touches && e.touches[0]) ? e.touches[0] : e;
+        budgetLongPressStartX = touch.clientX;
+        budgetLongPressStartY = touch.clientY;
 
         card.classList.add('ring-2', 'ring-red-500', 'bg-slate-800/90');
 
@@ -3465,25 +3803,57 @@
               openEditBudgetModal(target);
             }
           }
+
+          setTimeout(() => {
+            isBudgetLongPressTriggered = false;
+          }, 350);
         }, 450);
       }
 
       if (budgetModalListContainer) {
+        // Touch events for Mobile
         budgetModalListContainer.addEventListener('touchstart', e => {
           const card = e.target.closest('.budget-item-card');
           if (card) initiateBudgetLongPress(e, card);
         }, { passive: true });
 
-        budgetModalListContainer.addEventListener('touchmove', () => cancelBudgetLongPress(), { passive: true });
-        budgetModalListContainer.addEventListener('touchend', () => cancelBudgetLongPress(), { passive: true });
-        budgetModalListContainer.addEventListener('touchcancel', () => cancelBudgetLongPress(), { passive: true });
+        budgetModalListContainer.addEventListener('touchmove', e => {
+          if (!activeBudgetLongPressCard) return;
+          if (e.touches && e.touches[0]) {
+            const dx = Math.abs(e.touches[0].clientX - budgetLongPressStartX);
+            const dy = Math.abs(e.touches[0].clientY - budgetLongPressStartY);
+            if (dx > 8 || dy > 8) {
+              cancelBudgetLongPress();
+            }
+          }
+        }, { passive: true });
 
+        budgetModalListContainer.addEventListener('touchend', () => cancelBudgetLongPress());
+        budgetModalListContainer.addEventListener('touchcancel', () => cancelBudgetLongPress());
+
+        // Mouse events for Desktop
         budgetModalListContainer.addEventListener('mousedown', e => {
           const card = e.target.closest('.budget-item-card');
           if (card) initiateBudgetLongPress(e, card);
         });
+
+        budgetModalListContainer.addEventListener('mousemove', e => {
+          if (!activeBudgetLongPressCard) return;
+          const dx = Math.abs(e.clientX - budgetLongPressStartX);
+          const dy = Math.abs(e.clientY - budgetLongPressStartY);
+          if (dx > 8 || dy > 8) {
+            cancelBudgetLongPress();
+          }
+        });
+
         budgetModalListContainer.addEventListener('mouseup', () => cancelBudgetLongPress());
         budgetModalListContainer.addEventListener('mouseleave', () => cancelBudgetLongPress());
+
+        budgetModalListContainer.addEventListener('contextmenu', e => {
+          if (e.target.closest('.budget-item-card')) {
+            e.preventDefault();
+          }
+        });
       }
 
       // Edit Budget Item Modal Handlers
@@ -3610,8 +3980,7 @@
 
           currentBudgetMonthKey = monthKey;
           renderBudget();
-          openBudgetDetailModal('pending');
-          showToast(`Added to Monthly Budget: ${formatINR(newBudgetItem.amount)} for "${newBudgetItem.reason}"`);
+          showBudgetRecordedScreen(newBudgetItem);
 
           if (navigator.vibrate) navigator.vibrate([40, 30, 40]);
         });
@@ -4147,6 +4516,9 @@
           expenses = expenses.filter(i => i.id !== itemPendingDeleteId);
           saveExpenses();
           refreshUI();
+          if (typeof renderSummaryModal === 'function') {
+            renderSummaryModal();
+          }
           if (navigator.vibrate) navigator.vibrate(35);
           closeDeleteModal();
         }
