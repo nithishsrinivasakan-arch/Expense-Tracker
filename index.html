@@ -51,6 +51,14 @@
       -webkit-tap-highlight-color: transparent;
       box-sizing: border-box;
     }
+    button, a, input, select {
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+    input, textarea {
+      user-select: text;
+      -webkit-user-select: text;
+    }
     html, body {
       background-color: #0b0f19;
       color: #f8fafc;
@@ -220,8 +228,8 @@
               type="text"
               required
               autocomplete="off"
-              autocorrect="off"
-              autocapitalize="off"
+              autocorrect="on"
+              autocapitalize="sentences"
               spellcheck="false"
               data-form-type="other"
               data-lpignore="true"
@@ -245,8 +253,8 @@
               value="Food"
               placeholder="Type a tag (e.g. Food, Travel, Bills, Shopping)"
               autocomplete="off"
-              autocorrect="off"
-              autocapitalize="off"
+              autocorrect="on"
+              autocapitalize="words"
               spellcheck="false"
               data-form-type="other"
               data-lpignore="true"
@@ -318,7 +326,7 @@
             <button
               id="historyBtnDay"
               type="button"
-              class="history-filter-btn py-1.5 px-2 rounded-xl text-xs font-bold transition-all text-slate-300 hover:text-white hover:bg-slate-800 active:scale-95 cursor-pointer text-center"
+              class="history-filter-btn py-1.5 px-2 rounded-xl text-xs font-black transition-all bg-red-600 text-white shadow-sm shadow-red-950 active:scale-95 cursor-pointer text-center"
             >
               Day
             </button>
@@ -339,7 +347,7 @@
             <button
               id="historyBtnAll"
               type="button"
-              class="history-filter-btn py-1.5 px-2 rounded-xl text-xs font-black transition-all bg-red-600 text-white shadow-sm shadow-red-950 active:scale-95 cursor-pointer text-center"
+              class="history-filter-btn py-1.5 px-2 rounded-xl text-xs font-bold transition-all text-slate-300 hover:text-white hover:bg-slate-800 active:scale-95 cursor-pointer text-center"
             >
               All
             </button>
@@ -670,7 +678,7 @@
       const dateFilterActiveBar = document.getElementById('dateFilterActiveBar');
       const dateFilterActiveText = document.getElementById('dateFilterActiveText');
       const clearHistoryDateBtn = document.getElementById('clearHistoryDateBtn');
-      let historyPeriodFilter = 'all'; // 'all' | 'day' | 'week' | 'month' | 'custom'
+      let historyPeriodFilter = 'day'; // Default to 'day' (Today) whenever opening history
       const exportCsvBtn = document.getElementById('exportCsvBtn');
       const filteredSummaryText = document.getElementById('filteredSummaryText');
       const filteredTotalText = document.getElementById('filteredTotalText');
@@ -1179,6 +1187,10 @@
         });
 
         if (tab === 'history') {
+          // Whenever opening history, default filter is Day (today's transactions)
+          if (historyFromDate) historyFromDate.value = '';
+          if (historyToDate) historyToDate.value = '';
+          setHistoryPeriodUI('day');
           renderHistory();
         } else if (tab === 'analytics') {
           setTimeout(renderMonthlyChart, 50);
@@ -1188,6 +1200,27 @@
       navAddBtn.addEventListener('click', () => switchTab('add'));
       navHistoryBtn.addEventListener('click', () => switchTab('history'));
       navAnalyticsBtn.addEventListener('click', () => switchTab('analytics'));
+
+      // Automatically capitalize the first letter on "Why did you spend?" and "Category Tag" inputs
+      function enforceFirstLetterCapital(el) {
+        if (!el) return;
+        el.addEventListener('input', () => {
+          const val = el.value;
+          if (val.length > 0) {
+            const cap = val.charAt(0).toUpperCase() + val.slice(1);
+            if (val !== cap) {
+              const start = el.selectionStart;
+              const end = el.selectionEnd;
+              el.value = cap;
+              if (start !== null && end !== null) {
+                el.setSelectionRange(start, end);
+              }
+            }
+          }
+        });
+      }
+      enforceFirstLetterCapital(reasonInput);
+      enforceFirstLetterCapital(tagInput);
 
       // Clear Amount Button
       const clearAmountBtn = document.getElementById('clearAmountBtn');
