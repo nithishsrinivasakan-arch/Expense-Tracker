@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rupee-tracker-cache-v29';
+const CACHE_NAME = 'rupee-tracker-cache-v30';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
