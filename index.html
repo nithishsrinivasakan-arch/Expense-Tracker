@@ -1647,39 +1647,142 @@
     </div>
 
     <!-- Numeric Keypad (Bottom) -->
-    <div class="w-full max-w-xs pb-safe">
-      <div class="grid grid-cols-3 gap-2.5 text-center">
-        <!-- 1 to 9 -->
-        <button type="button" class="pin-key h-13 sm:h-14 rounded-2xl bg-slate-900 border border-slate-800 hover:bg-slate-800 active:scale-95 text-white font-black text-xl flex items-center justify-center transition-all cursor-pointer shadow-sm select-none" data-key="1">1</button>
-        <button type="button" class="pin-key h-13 sm:h-14 rounded-2xl bg-slate-900 border border-slate-800 hover:bg-slate-800 active:scale-95 text-white font-black text-xl flex items-center justify-center transition-all cursor-pointer shadow-sm select-none" data-key="2">2</button>
-        <button type="button" class="pin-key h-13 sm:h-14 rounded-2xl bg-slate-900 border border-slate-800 hover:bg-slate-800 active:scale-95 text-white font-black text-xl flex items-center justify-center transition-all cursor-pointer shadow-sm select-none" data-key="3">3</button>
-
-        <button type="button" class="pin-key h-13 sm:h-14 rounded-2xl bg-slate-900 border border-slate-800 hover:bg-slate-800 active:scale-95 text-white font-black text-xl flex items-center justify-center transition-all cursor-pointer shadow-sm select-none" data-key="4">4</button>
-        <button type="button" class="pin-key h-13 sm:h-14 rounded-2xl bg-slate-900 border border-slate-800 hover:bg-slate-800 active:scale-95 text-white font-black text-xl flex items-center justify-center transition-all cursor-pointer shadow-sm select-none" data-key="5">5</button>
-        <button type="button" class="pin-key h-13 sm:h-14 rounded-2xl bg-slate-900 border border-slate-800 hover:bg-slate-800 active:scale-95 text-white font-black text-xl flex items-center justify-center transition-all cursor-pointer shadow-sm select-none" data-key="6">6</button>
-
-        <button type="button" class="pin-key h-13 sm:h-14 rounded-2xl bg-slate-900 border border-slate-800 hover:bg-slate-800 active:scale-95 text-white font-black text-xl flex items-center justify-center transition-all cursor-pointer shadow-sm select-none" data-key="7">7</button>
-        <button type="button" class="pin-key h-13 sm:h-14 rounded-2xl bg-slate-900 border border-slate-800 hover:bg-slate-800 active:scale-95 text-white font-black text-xl flex items-center justify-center transition-all cursor-pointer shadow-sm select-none" data-key="8">8</button>
-        <button type="button" class="pin-key h-13 sm:h-14 rounded-2xl bg-slate-900 border border-slate-800 hover:bg-slate-800 active:scale-95 text-white font-black text-xl flex items-center justify-center transition-all cursor-pointer shadow-sm select-none" data-key="9">9</button>
-
-        <!-- Bottom Row: Clear, 0, Backspace -->
-        <button type="button" id="pinClearBtn" class="h-13 sm:h-14 rounded-2xl bg-slate-950 border border-slate-800 hover:bg-slate-800 active:scale-95 text-slate-400 font-bold text-xs uppercase tracking-wider flex items-center justify-center transition-all cursor-pointer select-none">
-          Clear
+    <div class="w-full max-w-[290px] sm:max-w-[320px] mx-auto pb-safe">
+      <div class="grid grid-cols-3 gap-y-3.5 gap-x-4 sm:gap-y-4 sm:gap-x-5 items-center justify-items-center text-center">
+        <!-- 1 -->
+        <button
+          type="button"
+          class="pin-key w-[72px] h-[72px] sm:w-[78px] sm:h-[78px] rounded-full border border-slate-700/80 hover:border-red-500 bg-slate-950/80 hover:bg-slate-900 active:bg-red-600 active:border-red-500 active:text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-md shadow-black/40 select-none touch-manipulation flex flex-col items-center justify-center group"
+          data-key="1"
+        >
+          <span class="text-2xl sm:text-3xl font-light text-white leading-none">1</span>
+          <span class="h-[10px] sm:h-[11px]"></span>
         </button>
-        <button type="button" class="pin-key h-13 sm:h-14 rounded-2xl bg-slate-900 border border-slate-800 hover:bg-slate-800 active:scale-95 text-white font-black text-xl flex items-center justify-center transition-all cursor-pointer shadow-sm select-none" data-key="0">0</button>
-        <button type="button" id="pinBackspaceBtn" class="h-13 sm:h-14 rounded-2xl bg-slate-950 border border-slate-800 hover:bg-slate-800 active:scale-95 text-slate-300 font-black text-lg flex items-center justify-center transition-all cursor-pointer select-none">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414-6.414a2 2 0 011.414-.586H19a2 2 0 012 2v10a2 2 0 01-2 2h-9.172a2 2 0 01-1.414-.586L3 12z" />
+
+        <!-- 2 ABC -->
+        <button
+          type="button"
+          class="pin-key w-[72px] h-[72px] sm:w-[78px] sm:h-[78px] rounded-full border border-slate-700/80 hover:border-red-500 bg-slate-950/80 hover:bg-slate-900 active:bg-red-600 active:border-red-500 active:text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-md shadow-black/40 select-none touch-manipulation flex flex-col items-center justify-center group"
+          data-key="2"
+        >
+          <span class="text-2xl sm:text-3xl font-light text-white leading-none">2</span>
+          <span class="text-[8px] sm:text-[9px] tracking-widest text-slate-400 group-active:text-white/90 font-medium uppercase leading-none mt-1">ABC</span>
+        </button>
+
+        <!-- 3 DEF -->
+        <button
+          type="button"
+          class="pin-key w-[72px] h-[72px] sm:w-[78px] sm:h-[78px] rounded-full border border-slate-700/80 hover:border-red-500 bg-slate-950/80 hover:bg-slate-900 active:bg-red-600 active:border-red-500 active:text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-md shadow-black/40 select-none touch-manipulation flex flex-col items-center justify-center group"
+          data-key="3"
+        >
+          <span class="text-2xl sm:text-3xl font-light text-white leading-none">3</span>
+          <span class="text-[8px] sm:text-[9px] tracking-widest text-slate-400 group-active:text-white/90 font-medium uppercase leading-none mt-1">DEF</span>
+        </button>
+
+        <!-- 4 GHI -->
+        <button
+          type="button"
+          class="pin-key w-[72px] h-[72px] sm:w-[78px] sm:h-[78px] rounded-full border border-slate-700/80 hover:border-red-500 bg-slate-950/80 hover:bg-slate-900 active:bg-red-600 active:border-red-500 active:text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-md shadow-black/40 select-none touch-manipulation flex flex-col items-center justify-center group"
+          data-key="4"
+        >
+          <span class="text-2xl sm:text-3xl font-light text-white leading-none">4</span>
+          <span class="text-[8px] sm:text-[9px] tracking-widest text-slate-400 group-active:text-white/90 font-medium uppercase leading-none mt-1">GHI</span>
+        </button>
+
+        <!-- 5 JKL -->
+        <button
+          type="button"
+          class="pin-key w-[72px] h-[72px] sm:w-[78px] sm:h-[78px] rounded-full border border-slate-700/80 hover:border-red-500 bg-slate-950/80 hover:bg-slate-900 active:bg-red-600 active:border-red-500 active:text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-md shadow-black/40 select-none touch-manipulation flex flex-col items-center justify-center group"
+          data-key="5"
+        >
+          <span class="text-2xl sm:text-3xl font-light text-white leading-none">5</span>
+          <span class="text-[8px] sm:text-[9px] tracking-widest text-slate-400 group-active:text-white/90 font-medium uppercase leading-none mt-1">JKL</span>
+        </button>
+
+        <!-- 6 MNO -->
+        <button
+          type="button"
+          class="pin-key w-[72px] h-[72px] sm:w-[78px] sm:h-[78px] rounded-full border border-slate-700/80 hover:border-red-500 bg-slate-950/80 hover:bg-slate-900 active:bg-red-600 active:border-red-500 active:text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-md shadow-black/40 select-none touch-manipulation flex flex-col items-center justify-center group"
+          data-key="6"
+        >
+          <span class="text-2xl sm:text-3xl font-light text-white leading-none">6</span>
+          <span class="text-[8px] sm:text-[9px] tracking-widest text-slate-400 group-active:text-white/90 font-medium uppercase leading-none mt-1">MNO</span>
+        </button>
+
+        <!-- 7 PQRS -->
+        <button
+          type="button"
+          class="pin-key w-[72px] h-[72px] sm:w-[78px] sm:h-[78px] rounded-full border border-slate-700/80 hover:border-red-500 bg-slate-950/80 hover:bg-slate-900 active:bg-red-600 active:border-red-500 active:text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-md shadow-black/40 select-none touch-manipulation flex flex-col items-center justify-center group"
+          data-key="7"
+        >
+          <span class="text-2xl sm:text-3xl font-light text-white leading-none">7</span>
+          <span class="text-[8px] sm:text-[9px] tracking-widest text-slate-400 group-active:text-white/90 font-medium uppercase leading-none mt-1">PQRS</span>
+        </button>
+
+        <!-- 8 TUV -->
+        <button
+          type="button"
+          class="pin-key w-[72px] h-[72px] sm:w-[78px] sm:h-[78px] rounded-full border border-slate-700/80 hover:border-red-500 bg-slate-950/80 hover:bg-slate-900 active:bg-red-600 active:border-red-500 active:text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-md shadow-black/40 select-none touch-manipulation flex flex-col items-center justify-center group"
+          data-key="8"
+        >
+          <span class="text-2xl sm:text-3xl font-light text-white leading-none">8</span>
+          <span class="text-[8px] sm:text-[9px] tracking-widest text-slate-400 group-active:text-white/90 font-medium uppercase leading-none mt-1">TUV</span>
+        </button>
+
+        <!-- 9 WXYZ -->
+        <button
+          type="button"
+          class="pin-key w-[72px] h-[72px] sm:w-[78px] sm:h-[78px] rounded-full border border-slate-700/80 hover:border-red-500 bg-slate-950/80 hover:bg-slate-900 active:bg-red-600 active:border-red-500 active:text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-md shadow-black/40 select-none touch-manipulation flex flex-col items-center justify-center group"
+          data-key="9"
+        >
+          <span class="text-2xl sm:text-3xl font-light text-white leading-none">9</span>
+          <span class="text-[8px] sm:text-[9px] tracking-widest text-slate-400 group-active:text-white/90 font-medium uppercase leading-none mt-1">WXYZ</span>
+        </button>
+
+        <!-- Bottom Row: Back Arrow, 0, Checkmark -->
+        <!-- Left: Backspace Arrow (Tap to delete, hold to clear) -->
+        <button
+          type="button"
+          id="pinBackspaceBtn"
+          class="w-[72px] h-[72px] sm:w-[78px] sm:h-[78px] rounded-full hover:bg-slate-900/60 active:scale-90 text-slate-300 hover:text-red-400 active:text-red-500 flex items-center justify-center transition-all cursor-pointer select-none touch-manipulation"
+          title="Backspace (Tap to delete, hold to clear)"
+          aria-label="Backspace"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 sm:w-9 sm:h-9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+          </svg>
+        </button>
+
+        <!-- Center: 0 + -->
+        <button
+          type="button"
+          class="pin-key w-[72px] h-[72px] sm:w-[78px] sm:h-[78px] rounded-full border border-slate-700/80 hover:border-red-500 bg-slate-950/80 hover:bg-slate-900 active:bg-red-600 active:border-red-500 active:text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-md shadow-black/40 select-none touch-manipulation flex flex-col items-center justify-center group"
+          data-key="0"
+        >
+          <span class="text-2xl sm:text-3xl font-light text-white leading-none">0</span>
+          <span class="text-xs text-slate-400 group-active:text-white/90 font-light leading-none mt-1">+</span>
+        </button>
+
+        <!-- Right: Submit Checkmark -->
+        <button
+          type="button"
+          id="pinSubmitBtn"
+          class="w-[72px] h-[72px] sm:w-[78px] sm:h-[78px] rounded-full hover:bg-slate-900/60 active:scale-90 text-slate-300 hover:text-red-400 active:text-red-500 flex items-center justify-center transition-all cursor-pointer select-none touch-manipulation"
+          title="Enter PIN"
+          aria-label="Enter PIN"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 sm:w-9 sm:h-9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
           </svg>
         </button>
       </div>
 
       <!-- Forgot / Reset PIN Link -->
-      <div class="mt-3 text-center">
+      <div class="mt-3.5 text-center">
         <button
           id="pinForgotBtn"
           type="button"
-          class="text-[11px] text-slate-500 hover:text-slate-300 underline underline-offset-2 transition-colors cursor-pointer"
+          class="text-[11px] text-slate-500 hover:text-red-400 underline underline-offset-2 transition-colors cursor-pointer"
         >
           Forgot PIN?
         </button>
@@ -3553,6 +3656,7 @@
       const pinCancelSetupBtn = document.getElementById('pinCancelSetupBtn');
       const pinClearBtn = document.getElementById('pinClearBtn');
       const pinBackspaceBtn = document.getElementById('pinBackspaceBtn');
+      const pinSubmitBtn = document.getElementById('pinSubmitBtn');
       const pinForgotBtn = document.getElementById('pinForgotBtn');
 
       const pinResetConfirmModal = document.getElementById('pinResetConfirmModal');
@@ -3770,7 +3874,40 @@
       });
 
       if (pinClearBtn) pinClearBtn.addEventListener('click', handlePinClear);
-      if (pinBackspaceBtn) pinBackspaceBtn.addEventListener('click', handlePinBackspace);
+
+      if (pinBackspaceBtn) {
+        let backspaceHoldTimer = null;
+        const startHold = () => {
+          backspaceHoldTimer = setTimeout(() => {
+            handlePinClear();
+            if (navigator.vibrate) navigator.vibrate(25);
+          }, 450);
+        };
+        const clearHold = () => {
+          if (backspaceHoldTimer) {
+            clearTimeout(backspaceHoldTimer);
+            backspaceHoldTimer = null;
+          }
+        };
+        pinBackspaceBtn.addEventListener('mousedown', startHold);
+        pinBackspaceBtn.addEventListener('touchstart', startHold, { passive: true });
+        pinBackspaceBtn.addEventListener('mouseup', clearHold);
+        pinBackspaceBtn.addEventListener('mouseleave', clearHold);
+        pinBackspaceBtn.addEventListener('touchend', clearHold);
+        pinBackspaceBtn.addEventListener('touchcancel', clearHold);
+        pinBackspaceBtn.addEventListener('click', handlePinBackspace);
+      }
+
+      if (pinSubmitBtn) {
+        pinSubmitBtn.addEventListener('click', () => {
+          if (currentPinInput.length === 4) {
+            processCompletePinInput();
+          } else {
+            triggerPinShake('Please enter all 4 digits');
+          }
+        });
+      }
+
       if (pinCancelSetupBtn) pinCancelSetupBtn.addEventListener('click', hidePinLockOverlay);
 
       // Keyboard support for desktop / mobile physical keyboard
@@ -3780,6 +3917,12 @@
           handlePinDigit(e.key);
         } else if (e.key === 'Backspace') {
           handlePinBackspace();
+        } else if (e.key === 'Enter') {
+          if (currentPinInput.length === 4) {
+            processCompletePinInput();
+          } else {
+            triggerPinShake('Please enter all 4 digits');
+          }
         } else if (e.key === 'Escape' || e.key === 'c' || e.key === 'C') {
           handlePinClear();
         }
