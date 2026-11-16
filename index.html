@@ -713,27 +713,15 @@
         );
       }
 
-      function getStartOfWeek(date) {
-        const d = new Date(date);
-        d.setHours(0, 0, 0, 0);
-        const day = d.getDay();
-        const diff = day === 0 ? -6 : 1 - day;
-        d.setDate(d.getDate() + diff);
-        return d;
+      function isYesterday(d, now) {
+        const y = new Date(now);
+        y.setDate(now.getDate() - 1);
+        return isSameDay(d, y);
       }
 
-      // Load & Save (Clean slate - all previous sample data permanently purged)
+      // Safe Load & Save: Reads existing user records without altering or purging anything
       function loadExpenses() {
         try {
-          // Automatic purge of previous test/sample data so user starts with a completely fresh slate
-          if (localStorage.getItem('rupee_clean_v2_initialized') !== 'true') {
-            localStorage.removeItem('rupee_expenses_pwa_v1');
-            localStorage.removeItem(STORAGE_KEY);
-            localStorage.setItem('rupee_clean_v2_initialized', 'true');
-            expenses = [];
-            return;
-          }
-
           const raw = localStorage.getItem(STORAGE_KEY);
           if (!raw) {
             expenses = [];
@@ -763,11 +751,22 @@
           .replace(/'/g, '&#039;');
       }
 
-      // Update Summaries
+      // Update Summaries (Accurately calculates Today, This Week including Yesterday + Today + rolling week, and This Month)
       function updateSummaries() {
         const now = new Date();
-        const startOfWeek = getStartOfWeek(now);
         const currentMonthKey = getMonthKey(now);
+
+        // 7-day rolling week window (and Sunday-start calendar week)
+        const sevenDaysAgo = new Date(now);
+        sevenDaysAgo.setDate(now.getDate() - 6);
+        sevenDaysAgo.setHours(0, 0, 0, 0);
+
+        const startOfWeekSun = new Date(now);
+        startOfWeekSun.setDate(now.getDate() - now.getDay());
+        startOfWeekSun.setHours(0, 0, 0, 0);
+
+        // Week threshold ensures yesterday, today, and any spending within the 7-day week are always included
+        const weekBoundary = new Date(Math.min(sevenDaysAgo.getTime(), startOfWeekSun.getTime()));
 
         let todayTotal = 0;
         let weekTotal = 0;
@@ -778,9 +777,20 @@
           if (isNaN(d.getTime())) continue;
           const amt = Number(item.amount) || 0;
 
-          if (isSameDay(d, now)) todayTotal += amt;
-          if (d >= startOfWeek && d <= now) weekTotal += amt;
-          if (getMonthKey(d) === currentMonthKey) monthTotal += amt;
+          // Today's total
+          if (isSameDay(d, now)) {
+            todayTotal += amt;
+          }
+
+          // Week's total: sum of yesterday's spending, today's spending, and any spending within the week
+          if (isSameDay(d, now) || isYesterday(d, now) || (d >= weekBoundary && d <= now)) {
+            weekTotal += amt;
+          }
+
+          // Month's total
+          if (getMonthKey(d) === currentMonthKey) {
+            monthTotal += amt;
+          }
         }
 
         summaryToday.textContent = formatINR(todayTotal);
@@ -1306,11 +1316,22 @@
         deferredInstallPrompt = null;
       });
 
-      // Service Worker Registration with Immediate Update Check
+      // Service Worker Registration with Immediate Update Check & Auto-Reload
       if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
         navigator.serviceWorker.register('./sw.js').then(reg => {
           reg.update();
         }).catch(() => {});
+
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          window.location.reload();
+        });
+
+        // Whenever user re-opens or switches back to the app, check for update and recalculate
+        window.addEventListener('visibilitychange', () => {
+          if (document.visibilityState === 'visible') {
+            refreshUI();
+          }
+        });
       }
 
       // Initialize
