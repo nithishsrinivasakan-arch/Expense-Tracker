@@ -119,9 +119,14 @@
          TOP MOBILE APP BAR (EXACT MATCH TO LAYOUT)
          ========================================== -->
     <header class="shrink-0 flex items-center justify-between py-1.5 px-0.5 border-b border-slate-800/80 mb-1">
-      <!-- App Brand -->
-      <div class="flex items-center gap-2 min-w-0">
-        <div class="w-8 h-8 rounded-xl bg-red-950/60 border border-red-500/40 flex items-center justify-center text-red-400 font-black text-sm shadow-md shadow-red-950/50 shrink-0">
+      <!-- App Brand (Click logo or title to open Budgeting) -->
+      <button
+        id="brandBudgetBtn"
+        type="button"
+        class="flex items-center gap-2 min-w-0 text-left cursor-pointer group active:scale-95 transition-all"
+        title="Open Monthly Budget Planner"
+      >
+        <div class="w-8 h-8 rounded-xl bg-red-950/60 border border-red-500/40 group-hover:border-red-500 flex items-center justify-center text-red-400 font-black text-sm shadow-md shadow-red-950/50 shrink-0 transition-colors">
           ₹
         </div>
         <div class="min-w-0">
@@ -131,15 +136,28 @@
           </h1>
           <p id="topBarSubtitle" class="text-[9px] text-slate-400 font-medium">0 records</p>
         </div>
-      </div>
+      </button>
 
-      <!-- Header Actions -->
-      <div class="flex items-center gap-2 shrink-0">
-        <!-- Install App Button (Red button) -->
+      <!-- Header Actions (Top-right corner with Budget Button) -->
+      <div class="flex items-center gap-1.5 shrink-0">
+        <!-- Budget Button on Top Right Corner -->
+        <button
+          id="openBudgetBtn"
+          type="button"
+          class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700/80 active:scale-95 text-white font-bold text-xs shadow-sm transition-all cursor-pointer"
+          title="Monthly Budget Planner"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+          </svg>
+          <span>Budget</span>
+        </button>
+
+        <!-- Install App Button (if available) -->
         <button
           id="installAppBtn"
           type="button"
-          class="hidden items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-500 active:scale-95 text-white font-extrabold text-xs shadow-md shadow-red-950/60 transition-all"
+          class="hidden items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-red-600 hover:bg-red-500 active:scale-95 text-white font-extrabold text-xs shadow-md shadow-red-950/60 transition-all"
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V3" />
@@ -286,47 +304,44 @@
           </button>
         </form>
 
-        <!-- Bottom: Unified Expense Summary Dashboard Panel -->
+        <!-- Bottom: Unified Expense Summary Dashboard Panel (All in White Color) -->
         <div class="w-full max-w-sm mx-auto mt-auto pt-3 pb-1">
           <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-3 shadow-xl shadow-slate-950/60">
-            <!-- Summary Header -->
+            <!-- Summary Header (White text) -->
             <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-800/80">
               <div class="flex items-center gap-1.5">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                 </svg>
-                <span class="text-[10px] font-black uppercase tracking-wider text-slate-300">Spending Summary</span>
+                <span class="text-[10px] font-black uppercase tracking-wider text-white">Spending Summary</span>
               </div>
               <div class="flex items-center gap-1">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Live</span>
+                <span class="w-1.5 h-1.5 rounded-full bg-white"></span>
+                <span class="text-[9px] font-bold text-white uppercase tracking-wider">Live</span>
               </div>
             </div>
 
-            <!-- 3 Summary Metrics in a Single Balanced Panel with Clean Dividers -->
+            <!-- 3 Summary Metrics: ALL IN WHITE COLOR -->
             <div class="grid grid-cols-3 text-center">
               <!-- Today -->
               <div class="px-1 flex flex-col justify-between">
-                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Today</span>
-                <p id="summaryToday" class="text-base sm:text-lg font-black text-white my-0.5 truncate tabular-nums">₹0</p>
-                <span class="text-[9px] text-slate-500 font-medium">Daily</span>
+                <span class="text-[10px] font-bold text-white uppercase tracking-wider">Today</span>
+                <p id="summaryToday" class="text-lg sm:text-xl font-black text-white my-0.5 truncate tabular-nums">₹0</p>
+                <span class="text-[9px] text-white/80 font-medium">Daily</span>
               </div>
 
               <!-- This Week -->
               <div class="px-1 border-x border-slate-800 flex flex-col justify-between">
-                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">This Week</span>
-                <p id="summaryWeek" class="text-base sm:text-lg font-black text-slate-100 my-0.5 truncate tabular-nums">₹0</p>
-                <span class="text-[9px] text-slate-500 font-medium">Rolling</span>
+                <span class="text-[10px] font-bold text-white uppercase tracking-wider">This Week</span>
+                <p id="summaryWeek" class="text-lg sm:text-xl font-black text-white my-0.5 truncate tabular-nums">₹0</p>
+                <span class="text-[9px] text-white/80 font-medium">Rolling</span>
               </div>
 
               <!-- This Month -->
               <div class="px-1 flex flex-col justify-between">
-                <div class="flex items-center justify-center gap-1">
-                  <span class="text-[10px] font-black text-red-400 uppercase tracking-wider">This Month</span>
-                  <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-                </div>
-                <p id="summaryMonth" class="text-base sm:text-lg font-black text-rose-400 my-0.5 truncate tabular-nums">₹0</p>
-                <span class="text-[9px] text-red-500/70 font-semibold">Monthly</span>
+                <span class="text-[10px] font-bold text-white uppercase tracking-wider">This Month</span>
+                <p id="summaryMonth" class="text-lg sm:text-xl font-black text-white my-0.5 truncate tabular-nums">₹0</p>
+                <span class="text-[9px] text-white/80 font-medium">Monthly</span>
               </div>
             </div>
           </div>
@@ -531,6 +546,209 @@
           </div>
           <div id="categoryBreakdownContainer" class="space-y-2.5 pt-0.5">
             <!-- Dynamically populated with category rankings & progress bars -->
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ====================================================
+           VIEW 4: MONTHLY BUDGET PLANNER (WITH SWIPE-TO-SCRATCH)
+           ==================================================== -->
+      <section id="viewBudget" class="hidden flex-1 flex flex-col overflow-y-auto py-1 space-y-2.5 pr-0.5 no-scrollbar">
+        
+        <!-- Budget Header & Month Selector Bar -->
+        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-2.5 shadow-md flex items-center justify-between">
+          <div class="flex items-center gap-1.5">
+            <button
+              id="budgetPrevMonthBtn"
+              type="button"
+              class="w-7 h-7 rounded-xl bg-slate-950 border border-slate-800 text-slate-300 hover:text-white flex items-center justify-center text-xs font-bold active:scale-95 cursor-pointer"
+              title="Previous Month"
+            >
+              ‹
+            </button>
+            <h3 id="budgetMonthLabel" class="text-xs sm:text-sm font-black text-white px-1">
+              November 2026
+            </h3>
+            <button
+              id="budgetNextMonthBtn"
+              type="button"
+              class="w-7 h-7 rounded-xl bg-slate-950 border border-slate-800 text-slate-300 hover:text-white flex items-center justify-center text-xs font-bold active:scale-95 cursor-pointer"
+              title="Next Month"
+            >
+              ›
+            </button>
+          </div>
+          <!-- Close / Back Button -->
+          <button
+            id="budgetCloseBtn"
+            type="button"
+            class="px-2.5 py-1 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-[11px] font-bold text-slate-300 hover:text-white flex items-center gap-1 transition-all cursor-pointer"
+          >
+            <span>✕ Close</span>
+          </button>
+        </div>
+
+        <!-- Executive Monthly Budget Health Card -->
+        <div class="bg-gradient-to-r from-red-950/60 via-slate-900 to-slate-900 border border-slate-800 rounded-2xl p-3 shadow-lg space-y-2.5">
+          <div class="flex items-center justify-between pb-1.5 border-b border-slate-800/80">
+            <div class="flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-red-500"></span>
+              <span class="text-[10px] font-black uppercase tracking-wider text-white">Monthly Budget Clarity</span>
+            </div>
+            <span id="budgetHealthStatus" class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+              0% Done
+            </span>
+          </div>
+
+          <div class="grid grid-cols-3 gap-1.5 text-center">
+            <!-- Planned Total -->
+            <div class="bg-slate-950/70 border border-slate-800/80 rounded-xl p-2">
+              <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Planned Total</span>
+              <p id="budgetPlannedTotal" class="text-xs sm:text-sm font-black text-white mt-0.5 truncate tabular-nums">₹0</p>
+            </div>
+            <!-- Completed / Scratched -->
+            <div class="bg-slate-950/70 border border-slate-800/80 rounded-xl p-2">
+              <span class="text-[9px] font-bold text-emerald-400 uppercase tracking-wider block">Completed</span>
+              <p id="budgetCompletedTotal" class="text-xs sm:text-sm font-black text-emerald-400 mt-0.5 truncate tabular-nums">₹0</p>
+            </div>
+            <!-- Pending To Spend -->
+            <div class="bg-slate-950/70 border border-slate-800/80 rounded-xl p-2">
+              <span class="text-[9px] font-bold text-amber-400 uppercase tracking-wider block">Pending</span>
+              <p id="budgetPendingTotal" class="text-xs sm:text-sm font-black text-amber-400 mt-0.5 truncate tabular-nums">₹0</p>
+            </div>
+          </div>
+
+          <!-- Progress Bar -->
+          <div class="space-y-1">
+            <div class="flex items-center justify-between text-[10px]">
+              <span class="text-slate-400">Budget Executed</span>
+              <span id="budgetUsagePercent" class="font-bold text-white tabular-nums">0%</span>
+            </div>
+            <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+              <div id="budgetProgressBar" class="h-full rounded-full bg-emerald-500 transition-all duration-500" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Add Planned Expense Form -->
+        <form id="budgetForm" class="bg-slate-900 border border-slate-800 rounded-2xl p-3 space-y-2.5 shadow-md">
+          <div class="flex items-center justify-between pb-1 border-b border-slate-800/80">
+            <span class="text-[10px] font-black uppercase tracking-wider text-slate-300">Plan Upcoming Expense</span>
+            <span class="text-[9px] text-slate-400">Forecast</span>
+          </div>
+
+          <!-- Amount -->
+          <div class="space-y-0.5">
+            <label for="budgetAmountInput" class="text-[9px] font-bold uppercase tracking-wider text-slate-400 block px-0.5">
+              Planned Amount (₹)
+            </label>
+            <input
+              id="budgetAmountInput"
+              type="number"
+              step="any"
+              min="1"
+              required
+              placeholder="e.g. 3500"
+              class="w-full h-10 px-3 bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl text-sm font-black text-white focus:outline-none tabular-nums"
+            />
+          </div>
+
+          <!-- What is it for? -->
+          <div class="space-y-0.5">
+            <label for="budgetReasonInput" class="text-[9px] font-bold uppercase tracking-wider text-slate-400 block px-0.5">
+              What is this for?
+            </label>
+            <input
+              id="budgetReasonInput"
+              type="text"
+              required
+              autocomplete="off"
+              autocorrect="on"
+              autocapitalize="sentences"
+              spellcheck="true"
+              placeholder="e.g. House Rent, Bike Insurance, Diwali Shopping"
+              class="w-full h-9.5 px-3 bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl text-xs sm:text-sm text-white focus:outline-none"
+            />
+          </div>
+
+          <!-- Row: Category Tag & Planned Date -->
+          <div class="grid grid-cols-2 gap-2">
+            <div class="space-y-0.5">
+              <label for="budgetTagInput" class="text-[9px] font-bold uppercase tracking-wider text-slate-400 block px-0.5">
+                Category
+              </label>
+              <input
+                id="budgetTagInput"
+                type="text"
+                list="categoryKeywordsList"
+                value="Bills"
+                placeholder="Category tag"
+                autocomplete="off"
+                autocorrect="on"
+                autocapitalize="words"
+                spellcheck="true"
+                class="w-full h-9 bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl px-2.5 text-xs text-white focus:outline-none"
+              />
+            </div>
+            <div class="space-y-0.5">
+              <label for="budgetDateInput" class="text-[9px] font-bold uppercase tracking-wider text-slate-400 block px-0.5">
+                Target Date
+              </label>
+              <input
+                id="budgetDateInput"
+                type="date"
+                required
+                class="w-full h-9 bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl px-2 text-xs font-medium text-white focus:outline-none tabular-nums cursor-pointer"
+              />
+            </div>
+          </div>
+
+          <!-- Red Submit Button -->
+          <button
+            type="submit"
+            class="w-full h-10 rounded-xl bg-red-600 hover:bg-red-500 active:scale-95 text-white font-black text-xs shadow-md shadow-red-950/60 transition-all flex items-center justify-center cursor-pointer mt-1"
+          >
+            <span>+ Add to Monthly Budget</span>
+          </button>
+        </form>
+
+        <!-- TOP LIST: Pending / Not Completed Expenses -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 shadow-md space-y-2">
+          <div class="flex items-center justify-between pb-1.5 border-b border-slate-800/80">
+            <div>
+              <span class="text-xs font-bold text-slate-100 block">Not Completed</span>
+              <span class="text-[10px] text-slate-400">Swipe left or tap scratch to complete</span>
+            </div>
+            <span id="budgetPendingCountBadge" class="text-[10px] font-bold text-amber-400">0 pending</span>
+          </div>
+
+          <div id="budgetPendingListContainer" class="space-y-2 pt-0.5">
+            <!-- Dynamically populated pending budget items with swipe-left -->
+          </div>
+        </div>
+
+        <!-- BOTTOM BUTTON & SECTION: Completed / Scratched Items -->
+        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-2.5 shadow-sm space-y-2">
+          <!-- Toggle Button to Show/Hide Completed Items -->
+          <button
+            id="toggleCompletedBudgetBtn"
+            type="button"
+            class="w-full py-2 px-3 rounded-xl bg-slate-950 border border-slate-800/90 hover:bg-slate-800 active:scale-[0.99] flex items-center justify-between text-xs font-bold text-slate-300 transition-all cursor-pointer"
+          >
+            <div class="flex items-center gap-2">
+              <span class="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-[10px]">✓</span>
+              <span>Completed Tasks</span>
+              <span id="budgetCompletedCountBadge" class="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded-full">0</span>
+            </div>
+            <span id="completedToggleArrow" class="text-slate-500 transition-transform">▼</span>
+          </button>
+
+          <!-- Collapsible Completed Items List -->
+          <div id="budgetCompletedSection" class="hidden space-y-2 pt-1">
+            <div id="budgetCompletedListContainer" class="space-y-2">
+              <!-- Dynamically populated completed items with restore option -->
+            </div>
           </div>
         </div>
 
@@ -1032,6 +1250,37 @@
       const analyticsMonthCount = document.getElementById('analyticsMonthCount');
       const analyticsTagCount = document.getElementById('analyticsTagCount');
       const categoryBreakdownContainer = document.getElementById('categoryBreakdownContainer');
+
+      // Budget State & DOM Elements
+      const BUDGET_STORAGE_KEY = 'rupee_monthly_budgets_v1';
+      let budgetItems = [];
+      let currentBudgetMonthKey = getMonthKey(new Date());
+
+      const brandBudgetBtn = document.getElementById('brandBudgetBtn');
+      const openBudgetBtn = document.getElementById('openBudgetBtn');
+      const viewBudget = document.getElementById('viewBudget');
+      const budgetCloseBtn = document.getElementById('budgetCloseBtn');
+      const budgetPrevMonthBtn = document.getElementById('budgetPrevMonthBtn');
+      const budgetNextMonthBtn = document.getElementById('budgetNextMonthBtn');
+      const budgetMonthLabel = document.getElementById('budgetMonthLabel');
+      const budgetHealthStatus = document.getElementById('budgetHealthStatus');
+      const budgetPlannedTotal = document.getElementById('budgetPlannedTotal');
+      const budgetCompletedTotal = document.getElementById('budgetCompletedTotal');
+      const budgetPendingTotal = document.getElementById('budgetPendingTotal');
+      const budgetUsagePercent = document.getElementById('budgetUsagePercent');
+      const budgetProgressBar = document.getElementById('budgetProgressBar');
+      const budgetForm = document.getElementById('budgetForm');
+      const budgetAmountInput = document.getElementById('budgetAmountInput');
+      const budgetReasonInput = document.getElementById('budgetReasonInput');
+      const budgetTagInput = document.getElementById('budgetTagInput');
+      const budgetDateInput = document.getElementById('budgetDateInput');
+      const budgetPendingCountBadge = document.getElementById('budgetPendingCountBadge');
+      const budgetPendingListContainer = document.getElementById('budgetPendingListContainer');
+      const toggleCompletedBudgetBtn = document.getElementById('toggleCompletedBudgetBtn');
+      const budgetCompletedCountBadge = document.getElementById('budgetCompletedCountBadge');
+      const completedToggleArrow = document.getElementById('completedToggleArrow');
+      const budgetCompletedSection = document.getElementById('budgetCompletedSection');
+      const budgetCompletedListContainer = document.getElementById('budgetCompletedListContainer');
 
       // Expense Recorded Confirmation Screen Elements
       const recordConfirmModal = document.getElementById('recordConfirmModal');
@@ -1732,6 +1981,8 @@
         renderHistory();
         if (currentTab === 'analytics') {
           renderAnalytics();
+        } else if (currentTab === 'budget') {
+          renderBudget();
         }
       }
 
@@ -1742,16 +1993,21 @@
           { name: 'add', btn: navAddBtn, view: viewQuickAdd },
           { name: 'history', btn: navHistoryBtn, view: viewHistory },
           { name: 'analytics', btn: navAnalyticsBtn, view: viewAnalytics },
+          { name: 'budget', btn: null, view: viewBudget },
         ];
 
         tabs.forEach(t => {
-          if (!t.view || !t.btn) return;
+          if (!t.view) return;
           if (t.name === tab) {
             t.view.classList.remove('hidden');
-            t.btn.className = 'nav-tab-btn flex flex-col items-center justify-center py-2 px-1 rounded-2xl text-[11px] font-black transition-all bg-red-600 text-white shadow-lg shadow-red-950/60 cursor-pointer';
+            if (t.btn) {
+              t.btn.className = 'nav-tab-btn flex flex-col items-center justify-center py-2 px-1 rounded-2xl text-[11px] font-black transition-all bg-red-600 text-white shadow-lg shadow-red-950/60 cursor-pointer';
+            }
           } else {
             t.view.classList.add('hidden');
-            t.btn.className = 'nav-tab-btn flex flex-col items-center justify-center py-2 px-1 rounded-2xl text-[11px] font-bold transition-all text-slate-400 hover:text-white cursor-pointer';
+            if (t.btn) {
+              t.btn.className = 'nav-tab-btn flex flex-col items-center justify-center py-2 px-1 rounded-2xl text-[11px] font-bold transition-all text-slate-400 hover:text-white cursor-pointer';
+            }
           }
         });
 
@@ -1763,12 +2019,413 @@
           renderHistory();
         } else if (tab === 'analytics') {
           setTimeout(renderAnalytics, 50);
+        } else if (tab === 'budget') {
+          renderBudget();
         }
       }
 
       navAddBtn.addEventListener('click', () => switchTab('add'));
       navHistoryBtn.addEventListener('click', () => switchTab('history'));
       navAnalyticsBtn.addEventListener('click', () => switchTab('analytics'));
+
+      // Budget Planner Logic
+      function loadBudgets() {
+        try {
+          const raw = localStorage.getItem(BUDGET_STORAGE_KEY);
+          budgetItems = raw ? JSON.parse(raw) : [];
+          if (!Array.isArray(budgetItems)) budgetItems = [];
+        } catch {
+          budgetItems = [];
+        }
+      }
+
+      function saveBudgets() {
+        try {
+          localStorage.setItem(BUDGET_STORAGE_KEY, JSON.stringify(budgetItems));
+        } catch (err) {
+          console.error('Failed to save budgets', err);
+        }
+      }
+
+      function changeBudgetMonth(offset) {
+        const parts = currentBudgetMonthKey.split('-');
+        let y = parseInt(parts[0], 10);
+        let m = parseInt(parts[1], 10);
+        m += offset;
+        if (m < 1) {
+          m = 12;
+          y -= 1;
+        } else if (m > 12) {
+          m = 1;
+          y += 1;
+        }
+        currentBudgetMonthKey = `${y}-${String(m).padStart(2, '0')}`;
+        renderBudget();
+        if (navigator.vibrate) navigator.vibrate(15);
+      }
+
+      if (budgetPrevMonthBtn) budgetPrevMonthBtn.addEventListener('click', () => changeBudgetMonth(-1));
+      if (budgetNextMonthBtn) budgetNextMonthBtn.addEventListener('click', () => changeBudgetMonth(1));
+
+      // Toggle Completed Section
+      let isCompletedSectionOpen = false;
+      if (toggleCompletedBudgetBtn) {
+        toggleCompletedBudgetBtn.addEventListener('click', () => {
+          isCompletedSectionOpen = !isCompletedSectionOpen;
+          if (budgetCompletedSection) {
+            budgetCompletedSection.classList.toggle('hidden', !isCompletedSectionOpen);
+          }
+          if (completedToggleArrow) {
+            completedToggleArrow.textContent = isCompletedSectionOpen ? '▲' : '▼';
+          }
+        });
+      }
+
+      function scratchAndCompleteBudgetItem(id) {
+        const target = budgetItems.find(b => b.id === id);
+        if (!target) return;
+
+        const card = document.querySelector(`[data-budget-item-id="${id}"]`);
+        if (card) {
+          card.classList.add('transition-all', 'duration-300', '-translate-x-full', 'opacity-0');
+        }
+
+        setTimeout(() => {
+          target.completed = true;
+          target.completedAt = new Date().toISOString();
+          saveBudgets();
+          renderBudget();
+          if (navigator.vibrate) navigator.vibrate([40, 20, 40]);
+        }, 220);
+      }
+
+      function restoreBudgetItem(id) {
+        const target = budgetItems.find(b => b.id === id);
+        if (!target) return;
+        target.completed = false;
+        target.completedAt = null;
+        saveBudgets();
+        renderBudget();
+        if (navigator.vibrate) navigator.vibrate(20);
+      }
+
+      function deleteBudgetItem(id) {
+        budgetItems = budgetItems.filter(b => b.id !== id);
+        saveBudgets();
+        renderBudget();
+        if (navigator.vibrate) navigator.vibrate(25);
+      }
+
+      function renderBudget() {
+        if (!viewBudget || viewBudget.classList.contains('hidden')) return;
+
+        if (budgetMonthLabel) {
+          budgetMonthLabel.textContent = formatMonthLabel(currentBudgetMonthKey);
+        }
+
+        const monthItems = budgetItems.filter(b => b.monthKey === currentBudgetMonthKey);
+        const pendingItems = monthItems.filter(b => !b.completed);
+        const completedItems = monthItems.filter(b => b.completed);
+
+        const plannedTotal = monthItems.reduce((acc, cur) => acc + (Number(cur.amount) || 0), 0);
+        const completedTotal = completedItems.reduce((acc, cur) => acc + (Number(cur.amount) || 0), 0);
+        const pendingTotal = pendingItems.reduce((acc, cur) => acc + (Number(cur.amount) || 0), 0);
+
+        const execPct = plannedTotal > 0 ? Math.round((completedTotal / plannedTotal) * 100) : 0;
+
+        if (budgetPlannedTotal) budgetPlannedTotal.textContent = formatINR(plannedTotal);
+        if (budgetCompletedTotal) budgetCompletedTotal.textContent = formatINR(completedTotal);
+        if (budgetPendingTotal) budgetPendingTotal.textContent = formatINR(pendingTotal);
+        if (budgetUsagePercent) budgetUsagePercent.textContent = `${execPct}%`;
+
+        if (budgetProgressBar) {
+          budgetProgressBar.style.width = `${Math.min(execPct, 100)}%`;
+        }
+
+        if (budgetHealthStatus) {
+          if (plannedTotal === 0) {
+            budgetHealthStatus.textContent = 'Set Budget Below';
+            budgetHealthStatus.className = 'text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700';
+          } else if (execPct === 100) {
+            budgetHealthStatus.textContent = '100% Completed';
+            budgetHealthStatus.className = 'text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30';
+          } else {
+            budgetHealthStatus.textContent = `${execPct}% Completed`;
+            budgetHealthStatus.className = 'text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30';
+          }
+        }
+
+        if (budgetPendingCountBadge) {
+          budgetPendingCountBadge.textContent = `${pendingItems.length} pending`;
+        }
+        if (budgetCompletedCountBadge) {
+          budgetCompletedCountBadge.textContent = `${completedItems.length}`;
+        }
+
+        // 1. Render Pending (Not Completed) Items (Top Section)
+        if (budgetPendingListContainer) {
+          if (pendingItems.length === 0) {
+            budgetPendingListContainer.innerHTML = `
+              <div class="h-20 flex flex-col items-center justify-center text-xs text-slate-500 text-center px-4 space-y-0.5">
+                <p class="font-bold text-slate-400">All planned tasks completed!</p>
+                <p class="text-[11px] text-slate-600">Plan new upcoming expenses above to forecast your month.</p>
+              </div>
+            `;
+          } else {
+            const sortedPending = [...pendingItems].sort((a, b) => new Date(a.date) - new Date(b.date));
+            budgetPendingListContainer.innerHTML = sortedPending.map(item => {
+              const tagClass = TAG_COLORS[item.tag] || 'bg-slate-800 text-slate-300 border-slate-700';
+              return `
+                <div
+                  data-budget-item-id="${escapeHtml(item.id)}"
+                  class="budget-swipe-card p-3 rounded-2xl bg-slate-950/80 border border-slate-800 flex items-center justify-between gap-2.5 shadow-sm relative overflow-hidden transition-all select-none cursor-pointer"
+                >
+                  <div class="min-w-0 flex-1 pointer-events-none">
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                      <span class="budget-item-title text-xs sm:text-sm font-bold text-slate-100 truncate">
+                        ${escapeHtml(item.reason)}
+                      </span>
+                      <span class="text-[9px] font-bold px-2 py-0.5 rounded-full border ${tagClass}">
+                        ${escapeHtml(item.tag || 'Bills')}
+                      </span>
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-1 tabular-nums flex items-center gap-1">
+                      <span>Due: ${escapeHtml(item.date)}</span>
+                      <span class="text-slate-600">•</span>
+                      <span class="text-slate-500">Swipe ‹ to scratch</span>
+                    </p>
+                  </div>
+                  <div class="flex items-center gap-2 shrink-0">
+                    <span class="text-xs sm:text-sm font-black text-white tabular-nums">${formatINR(item.amount)}</span>
+                    <!-- Tap Scratch Action Button -->
+                    <button
+                      type="button"
+                      data-scratch-budget-id="${escapeHtml(item.id)}"
+                      class="px-2 py-1 rounded-xl bg-red-600/15 hover:bg-red-600 text-red-400 hover:text-white border border-red-500/30 text-[10px] font-bold transition-all cursor-pointer flex items-center gap-1 active:scale-95"
+                      title="Scratch & Complete"
+                    >
+                      <span>Scratch</span>
+                      <span>✓</span>
+                    </button>
+                    <!-- Delete Button -->
+                    <button
+                      type="button"
+                      data-delete-budget-id="${escapeHtml(item.id)}"
+                      class="w-7 h-7 rounded-xl bg-slate-800 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 flex items-center justify-center transition-colors cursor-pointer"
+                      title="Delete"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              `;
+            }).join('');
+          }
+        }
+
+        // 2. Render Completed Items (Bottom Section)
+        if (budgetCompletedListContainer) {
+          if (completedItems.length === 0) {
+            budgetCompletedListContainer.innerHTML = `
+              <div class="h-16 flex items-center justify-center text-xs text-slate-500 text-center">
+                No completed tasks yet. Swipe left or tap scratch to complete tasks.
+              </div>
+            `;
+          } else {
+            const sortedCompleted = [...completedItems].sort((a, b) => new Date(b.completedAt || b.date) - new Date(a.completedAt || a.date));
+            budgetCompletedListContainer.innerHTML = sortedCompleted.map(item => {
+              return `
+                <div
+                  data-budget-item-id="${escapeHtml(item.id)}"
+                  class="p-2.5 rounded-xl bg-slate-950/60 border border-slate-800/80 flex items-center justify-between gap-2 shadow-sm transition-all opacity-70"
+                >
+                  <div class="min-w-0 flex-1">
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                      <span class="text-xs font-bold line-through text-slate-400 truncate decoration-red-500 decoration-2">
+                        ${escapeHtml(item.reason)}
+                      </span>
+                      <span class="text-[9px] font-bold px-2 py-0.5 rounded-full border bg-slate-800/80 text-slate-400 border-slate-700">
+                        ${escapeHtml(item.tag || 'Bills')}
+                      </span>
+                    </div>
+                    <p class="text-[10px] text-emerald-500 mt-0.5 tabular-nums">✓ Completed</p>
+                  </div>
+                  <div class="flex items-center gap-2 shrink-0">
+                    <span class="text-xs font-black line-through text-slate-400 tabular-nums">${formatINR(item.amount)}</span>
+                    <!-- Restore Button -->
+                    <button
+                      type="button"
+                      data-restore-budget-id="${escapeHtml(item.id)}"
+                      class="px-2.5 py-1 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[10px] font-bold transition-all cursor-pointer flex items-center gap-1 active:scale-95"
+                      title="Restore to Pending"
+                    >
+                      <span>↩</span>
+                      <span>Restore</span>
+                    </button>
+                    <!-- Delete Button -->
+                    <button
+                      type="button"
+                      data-delete-budget-id="${escapeHtml(item.id)}"
+                      class="w-7 h-7 rounded-xl bg-slate-800 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 flex items-center justify-center transition-colors cursor-pointer"
+                      title="Delete"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              `;
+            }).join('');
+          }
+        }
+      }
+
+      // Budget Container Click Handlers (Scratch, Restore, Delete)
+      if (budgetPendingListContainer) {
+        budgetPendingListContainer.addEventListener('click', e => {
+          const scratchBtn = e.target.closest('[data-scratch-budget-id]');
+          if (scratchBtn) {
+            const id = scratchBtn.getAttribute('data-scratch-budget-id');
+            scratchAndCompleteBudgetItem(id);
+            return;
+          }
+
+          const deleteBtn = e.target.closest('[data-delete-budget-id]');
+          if (deleteBtn) {
+            const id = deleteBtn.getAttribute('data-delete-budget-id');
+            deleteBudgetItem(id);
+            return;
+          }
+        });
+      }
+
+      if (budgetCompletedListContainer) {
+        budgetCompletedListContainer.addEventListener('click', e => {
+          const restoreBtn = e.target.closest('[data-restore-budget-id]');
+          if (restoreBtn) {
+            const id = restoreBtn.getAttribute('data-restore-budget-id');
+            restoreBudgetItem(id);
+            return;
+          }
+
+          const deleteBtn = e.target.closest('[data-delete-budget-id]');
+          if (deleteBtn) {
+            const id = deleteBtn.getAttribute('data-delete-budget-id');
+            deleteBudgetItem(id);
+            return;
+          }
+        });
+      }
+
+      // Swipe Left on Budget Card to Scratch & Complete
+      let budgetTouchStartX = 0;
+      let budgetTouchStartY = 0;
+      let budgetTouchTargetCard = null;
+
+      if (budgetPendingListContainer) {
+        budgetPendingListContainer.addEventListener('touchstart', e => {
+          const card = e.target.closest('.budget-swipe-card');
+          if (!card || e.target.closest('button')) {
+            budgetTouchTargetCard = null;
+            return;
+          }
+          budgetTouchTargetCard = card;
+          if (e.touches && e.touches[0]) {
+            budgetTouchStartX = e.touches[0].clientX;
+            budgetTouchStartY = e.touches[0].clientY;
+          }
+        }, { passive: true });
+
+        budgetPendingListContainer.addEventListener('touchmove', e => {
+          if (!budgetTouchTargetCard || !e.touches || !e.touches[0]) return;
+          const currentX = e.touches[0].clientX;
+          const currentY = e.touches[0].clientY;
+          const dx = currentX - budgetTouchStartX;
+          const dy = currentY - budgetTouchStartY;
+
+          // If swiping horizontally to the left
+          if (dx < -10 && Math.abs(dx) > Math.abs(dy)) {
+            budgetTouchTargetCard.style.transform = `translateX(${dx}px)`;
+            const title = budgetTouchTargetCard.querySelector('.budget-item-title');
+            if (title && dx < -35) {
+              title.classList.add('line-through', 'decoration-red-500', 'decoration-2', 'text-slate-400');
+            }
+          }
+        }, { passive: true });
+
+        budgetPendingListContainer.addEventListener('touchend', e => {
+          if (!budgetTouchTargetCard) return;
+          const card = budgetTouchTargetCard;
+          budgetTouchTargetCard = null;
+
+          const changedTouch = e.changedTouches ? e.changedTouches[0] : null;
+          if (changedTouch) {
+            const dx = changedTouch.clientX - budgetTouchStartX;
+            if (dx < -55) {
+              const id = card.getAttribute('data-budget-item-id');
+              scratchAndCompleteBudgetItem(id);
+              return;
+            }
+          }
+          card.style.transform = '';
+          const title = card.querySelector('.budget-item-title');
+          if (title) {
+            title.classList.remove('line-through', 'decoration-red-500', 'decoration-2', 'text-slate-400');
+          }
+        });
+      }
+
+      // Budget Form Submit
+      if (budgetForm) {
+        budgetForm.addEventListener('submit', e => {
+          e.preventDefault();
+          const rawAmt = parseFloat(budgetAmountInput.value);
+          if (isNaN(rawAmt) || rawAmt <= 0) return;
+
+          const reason = budgetReasonInput.value.trim();
+          if (!reason) return;
+
+          const tag = budgetTagInput.value.trim() || 'Bills';
+          const targetDate = budgetDateInput.value || new Date().toISOString().slice(0, 10);
+          const monthKey = targetDate.slice(0, 7); // e.g. 2026-11
+
+          const newBudgetItem = {
+            id: 'bgt_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+            amount: Math.round(rawAmt * 100) / 100,
+            reason,
+            tag,
+            date: targetDate,
+            monthKey,
+            completed: false,
+            createdAt: new Date().toISOString()
+          };
+
+          budgetItems.push(newBudgetItem);
+          saveBudgets();
+
+          budgetAmountInput.value = '';
+          budgetReasonInput.value = '';
+
+          currentBudgetMonthKey = monthKey;
+          renderBudget();
+
+          if (navigator.vibrate) navigator.vibrate([40, 30, 40]);
+        });
+      }
+
+      enforceFirstLetterCapital(budgetReasonInput);
+      enforceFirstLetterCapital(budgetTagInput);
+
+      if (budgetDateInput) {
+        budgetDateInput.value = new Date().toISOString().slice(0, 10);
+      }
+
+      if (brandBudgetBtn) brandBudgetBtn.addEventListener('click', () => switchTab('budget'));
+      if (openBudgetBtn) openBudgetBtn.addEventListener('click', () => switchTab('budget'));
+      if (budgetCloseBtn) budgetCloseBtn.addEventListener('click', () => switchTab('add'));
 
       // Automatically capitalize the first letter on "Why did you spend?" and "Category Tag" inputs
       function enforceFirstLetterCapital(el) {
@@ -2390,6 +3047,7 @@
 
       // Initialize
       loadExpenses();
+      loadBudgets();
       refreshUI();
     })();
   </script>
