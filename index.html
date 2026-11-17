@@ -45,6 +45,8 @@
 
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <!-- Tesseract.js OCR CDN for Payment Screenshots -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
   <style>
     * {
@@ -322,6 +324,23 @@
           >
             <span>Record Expense</span>
           </button>
+
+          <!-- Record Expense via Photo (PhonePe, GPay, Amazon Pay Screenshots) -->
+          <div class="relative pt-0.5">
+            <button
+              id="recordViaPhotoBtn"
+              type="button"
+              class="w-full h-11 rounded-2xl bg-slate-950 hover:bg-slate-850 active:scale-[0.98] text-slate-200 hover:text-white font-extrabold text-xs sm:text-sm tracking-wide border border-slate-750 hover:border-red-500/50 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md shadow-slate-950/60"
+              title="Upload PhonePe, GPay, or Amazon Pay screenshot to auto-record expenses"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 text-rose-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              <span>Record Expense via Photo</span>
+            </button>
+            <input id="photoExpenseInput" type="file" accept="image/*" class="hidden" />
+          </div>
         </form>
 
         <!-- Bottom: Unified Expense Summary Dashboard Panel (All in White Color) -->
@@ -922,7 +941,7 @@
        ========================================== -->
   <div
     id="deleteConfirmModal"
-    class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200"
+    class="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200"
     role="dialog"
     aria-modal="true"
   >
@@ -973,52 +992,55 @@
        ========================================== -->
   <div
     id="editExpenseModal"
-    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200"
+    class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200"
     role="dialog"
     aria-modal="true"
   >
     <div
       id="editExpenseCard"
-      class="w-full max-w-sm bg-slate-900 border border-slate-700/80 rounded-3xl p-5 shadow-2xl shadow-rose-950/90 flex flex-col text-left transform scale-90 transition-all duration-200"
+      class="w-full max-w-md bg-slate-900 border border-slate-700/80 rounded-3xl p-5 sm:p-6 shadow-2xl shadow-rose-950/90 flex flex-col text-left transform scale-90 transition-all duration-200"
     >
       <div class="flex items-center justify-between pb-3 border-b border-slate-800">
-        <div class="flex items-center gap-2">
-          <div class="w-8 h-8 rounded-xl bg-red-600/20 text-red-400 flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-red-600/20 text-red-400 flex items-center justify-center shrink-0 border border-red-500/30">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
             </svg>
           </div>
           <div>
-            <h3 class="text-sm font-extrabold text-white">Edit Expense</h3>
-            <p class="text-[10px] text-slate-400">Update amount, reason, tag, or date</p>
+            <h3 class="text-base sm:text-lg font-black text-white tracking-tight">Edit Expense</h3>
+            <p class="text-xs text-slate-400">Update amount, reason, tag, or date</p>
           </div>
         </div>
-        <button id="editModalCloseX" type="button" class="w-7 h-7 rounded-lg bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center cursor-pointer">
+        <button id="editModalCloseX" type="button" class="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center text-sm font-bold active:scale-95 cursor-pointer">
           ✕
         </button>
       </div>
 
-      <form id="editExpenseForm" class="space-y-3 mt-3.5">
+      <form id="editExpenseForm" class="space-y-3.5 mt-3.5">
         <input type="hidden" id="editModalId" />
 
-        <!-- Amount -->
+        <!-- Amount with Currency Prefix -->
         <div class="space-y-1">
-          <label for="editModalAmount" class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block px-0.5">
+          <label for="editModalAmount" class="text-xs font-bold uppercase tracking-wider text-slate-400 block px-0.5">
             Amount (₹)
           </label>
-          <input
-            id="editModalAmount"
-            type="number"
-            step="any"
-            min="0.01"
-            required
-            class="w-full h-11 px-3.5 bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl text-lg font-black text-white focus:outline-none tabular-nums"
-          />
+          <div class="relative flex items-center bg-slate-950 border border-slate-800 focus-within:border-red-500 rounded-2xl overflow-hidden transition-all">
+            <span class="pl-3.5 text-xl font-black text-red-400 select-none">₹</span>
+            <input
+              id="editModalAmount"
+              type="number"
+              step="any"
+              min="0.01"
+              required
+              class="w-full h-12 pl-2 pr-3.5 bg-transparent text-xl sm:text-2xl font-black text-white focus:outline-none tabular-nums"
+            />
+          </div>
         </div>
 
         <!-- Reason -->
         <div class="space-y-1">
-          <label for="editModalReason" class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block px-0.5">
+          <label for="editModalReason" class="text-xs font-bold uppercase tracking-wider text-slate-400 block px-0.5">
             Why did you spend?
           </label>
           <input
@@ -1029,13 +1051,13 @@
             autocorrect="on"
             autocapitalize="sentences"
             spellcheck="true"
-            class="w-full h-10 px-3.5 bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl text-xs sm:text-sm text-white focus:outline-none"
+            class="w-full h-11 px-3.5 bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl text-sm font-semibold text-white focus:outline-none"
           />
         </div>
 
         <!-- Category Tag -->
         <div class="space-y-1">
-          <label for="editModalTag" class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block px-0.5">
+          <label for="editModalTag" class="text-xs font-bold uppercase tracking-wider text-slate-400 block px-0.5">
             Category Tag
           </label>
           <input
@@ -1046,38 +1068,51 @@
             autocorrect="on"
             autocapitalize="words"
             spellcheck="true"
-            class="w-full h-10 px-3.5 bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl text-xs sm:text-sm text-white focus:outline-none"
+            class="w-full h-11 px-3.5 bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl text-sm font-semibold text-white focus:outline-none"
           />
         </div>
 
         <!-- Date & Time -->
         <div class="space-y-1">
-          <label for="editModalDate" class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block px-0.5">
+          <label for="editModalDate" class="text-xs font-bold uppercase tracking-wider text-slate-400 block px-0.5">
             Date & Time
           </label>
           <input
             id="editModalDate"
             type="datetime-local"
-            class="w-full h-10 px-3.5 bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl text-xs text-white focus:outline-none tabular-nums cursor-pointer"
+            class="w-full h-11 px-3.5 bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl text-xs sm:text-sm text-white focus:outline-none tabular-nums cursor-pointer"
           />
         </div>
 
-        <!-- Action Buttons -->
-        <div class="grid grid-cols-2 gap-2 pt-2">
+        <!-- Action Buttons: Delete on left, Cancel & Save on right -->
+        <div class="flex items-center justify-between gap-2 pt-2 border-t border-slate-800/80">
           <button
-            id="editModalCancelBtn"
+            id="editModalDeleteBtn"
             type="button"
-            class="py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-xs font-bold text-slate-300 transition-all text-center cursor-pointer"
+            class="py-2.5 px-3.5 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 active:scale-95 border border-rose-500/30 text-rose-400 hover:text-rose-300 text-xs font-bold transition-all text-center cursor-pointer flex items-center gap-1.5"
+            title="Delete this expense"
           >
-            Cancel
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+            <span>Delete</span>
           </button>
-          <button
-            id="editModalSaveBtn"
-            type="submit"
-            class="py-2.5 px-3 rounded-xl bg-red-600 hover:bg-red-500 active:scale-95 text-xs font-black text-white shadow-md shadow-red-950 transition-all cursor-pointer text-center"
-          >
-            Save Changes
-          </button>
+          <div class="flex items-center gap-2">
+            <button
+              id="editModalCancelBtn"
+              type="button"
+              class="py-2.5 px-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-xs font-bold text-slate-300 transition-all text-center cursor-pointer"
+            >
+              Cancel
+            </button>
+            <button
+              id="editModalSaveBtn"
+              type="submit"
+              class="py-2.5 px-4.5 rounded-xl bg-red-600 hover:bg-red-500 active:scale-95 text-xs font-black text-white shadow-md shadow-red-950 transition-all cursor-pointer text-center"
+            >
+              Save Changes
+            </button>
+          </div>
         </div>
       </form>
     </div>
@@ -1094,46 +1129,49 @@
   >
     <div
       id="editBudgetCard"
-      class="w-full max-w-sm bg-slate-900 border border-slate-700/80 rounded-3xl p-5 shadow-2xl shadow-rose-950/90 flex flex-col text-left transform scale-90 transition-all duration-200"
+      class="w-full max-w-md bg-slate-900 border border-slate-700/80 rounded-3xl p-5 sm:p-6 shadow-2xl shadow-rose-950/90 flex flex-col text-left transform scale-90 transition-all duration-200"
     >
       <div class="flex items-center justify-between pb-3 border-b border-slate-800">
-        <div class="flex items-center gap-2">
-          <div class="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 border border-amber-500/30">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
             </svg>
           </div>
           <div>
-            <h3 class="text-sm font-extrabold text-white">Edit Planned Expense</h3>
-            <p class="text-[10px] text-slate-400">Update amount, reason, tag, or due date</p>
+            <h3 class="text-base sm:text-lg font-black text-white tracking-tight">Edit Planned Expense</h3>
+            <p class="text-xs text-slate-400">Update amount, reason, tag, or due date</p>
           </div>
         </div>
-        <button id="editBudgetModalCloseX" type="button" class="w-7 h-7 rounded-lg bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center cursor-pointer">
+        <button id="editBudgetModalCloseX" type="button" class="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center text-sm font-bold active:scale-95 cursor-pointer">
           ✕
         </button>
       </div>
 
-      <form id="editBudgetForm" class="space-y-3 mt-3.5">
+      <form id="editBudgetForm" class="space-y-3.5 mt-3.5">
         <input type="hidden" id="editBudgetModalId" />
 
-        <!-- Amount -->
+        <!-- Amount with Currency Prefix -->
         <div class="space-y-1">
-          <label for="editBudgetModalAmount" class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block px-0.5">
+          <label for="editBudgetModalAmount" class="text-xs font-bold uppercase tracking-wider text-slate-400 block px-0.5">
             Planned Amount (₹)
           </label>
-          <input
-            id="editBudgetModalAmount"
-            type="number"
-            step="any"
-            min="0.01"
-            required
-            class="w-full h-11 px-3.5 bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl text-lg font-black text-white focus:outline-none tabular-nums"
-          />
+          <div class="relative flex items-center bg-slate-950 border border-slate-800 focus-within:border-red-500 rounded-2xl overflow-hidden transition-all">
+            <span class="pl-3.5 text-xl font-black text-amber-400 select-none">₹</span>
+            <input
+              id="editBudgetModalAmount"
+              type="number"
+              step="any"
+              min="0.01"
+              required
+              class="w-full h-12 pl-2 pr-3.5 bg-transparent text-xl sm:text-2xl font-black text-white focus:outline-none tabular-nums"
+            />
+          </div>
         </div>
 
         <!-- Reason -->
         <div class="space-y-1">
-          <label for="editBudgetModalReason" class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block px-0.5">
+          <label for="editBudgetModalReason" class="text-xs font-bold uppercase tracking-wider text-slate-400 block px-0.5">
             What is it for?
           </label>
           <input
@@ -1144,13 +1182,13 @@
             autocorrect="on"
             autocapitalize="sentences"
             spellcheck="true"
-            class="w-full h-10 px-3.5 bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl text-xs sm:text-sm text-white focus:outline-none"
+            class="w-full h-11 px-3.5 bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl text-sm font-semibold text-white focus:outline-none"
           />
         </div>
 
         <!-- Category Tag -->
         <div class="space-y-1">
-          <label for="editBudgetModalTag" class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block px-0.5">
+          <label for="editBudgetModalTag" class="text-xs font-bold uppercase tracking-wider text-slate-400 block px-0.5">
             Category Tag
           </label>
           <input
@@ -1161,20 +1199,20 @@
             autocorrect="on"
             autocapitalize="words"
             spellcheck="true"
-            class="w-full h-10 px-3.5 bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl text-xs sm:text-sm text-white focus:outline-none"
+            class="w-full h-11 px-3.5 bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl text-sm font-semibold text-white focus:outline-none"
           />
         </div>
 
         <!-- Target Due Date -->
         <div class="space-y-1">
-          <label for="editBudgetModalDate" class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block px-0.5">
+          <label for="editBudgetModalDate" class="text-xs font-bold uppercase tracking-wider text-slate-400 block px-0.5">
             Due Date
           </label>
           <input
             id="editBudgetModalDate"
             type="date"
             required
-            class="w-full h-10 px-3.5 bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl text-xs text-white focus:outline-none tabular-nums cursor-pointer"
+            class="w-full h-11 px-3.5 bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl text-xs sm:text-sm text-white focus:outline-none tabular-nums cursor-pointer"
           />
         </div>
 
@@ -1183,10 +1221,10 @@
           <button
             id="editBudgetModalDeleteBtn"
             type="button"
-            class="py-2 px-3 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 active:scale-95 border border-rose-500/30 text-rose-400 hover:text-rose-300 text-xs font-bold transition-all text-center cursor-pointer flex items-center gap-1.5"
+            class="py-2.5 px-3.5 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 active:scale-95 border border-rose-500/30 text-rose-400 hover:text-rose-300 text-xs font-bold transition-all text-center cursor-pointer flex items-center gap-1.5"
             title="Delete this planned expense"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
             </svg>
             <span>Delete</span>
@@ -1195,14 +1233,14 @@
             <button
               id="editBudgetModalCancelBtn"
               type="button"
-              class="py-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-xs font-bold text-slate-300 transition-all text-center cursor-pointer"
+              class="py-2.5 px-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-xs font-bold text-slate-300 transition-all text-center cursor-pointer"
             >
               Cancel
             </button>
             <button
               id="editBudgetModalSaveBtn"
               type="submit"
-              class="py-2 px-3.5 rounded-xl bg-red-600 hover:bg-red-500 active:scale-95 text-xs font-black text-white shadow-md shadow-red-950 transition-all cursor-pointer text-center"
+              class="py-2.5 px-4.5 rounded-xl bg-red-600 hover:bg-red-500 active:scale-95 text-xs font-black text-white shadow-md shadow-red-950 transition-all cursor-pointer text-center"
             >
               Save Changes
             </button>
@@ -1318,29 +1356,29 @@
   >
     <div
       id="summaryDetailCard"
-      class="w-full max-w-md bg-slate-900 border border-slate-700/80 rounded-3xl p-4 sm:p-5 shadow-2xl shadow-rose-950/90 flex flex-col min-h-[48vh] max-h-[85vh] text-left transform scale-95 transition-all duration-200"
+      class="w-full max-w-lg sm:max-w-xl bg-slate-900 border border-slate-700/80 rounded-3xl p-4 sm:p-6 shadow-2xl shadow-rose-950/90 flex flex-col min-h-[55vh] max-h-[88vh] text-left transform scale-95 transition-all duration-200"
     >
       <!-- Header with Tabs and Close Button -->
       <div class="flex items-center justify-between pb-3 border-b border-slate-800 shrink-0">
-        <div class="flex items-center gap-1.5 p-1 bg-slate-950/80 rounded-xl border border-slate-800">
+        <div class="flex items-center gap-1.5 p-1 bg-slate-950/80 rounded-2xl border border-slate-800">
           <button
             id="summaryModalTabToday"
             type="button"
-            class="px-2.5 py-1 rounded-lg text-xs font-black transition-all cursor-pointer bg-red-600 text-white"
+            class="px-3 py-1.5 rounded-xl text-xs sm:text-sm font-black transition-all cursor-pointer bg-red-600 text-white shadow-sm"
           >
             Today
           </button>
           <button
             id="summaryModalTabWeek"
             type="button"
-            class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer text-slate-400 hover:text-white"
+            class="px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer text-slate-400 hover:text-white"
           >
             This Week
           </button>
           <button
             id="summaryModalTabMonth"
             type="button"
-            class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer text-slate-400 hover:text-white"
+            class="px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer text-slate-400 hover:text-white"
           >
             This Month
           </button>
@@ -1348,33 +1386,33 @@
         <button
           id="summaryDetailModalCloseBtn"
           type="button"
-          class="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center text-sm font-bold active:scale-95 cursor-pointer"
+          class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center text-base font-black active:scale-95 cursor-pointer"
         >
           ✕
         </button>
       </div>
 
       <!-- Sub-header Total & Count Banner -->
-      <div class="flex items-center justify-between py-2 px-1 border-b border-slate-800/80 shrink-0">
+      <div class="flex items-center justify-between py-2.5 px-1 border-b border-slate-800/80 shrink-0">
         <div>
-          <span class="text-[9px] uppercase tracking-wider font-extrabold text-slate-400 block" id="summaryModalPeriodLabel">Today's Spending</span>
-          <p id="summaryModalTotalAmt" class="text-lg font-black text-white tabular-nums">₹0</p>
+          <span class="text-xs uppercase tracking-wider font-extrabold text-slate-400 block" id="summaryModalPeriodLabel">Today's Spending</span>
+          <p id="summaryModalTotalAmt" class="text-2xl sm:text-3xl font-black text-white tabular-nums">₹0</p>
         </div>
         <div class="text-right">
-          <span id="summaryModalCountBadge" class="text-[10px] font-bold text-slate-300 bg-slate-800 px-2 py-0.5 rounded-full">0 transactions</span>
-          <p class="text-[9px] text-slate-500 mt-0.5">Free flow list</p>
+          <span id="summaryModalCountBadge" class="text-xs font-bold text-slate-300 bg-slate-800 px-3 py-1 rounded-full">0 transactions</span>
+          <p class="text-[10px] text-slate-500 mt-1">Free flow list</p>
         </div>
       </div>
 
       <!-- Free Flow Scrollable List Container -->
-      <div id="summaryModalListContainer" class="flex-1 overflow-y-auto divide-y divide-slate-800/60 pr-1 my-1 no-scrollbar max-h-[55vh]">
+      <div id="summaryModalListContainer" class="flex-1 overflow-y-auto space-y-2.5 pr-1 my-2.5 no-scrollbar max-h-[62vh]">
         <!-- Dynamically rendered expenses -->
       </div>
 
       <!-- Footer Micro-tip -->
-      <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[10px] text-slate-500 shrink-0">
-        <span>💡 Long-press any item to edit</span>
-        <button id="summaryModalDoneBtn" type="button" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-bold text-xs cursor-pointer active:scale-95">
+      <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400 shrink-0">
+        <span class="flex items-center gap-1">💡 <span>Long-press any item to edit</span></span>
+        <button id="summaryModalDoneBtn" type="button" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-extrabold text-xs sm:text-sm cursor-pointer active:scale-95">
           Close
         </button>
       </div>
@@ -1392,26 +1430,26 @@
   >
     <div
       id="budgetDetailCard"
-      class="w-full max-w-md bg-slate-900 border border-slate-700/80 rounded-3xl p-4 sm:p-5 shadow-2xl shadow-rose-950/90 flex flex-col min-h-[48vh] max-h-[85vh] text-left transform scale-95 transition-all duration-200"
+      class="w-full max-w-lg sm:max-w-xl bg-slate-900 border border-slate-700/80 rounded-3xl p-4 sm:p-6 shadow-2xl shadow-rose-950/90 flex flex-col min-h-[55vh] max-h-[88vh] text-left transform scale-95 transition-all duration-200"
     >
       <!-- Header: Month Selector (Move forward/backward) & Close Button -->
-      <div class="flex items-center justify-between pb-2.5 border-b border-slate-800 shrink-0">
-        <div class="flex items-center gap-1.5">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800 shrink-0">
+        <div class="flex items-center gap-2">
           <button
             id="budgetModalPrevMonthBtn"
             type="button"
-            class="w-7 h-7 rounded-xl bg-slate-950 border border-slate-800 text-slate-300 hover:text-white flex items-center justify-center text-xs font-bold active:scale-95 cursor-pointer"
+            class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-950 border border-slate-800 text-slate-300 hover:text-white flex items-center justify-center text-base sm:text-lg font-black active:scale-95 cursor-pointer shadow-sm"
             title="Previous Month"
           >
             ‹
           </button>
-          <h3 id="budgetModalMonthLabel" class="text-xs sm:text-sm font-black text-white px-1">
+          <h3 id="budgetModalMonthLabel" class="text-sm sm:text-base font-black text-white px-2 tracking-tight">
             November 2026
           </h3>
           <button
             id="budgetModalNextMonthBtn"
             type="button"
-            class="w-7 h-7 rounded-xl bg-slate-950 border border-slate-800 text-slate-300 hover:text-white flex items-center justify-center text-xs font-bold active:scale-95 cursor-pointer"
+            class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-950 border border-slate-800 text-slate-300 hover:text-white flex items-center justify-center text-base sm:text-lg font-black active:scale-95 cursor-pointer shadow-sm"
             title="Next Month"
           >
             ›
@@ -1420,63 +1458,289 @@
         <button
           id="budgetDetailModalCloseBtn"
           type="button"
-          class="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center text-sm font-bold active:scale-95 cursor-pointer"
+          class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center text-base font-black active:scale-95 cursor-pointer"
         >
           ✕
         </button>
       </div>
 
       <!-- Filter Tabs: All Planned | Pending | Completed -->
-      <div class="grid grid-cols-3 gap-1 p-1 bg-slate-950/80 rounded-xl border border-slate-800 my-2 shrink-0">
+      <div class="grid grid-cols-3 gap-1.5 p-1.5 bg-slate-950/80 rounded-2xl border border-slate-800 my-2.5 shrink-0">
         <button
           id="budgetTabAll"
           type="button"
-          class="py-1.5 px-1 rounded-lg text-xs font-black transition-all cursor-pointer text-center bg-red-600 text-white"
+          class="py-2.5 px-2 rounded-xl text-xs sm:text-sm font-black transition-all cursor-pointer text-center bg-red-600 text-white shadow-sm"
         >
           All Planned
         </button>
         <button
           id="budgetTabPending"
           type="button"
-          class="py-1.5 px-1 rounded-lg text-xs font-bold transition-all cursor-pointer text-center text-slate-400 hover:text-white"
+          class="py-2.5 px-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer text-center text-slate-400 hover:text-white"
         >
           Pending
         </button>
         <button
           id="budgetTabCompleted"
           type="button"
-          class="py-1.5 px-1 rounded-lg text-xs font-bold transition-all cursor-pointer text-center text-slate-400 hover:text-white"
+          class="py-2.5 px-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer text-center text-slate-400 hover:text-white"
         >
           Completed
         </button>
       </div>
 
       <!-- Sub-header Total & Count Status Banner -->
-      <div class="flex items-center justify-between py-1.5 px-2 bg-slate-950/60 rounded-xl border border-slate-800/80 mb-1.5 shrink-0">
-        <div class="flex items-center gap-1.5">
-          <span id="budgetModalFilterDot" class="w-2 h-2 rounded-full bg-red-500"></span>
-          <span id="budgetModalFilterStatus" class="text-xs font-black text-white">0 items</span>
+      <div class="flex items-center justify-between py-2.5 px-3 bg-slate-950/80 rounded-2xl border border-slate-800/80 mb-2 shrink-0">
+        <div class="flex items-center gap-2">
+          <span id="budgetModalFilterDot" class="w-2.5 h-2.5 rounded-full bg-red-500"></span>
+          <span id="budgetModalFilterStatus" class="text-xs sm:text-sm font-black text-white">0 items</span>
         </div>
-        <span id="budgetModalFilterTotal" class="text-xs font-black text-amber-400 tabular-nums">₹0</span>
+        <span id="budgetModalFilterTotal" class="text-sm sm:text-base font-black text-amber-400 tabular-nums">₹0</span>
       </div>
 
-      <div class="px-1 pb-1 flex items-center justify-between text-[10px] text-slate-400 shrink-0">
-        <span class="flex items-center gap-1">⚡ <span>Tap pending item to lock into expenses</span></span>
-        <span class="text-slate-500">Long-press to edit</span>
+      <div class="px-1 pb-1 flex items-center justify-between text-xs text-slate-400 shrink-0 font-medium">
+        <span class="flex items-center gap-1.5">⚡ <span>Tap ₹ icon to lock into expenses</span></span>
+        <span class="text-slate-500">Tap / long-press to edit</span>
       </div>
 
       <!-- Free Flow Scrollable Budget List Container -->
-      <div id="budgetModalListContainer" class="flex-1 overflow-y-auto divide-y divide-slate-800/60 pr-1 my-1 no-scrollbar max-h-[55vh]">
+      <div id="budgetModalListContainer" class="flex-1 overflow-y-auto space-y-2.5 pr-1 my-2.5 no-scrollbar max-h-[62vh]">
         <!-- Dynamically rendered budget items -->
       </div>
 
       <!-- Footer Micro-tip & Close -->
-      <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[10px] text-slate-500 shrink-0">
+      <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400 shrink-0">
         <span>💡 Tap to spend • Button to restore</span>
-        <button id="budgetModalDoneBtn" type="button" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-bold text-xs cursor-pointer active:scale-95">
+        <button id="budgetModalDoneBtn" type="button" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-extrabold text-xs sm:text-sm cursor-pointer active:scale-95">
           Done
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       RECORD EXPENSE VIA PHOTO - REVIEW & SYNC POPUP MODAL
+       ========================================== -->
+  <div
+    id="photoReviewModal"
+    class="fixed inset-0 z-50 flex items-start justify-center p-3 pt-4 sm:p-4 sm:pt-6 bg-black/85 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-200 overflow-y-auto"
+    role="dialog"
+    aria-modal="true"
+  >
+    <div
+      id="photoReviewCard"
+      class="w-full max-w-lg sm:max-w-xl bg-slate-900 border border-slate-700/80 rounded-3xl p-4 sm:p-5 shadow-2xl shadow-rose-950/90 flex flex-col min-h-[60vh] max-h-[90vh] text-left transform scale-95 transition-all duration-200"
+    >
+      <!-- Header: Title, Subtitle & Close Button -->
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800 shrink-0">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-rose-600/20 border border-rose-500/40 text-rose-400 flex items-center justify-center shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-sm sm:text-base font-black text-white flex items-center gap-2">
+              Review Photo Expenses
+              <span id="photoReviewBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-600/30 text-red-300 border border-red-500/40">
+                0 detected
+              </span>
+            </h3>
+            <p id="photoReviewSubtitle" class="text-xs text-slate-400">Extracted from your payment screenshot</p>
+          </div>
+        </div>
+        <button
+          id="photoReviewCloseBtn"
+          type="button"
+          class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center text-base font-black active:scale-95 cursor-pointer"
+        >
+          ✕
+        </button>
+      </div>
+
+      <!-- Processing / Scanner Banner (Shown while OCR is running) -->
+      <div id="photoScanningBanner" class="hidden my-3 p-4 bg-slate-950/90 border border-slate-800 rounded-2xl flex flex-col items-center justify-center space-y-2.5 shrink-0">
+        <div class="w-full flex items-center justify-between text-xs font-bold text-slate-300">
+          <span class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span>
+            <span id="photoScanStatusText">Scanning payment screenshot...</span>
+          </span>
+          <span id="photoScanPercent" class="text-red-400 tabular-nums">0%</span>
+        </div>
+        <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+          <div id="photoScanProgressBar" class="bg-red-600 h-2 rounded-full transition-all duration-300 w-0"></div>
+        </div>
+        <p class="text-[11px] text-slate-500 text-center">Detecting PhonePe, Google Pay, Amazon Pay & UPI details</p>
+      </div>
+
+      <!-- Screenshot Thumbnail / Quick Peek -->
+      <div id="photoThumbnailSection" class="my-2 p-2 bg-slate-950/70 border border-slate-800/80 rounded-2xl flex items-center justify-between gap-3 shrink-0">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <img id="photoThumbnailImg" src="" alt="Screenshot" class="w-11 h-11 object-cover rounded-xl border border-slate-700 shrink-0 bg-slate-900" />
+          <div class="min-w-0">
+            <p id="photoThumbnailName" class="text-xs font-bold text-slate-200 truncate">Payment_Screenshot.png</p>
+            <p class="text-[10px] text-slate-400">Tap item to edit • Red button to delete</p>
+          </div>
+        </div>
+        <button
+          id="photoAddManualBtn"
+          type="button"
+          class="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-xs font-bold text-slate-200 flex items-center gap-1 shrink-0 border border-slate-700 cursor-pointer"
+        >
+          <span>+ Add Item</span>
+        </button>
+      </div>
+
+      <!-- Extracted Items Staged Container (Same app format!) -->
+      <div id="photoStagedListContainer" class="flex-1 overflow-y-auto space-y-2.5 pr-1 my-2 no-scrollbar max-h-[50vh]">
+        <!-- Dynamically rendered extracted items -->
+      </div>
+
+      <!-- Footer Action Bar: Discard on left, Total & Sync on right -->
+      <div class="pt-3 border-t border-slate-800 shrink-0 flex items-center justify-between gap-2.5">
+        <button
+          id="photoDiscardBtn"
+          type="button"
+          class="py-2.5 px-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-xs font-bold text-slate-300 transition-all cursor-pointer"
+        >
+          Discard
+        </button>
+        <div class="flex items-center gap-2.5">
+          <div class="text-right hidden sm:block">
+            <span class="text-[10px] font-bold uppercase text-slate-400 block">Total</span>
+            <span id="photoStagedTotalAmt" class="text-sm font-black text-white tabular-nums">₹0</span>
+          </div>
+          <button
+            id="photoSyncAllBtn"
+            type="button"
+            class="py-2.5 px-5 rounded-2xl bg-red-600 hover:bg-red-500 active:scale-95 text-xs sm:text-sm font-black text-white shadow-lg shadow-red-950 transition-all flex items-center gap-2 cursor-pointer"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+            <span id="photoSyncBtnLabel">Sync to Expenses</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       PHOTO STAGED ITEM EDIT MODAL SCREEN
+       ========================================== -->
+  <div
+    id="photoItemEditModal"
+    class="fixed inset-0 z-[65] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200"
+    role="dialog"
+    aria-modal="true"
+  >
+    <div
+      id="photoItemEditCard"
+      class="w-full max-w-md bg-slate-900 border border-slate-700/80 rounded-3xl p-5 sm:p-6 shadow-2xl shadow-rose-950/90 flex flex-col text-left transform scale-90 transition-all duration-200"
+    >
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-rose-600/20 text-rose-400 flex items-center justify-center shrink-0 border border-rose-500/30">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-base sm:text-lg font-black text-white tracking-tight">Edit Photo Item</h3>
+            <p class="text-xs text-slate-400">Modify details before syncing</p>
+          </div>
+        </div>
+        <button id="photoItemEditCloseX" type="button" class="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center text-sm font-bold active:scale-95 cursor-pointer">
+          ✕
+        </button>
+      </div>
+
+      <form id="photoItemEditForm" class="space-y-3.5 mt-3.5">
+        <input type="hidden" id="photoItemEditId" />
+
+        <!-- Amount -->
+        <div class="space-y-1">
+          <label for="photoItemEditAmount" class="text-xs font-bold uppercase tracking-wider text-slate-400 block px-0.5">
+            Amount (₹)
+          </label>
+          <div class="relative flex items-center bg-slate-950 border border-slate-800 focus-within:border-red-500 rounded-2xl overflow-hidden transition-all">
+            <span class="pl-3.5 text-xl font-black text-red-400 select-none">₹</span>
+            <input
+              id="photoItemEditAmount"
+              type="number"
+              step="any"
+              min="0.01"
+              required
+              class="w-full h-12 pl-2 pr-3.5 bg-transparent text-xl sm:text-2xl font-black text-white focus:outline-none tabular-nums"
+            />
+          </div>
+        </div>
+
+        <!-- Reason / Merchant -->
+        <div class="space-y-1">
+          <label for="photoItemEditReason" class="text-xs font-bold uppercase tracking-wider text-slate-400 block px-0.5">
+            Merchant / Description
+          </label>
+          <input
+            id="photoItemEditReason"
+            type="text"
+            required
+            autocomplete="off"
+            autocorrect="on"
+            autocapitalize="sentences"
+            spellcheck="true"
+            class="w-full h-11 px-3.5 bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl text-sm font-semibold text-white focus:outline-none"
+          />
+        </div>
+
+        <!-- Category Tag -->
+        <div class="space-y-1">
+          <label for="photoItemEditTag" class="text-xs font-bold uppercase tracking-wider text-slate-400 block px-0.5">
+            Category Tag
+          </label>
+          <input
+            id="photoItemEditTag"
+            type="text"
+            list="categoryKeywordsList"
+            autocomplete="off"
+            autocorrect="on"
+            autocapitalize="words"
+            spellcheck="true"
+            class="w-full h-11 px-3.5 bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl text-sm font-semibold text-white focus:outline-none"
+          />
+        </div>
+
+        <!-- Date & Time -->
+        <div class="space-y-1">
+          <label for="photoItemEditDate" class="text-xs font-bold uppercase tracking-wider text-slate-400 block px-0.5">
+            Date & Time
+          </label>
+          <input
+            id="photoItemEditDate"
+            type="datetime-local"
+            class="w-full h-11 px-3.5 bg-slate-950 border border-slate-800 focus:border-red-500 rounded-xl text-xs sm:text-sm text-white focus:outline-none tabular-nums cursor-pointer"
+          />
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-800/80">
+          <button
+            id="photoItemEditCancelBtn"
+            type="button"
+            class="py-2.5 px-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-xs font-bold text-slate-300 transition-all text-center cursor-pointer"
+          >
+            Cancel
+          </button>
+          <button
+            id="photoItemEditSaveBtn"
+            type="submit"
+            class="py-2.5 px-4.5 rounded-xl bg-red-600 hover:bg-red-500 active:scale-95 text-xs font-black text-white shadow-md shadow-red-950 transition-all cursor-pointer text-center"
+          >
+            Update Item
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -1746,133 +2010,133 @@
        ========================================== -->
   <div
     id="pinLockOverlay"
-    class="fixed inset-0 z-50 bg-slate-950 flex flex-col justify-between items-center px-6 py-6 transition-all duration-300 opacity-0 pointer-events-none select-none"
+    class="fixed inset-0 z-50 bg-slate-950 flex flex-col justify-between items-center px-4 py-6 transition-all duration-300 opacity-0 pointer-events-none select-none overflow-y-auto"
   >
     <!-- Top Bar with status & Cancel (when in setup mode) -->
-    <div class="w-full max-w-xs flex items-center justify-between pt-safe">
-      <div class="flex items-center gap-1.5">
-        <div class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
-        <span class="text-[10px] font-black uppercase tracking-wider text-slate-400">Expense Tracker Lock</span>
+    <div class="w-full max-w-sm flex items-center justify-between pt-safe px-2">
+      <div class="flex items-center gap-2">
+        <div class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></div>
+        <span class="text-xs font-black uppercase tracking-wider text-slate-400">Expense Tracker Lock</span>
       </div>
       <button
         id="pinCancelSetupBtn"
         type="button"
-        class="hidden text-[10px] font-bold text-slate-300 hover:text-white px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 cursor-pointer transition-colors"
+        class="hidden text-xs font-bold text-slate-300 hover:text-white px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 cursor-pointer transition-colors"
       >
         Cancel
       </button>
     </div>
 
     <!-- Center Section: Brand Icon, Title, Subtitle, and 4 PIN Dots -->
-    <div class="w-full max-w-xs flex flex-col items-center text-center my-auto space-y-4">
-      <div class="w-14 h-14 rounded-2xl bg-red-950/80 border border-red-500/50 flex items-center justify-center text-red-400 font-black text-2xl shadow-xl shadow-red-950/70">
+    <div class="w-full max-w-sm flex flex-col items-center text-center my-auto py-2 space-y-4">
+      <div class="w-16 h-16 rounded-2xl bg-red-950/80 border border-red-500/50 flex items-center justify-center text-red-400 font-black text-3xl shadow-xl shadow-red-950/70">
         ₹
       </div>
       <div>
-        <h2 id="pinLockTitle" class="text-lg font-black text-white tracking-tight">Enter 4-Digit PIN</h2>
-        <p id="pinLockSubtitle" class="text-xs text-slate-400 mt-1">Unlock your expense records</p>
+        <h2 id="pinLockTitle" class="text-xl sm:text-2xl font-black text-white tracking-tight">Enter 4-Digit PIN</h2>
+        <p id="pinLockSubtitle" class="text-xs sm:text-sm text-slate-400 mt-1">Unlock your expense records</p>
       </div>
 
       <!-- 4 PIN Indicator Dots -->
-      <div id="pinDotsContainer" class="flex items-center justify-center gap-4 py-2">
-        <div class="pin-dot w-4 h-4 rounded-full border-2 border-slate-700 bg-slate-900 transition-all duration-150"></div>
-        <div class="pin-dot w-4 h-4 rounded-full border-2 border-slate-700 bg-slate-900 transition-all duration-150"></div>
-        <div class="pin-dot w-4 h-4 rounded-full border-2 border-slate-700 bg-slate-900 transition-all duration-150"></div>
-        <div class="pin-dot w-4 h-4 rounded-full border-2 border-slate-700 bg-slate-900 transition-all duration-150"></div>
+      <div id="pinDotsContainer" class="flex items-center justify-center gap-4 sm:gap-5 py-2">
+        <div class="pin-dot w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 border-zinc-700 bg-zinc-900 transition-all duration-150"></div>
+        <div class="pin-dot w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 border-zinc-700 bg-zinc-900 transition-all duration-150"></div>
+        <div class="pin-dot w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 border-zinc-700 bg-zinc-900 transition-all duration-150"></div>
+        <div class="pin-dot w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 border-zinc-700 bg-zinc-900 transition-all duration-150"></div>
       </div>
     </div>
 
     <!-- Numeric Keypad (Bottom) -->
-    <div class="w-full max-w-[290px] sm:max-w-[320px] mx-auto pb-safe">
-      <div class="grid grid-cols-3 gap-y-3.5 gap-x-4 sm:gap-y-4 sm:gap-x-5 items-center justify-items-center text-center">
+    <div class="w-full max-w-[340px] sm:max-w-[375px] mx-auto pb-safe">
+      <div class="grid grid-cols-3 gap-y-4 sm:gap-y-5 gap-x-5 sm:gap-x-7 items-center justify-items-center text-center">
         <!-- 1 -->
         <button
           type="button"
-          class="pin-key w-[72px] h-[72px] sm:w-[78px] sm:h-[78px] rounded-full border border-slate-700/80 hover:border-red-500 bg-slate-950/80 hover:bg-slate-900 active:bg-red-600 active:border-red-500 active:text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-md shadow-black/40 select-none touch-manipulation flex flex-col items-center justify-center group"
+          class="pin-key w-[84px] h-[84px] sm:w-[92px] sm:h-[92px] rounded-full border-[1.5px] border-zinc-700/80 hover:border-red-500 bg-zinc-950/80 hover:bg-zinc-900 active:bg-red-600 active:border-red-500 active:text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-lg shadow-black/60 select-none touch-manipulation flex flex-col items-center justify-center group"
           data-key="1"
         >
-          <span class="text-2xl sm:text-3xl font-light text-white leading-none">1</span>
-          <span class="h-[10px] sm:h-[11px]"></span>
+          <span class="text-3xl sm:text-4xl font-light text-white leading-none tracking-tight">1</span>
+          <span class="h-[12px] sm:h-[13px]"></span>
         </button>
 
         <!-- 2 ABC -->
         <button
           type="button"
-          class="pin-key w-[72px] h-[72px] sm:w-[78px] sm:h-[78px] rounded-full border border-slate-700/80 hover:border-red-500 bg-slate-950/80 hover:bg-slate-900 active:bg-red-600 active:border-red-500 active:text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-md shadow-black/40 select-none touch-manipulation flex flex-col items-center justify-center group"
+          class="pin-key w-[84px] h-[84px] sm:w-[92px] sm:h-[92px] rounded-full border-[1.5px] border-zinc-700/80 hover:border-red-500 bg-zinc-950/80 hover:bg-zinc-900 active:bg-red-600 active:border-red-500 active:text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-lg shadow-black/60 select-none touch-manipulation flex flex-col items-center justify-center group"
           data-key="2"
         >
-          <span class="text-2xl sm:text-3xl font-light text-white leading-none">2</span>
-          <span class="text-[8px] sm:text-[9px] tracking-widest text-slate-400 group-active:text-white/90 font-medium uppercase leading-none mt-1">ABC</span>
+          <span class="text-3xl sm:text-4xl font-light text-white leading-none tracking-tight">2</span>
+          <span class="text-[10px] sm:text-[11px] tracking-[0.2em] text-zinc-400 group-hover:text-red-300 group-active:text-white/90 font-medium uppercase leading-none mt-1">ABC</span>
         </button>
 
         <!-- 3 DEF -->
         <button
           type="button"
-          class="pin-key w-[72px] h-[72px] sm:w-[78px] sm:h-[78px] rounded-full border border-slate-700/80 hover:border-red-500 bg-slate-950/80 hover:bg-slate-900 active:bg-red-600 active:border-red-500 active:text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-md shadow-black/40 select-none touch-manipulation flex flex-col items-center justify-center group"
+          class="pin-key w-[84px] h-[84px] sm:w-[92px] sm:h-[92px] rounded-full border-[1.5px] border-zinc-700/80 hover:border-red-500 bg-zinc-950/80 hover:bg-zinc-900 active:bg-red-600 active:border-red-500 active:text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-lg shadow-black/60 select-none touch-manipulation flex flex-col items-center justify-center group"
           data-key="3"
         >
-          <span class="text-2xl sm:text-3xl font-light text-white leading-none">3</span>
-          <span class="text-[8px] sm:text-[9px] tracking-widest text-slate-400 group-active:text-white/90 font-medium uppercase leading-none mt-1">DEF</span>
+          <span class="text-3xl sm:text-4xl font-light text-white leading-none tracking-tight">3</span>
+          <span class="text-[10px] sm:text-[11px] tracking-[0.2em] text-zinc-400 group-hover:text-red-300 group-active:text-white/90 font-medium uppercase leading-none mt-1">DEF</span>
         </button>
 
         <!-- 4 GHI -->
         <button
           type="button"
-          class="pin-key w-[72px] h-[72px] sm:w-[78px] sm:h-[78px] rounded-full border border-slate-700/80 hover:border-red-500 bg-slate-950/80 hover:bg-slate-900 active:bg-red-600 active:border-red-500 active:text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-md shadow-black/40 select-none touch-manipulation flex flex-col items-center justify-center group"
+          class="pin-key w-[84px] h-[84px] sm:w-[92px] sm:h-[92px] rounded-full border-[1.5px] border-zinc-700/80 hover:border-red-500 bg-zinc-950/80 hover:bg-zinc-900 active:bg-red-600 active:border-red-500 active:text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-lg shadow-black/60 select-none touch-manipulation flex flex-col items-center justify-center group"
           data-key="4"
         >
-          <span class="text-2xl sm:text-3xl font-light text-white leading-none">4</span>
-          <span class="text-[8px] sm:text-[9px] tracking-widest text-slate-400 group-active:text-white/90 font-medium uppercase leading-none mt-1">GHI</span>
+          <span class="text-3xl sm:text-4xl font-light text-white leading-none tracking-tight">4</span>
+          <span class="text-[10px] sm:text-[11px] tracking-[0.2em] text-zinc-400 group-hover:text-red-300 group-active:text-white/90 font-medium uppercase leading-none mt-1">GHI</span>
         </button>
 
         <!-- 5 JKL -->
         <button
           type="button"
-          class="pin-key w-[72px] h-[72px] sm:w-[78px] sm:h-[78px] rounded-full border border-slate-700/80 hover:border-red-500 bg-slate-950/80 hover:bg-slate-900 active:bg-red-600 active:border-red-500 active:text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-md shadow-black/40 select-none touch-manipulation flex flex-col items-center justify-center group"
+          class="pin-key w-[84px] h-[84px] sm:w-[92px] sm:h-[92px] rounded-full border-[1.5px] border-zinc-700/80 hover:border-red-500 bg-zinc-950/80 hover:bg-zinc-900 active:bg-red-600 active:border-red-500 active:text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-lg shadow-black/60 select-none touch-manipulation flex flex-col items-center justify-center group"
           data-key="5"
         >
-          <span class="text-2xl sm:text-3xl font-light text-white leading-none">5</span>
-          <span class="text-[8px] sm:text-[9px] tracking-widest text-slate-400 group-active:text-white/90 font-medium uppercase leading-none mt-1">JKL</span>
+          <span class="text-3xl sm:text-4xl font-light text-white leading-none tracking-tight">5</span>
+          <span class="text-[10px] sm:text-[11px] tracking-[0.2em] text-zinc-400 group-hover:text-red-300 group-active:text-white/90 font-medium uppercase leading-none mt-1">JKL</span>
         </button>
 
         <!-- 6 MNO -->
         <button
           type="button"
-          class="pin-key w-[72px] h-[72px] sm:w-[78px] sm:h-[78px] rounded-full border border-slate-700/80 hover:border-red-500 bg-slate-950/80 hover:bg-slate-900 active:bg-red-600 active:border-red-500 active:text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-md shadow-black/40 select-none touch-manipulation flex flex-col items-center justify-center group"
+          class="pin-key w-[84px] h-[84px] sm:w-[92px] sm:h-[92px] rounded-full border-[1.5px] border-zinc-700/80 hover:border-red-500 bg-zinc-950/80 hover:bg-zinc-900 active:bg-red-600 active:border-red-500 active:text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-lg shadow-black/60 select-none touch-manipulation flex flex-col items-center justify-center group"
           data-key="6"
         >
-          <span class="text-2xl sm:text-3xl font-light text-white leading-none">6</span>
-          <span class="text-[8px] sm:text-[9px] tracking-widest text-slate-400 group-active:text-white/90 font-medium uppercase leading-none mt-1">MNO</span>
+          <span class="text-3xl sm:text-4xl font-light text-white leading-none tracking-tight">6</span>
+          <span class="text-[10px] sm:text-[11px] tracking-[0.2em] text-zinc-400 group-hover:text-red-300 group-active:text-white/90 font-medium uppercase leading-none mt-1">MNO</span>
         </button>
 
         <!-- 7 PQRS -->
         <button
           type="button"
-          class="pin-key w-[72px] h-[72px] sm:w-[78px] sm:h-[78px] rounded-full border border-slate-700/80 hover:border-red-500 bg-slate-950/80 hover:bg-slate-900 active:bg-red-600 active:border-red-500 active:text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-md shadow-black/40 select-none touch-manipulation flex flex-col items-center justify-center group"
+          class="pin-key w-[84px] h-[84px] sm:w-[92px] sm:h-[92px] rounded-full border-[1.5px] border-zinc-700/80 hover:border-red-500 bg-zinc-950/80 hover:bg-zinc-900 active:bg-red-600 active:border-red-500 active:text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-lg shadow-black/60 select-none touch-manipulation flex flex-col items-center justify-center group"
           data-key="7"
         >
-          <span class="text-2xl sm:text-3xl font-light text-white leading-none">7</span>
-          <span class="text-[8px] sm:text-[9px] tracking-widest text-slate-400 group-active:text-white/90 font-medium uppercase leading-none mt-1">PQRS</span>
+          <span class="text-3xl sm:text-4xl font-light text-white leading-none tracking-tight">7</span>
+          <span class="text-[10px] sm:text-[11px] tracking-[0.2em] text-zinc-400 group-hover:text-red-300 group-active:text-white/90 font-medium uppercase leading-none mt-1">PQRS</span>
         </button>
 
         <!-- 8 TUV -->
         <button
           type="button"
-          class="pin-key w-[72px] h-[72px] sm:w-[78px] sm:h-[78px] rounded-full border border-slate-700/80 hover:border-red-500 bg-slate-950/80 hover:bg-slate-900 active:bg-red-600 active:border-red-500 active:text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-md shadow-black/40 select-none touch-manipulation flex flex-col items-center justify-center group"
+          class="pin-key w-[84px] h-[84px] sm:w-[92px] sm:h-[92px] rounded-full border-[1.5px] border-zinc-700/80 hover:border-red-500 bg-zinc-950/80 hover:bg-zinc-900 active:bg-red-600 active:border-red-500 active:text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-lg shadow-black/60 select-none touch-manipulation flex flex-col items-center justify-center group"
           data-key="8"
         >
-          <span class="text-2xl sm:text-3xl font-light text-white leading-none">8</span>
-          <span class="text-[8px] sm:text-[9px] tracking-widest text-slate-400 group-active:text-white/90 font-medium uppercase leading-none mt-1">TUV</span>
+          <span class="text-3xl sm:text-4xl font-light text-white leading-none tracking-tight">8</span>
+          <span class="text-[10px] sm:text-[11px] tracking-[0.2em] text-zinc-400 group-hover:text-red-300 group-active:text-white/90 font-medium uppercase leading-none mt-1">TUV</span>
         </button>
 
         <!-- 9 WXYZ -->
         <button
           type="button"
-          class="pin-key w-[72px] h-[72px] sm:w-[78px] sm:h-[78px] rounded-full border border-slate-700/80 hover:border-red-500 bg-slate-950/80 hover:bg-slate-900 active:bg-red-600 active:border-red-500 active:text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-md shadow-black/40 select-none touch-manipulation flex flex-col items-center justify-center group"
+          class="pin-key w-[84px] h-[84px] sm:w-[92px] sm:h-[92px] rounded-full border-[1.5px] border-zinc-700/80 hover:border-red-500 bg-zinc-950/80 hover:bg-zinc-900 active:bg-red-600 active:border-red-500 active:text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-lg shadow-black/60 select-none touch-manipulation flex flex-col items-center justify-center group"
           data-key="9"
         >
-          <span class="text-2xl sm:text-3xl font-light text-white leading-none">9</span>
-          <span class="text-[8px] sm:text-[9px] tracking-widest text-slate-400 group-active:text-white/90 font-medium uppercase leading-none mt-1">WXYZ</span>
+          <span class="text-3xl sm:text-4xl font-light text-white leading-none tracking-tight">9</span>
+          <span class="text-[10px] sm:text-[11px] tracking-[0.2em] text-zinc-400 group-hover:text-red-300 group-active:text-white/90 font-medium uppercase leading-none mt-1">WXYZ</span>
         </button>
 
         <!-- Bottom Row: Back Arrow, 0, Checkmark -->
@@ -1880,11 +2144,11 @@
         <button
           type="button"
           id="pinBackspaceBtn"
-          class="w-[72px] h-[72px] sm:w-[78px] sm:h-[78px] rounded-full hover:bg-slate-900/60 active:scale-90 text-slate-300 hover:text-red-400 active:text-red-500 flex items-center justify-center transition-all cursor-pointer select-none touch-manipulation"
+          class="w-[84px] h-[84px] sm:w-[92px] sm:h-[92px] flex items-center justify-center text-zinc-400 hover:text-red-400 active:text-red-500 active:scale-90 transition-all cursor-pointer select-none touch-manipulation"
           title="Backspace (Tap to delete, hold to clear)"
           aria-label="Backspace"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 sm:w-9 sm:h-9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-9 h-9 sm:w-10 sm:h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
             <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
           </svg>
         </button>
@@ -1892,33 +2156,33 @@
         <!-- Center: 0 + -->
         <button
           type="button"
-          class="pin-key w-[72px] h-[72px] sm:w-[78px] sm:h-[78px] rounded-full border border-slate-700/80 hover:border-red-500 bg-slate-950/80 hover:bg-slate-900 active:bg-red-600 active:border-red-500 active:text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-md shadow-black/40 select-none touch-manipulation flex flex-col items-center justify-center group"
+          class="pin-key w-[84px] h-[84px] sm:w-[92px] sm:h-[92px] rounded-full border-[1.5px] border-zinc-700/80 hover:border-red-500 bg-zinc-950/80 hover:bg-zinc-900 active:bg-red-600 active:border-red-500 active:text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-lg shadow-black/60 select-none touch-manipulation flex flex-col items-center justify-center group"
           data-key="0"
         >
-          <span class="text-2xl sm:text-3xl font-light text-white leading-none">0</span>
-          <span class="text-xs text-slate-400 group-active:text-white/90 font-light leading-none mt-1">+</span>
+          <span class="text-3xl sm:text-4xl font-light text-white leading-none tracking-tight">0</span>
+          <span class="text-sm sm:text-base text-zinc-400 group-hover:text-red-300 group-active:text-white/90 font-light leading-none mt-0.5">+</span>
         </button>
 
         <!-- Right: Submit Checkmark -->
         <button
           type="button"
           id="pinSubmitBtn"
-          class="w-[72px] h-[72px] sm:w-[78px] sm:h-[78px] rounded-full hover:bg-slate-900/60 active:scale-90 text-slate-300 hover:text-red-400 active:text-red-500 flex items-center justify-center transition-all cursor-pointer select-none touch-manipulation"
+          class="w-[84px] h-[84px] sm:w-[92px] sm:h-[92px] flex items-center justify-center text-zinc-400 hover:text-emerald-400 active:text-emerald-500 active:scale-90 transition-all cursor-pointer select-none touch-manipulation"
           title="Enter PIN"
           aria-label="Enter PIN"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 sm:w-9 sm:h-9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-9 h-9 sm:w-10 sm:h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
           </svg>
         </button>
       </div>
 
       <!-- Forgot / Reset PIN Link -->
-      <div class="mt-3.5 text-center">
+      <div class="mt-4 text-center">
         <button
           id="pinForgotBtn"
           type="button"
-          class="text-[11px] text-slate-500 hover:text-red-400 underline underline-offset-2 transition-colors cursor-pointer"
+          class="text-xs text-slate-500 hover:text-red-400 underline underline-offset-2 transition-colors cursor-pointer"
         >
           Forgot PIN?
         </button>
@@ -2043,6 +2307,49 @@
       const editModalTag = document.getElementById('editModalTag');
       const editModalDate = document.getElementById('editModalDate');
       const editModalCancelBtn = document.getElementById('editModalCancelBtn');
+      const editModalDeleteBtn = document.getElementById('editModalDeleteBtn');
+
+      // Record Expense via Photo Elements
+      const recordViaPhotoBtn = document.getElementById('recordViaPhotoBtn');
+      const photoExpenseInput = document.getElementById('photoExpenseInput');
+      const photoReviewModal = document.getElementById('photoReviewModal');
+      const photoReviewCard = document.getElementById('photoReviewCard');
+      const photoReviewCloseBtn = document.getElementById('photoReviewCloseBtn');
+      const photoReviewBadge = document.getElementById('photoReviewBadge');
+      const photoReviewSubtitle = document.getElementById('photoReviewSubtitle');
+      const photoScanningBanner = document.getElementById('photoScanningBanner');
+      const photoScanStatusText = document.getElementById('photoScanStatusText');
+      const photoScanPercent = document.getElementById('photoScanPercent');
+      const photoScanProgressBar = document.getElementById('photoScanProgressBar');
+      const photoThumbnailSection = document.getElementById('photoThumbnailSection');
+      const photoThumbnailImg = document.getElementById('photoThumbnailImg');
+      const photoThumbnailName = document.getElementById('photoThumbnailName');
+      const photoAddManualBtn = document.getElementById('photoAddManualBtn');
+      const photoStagedListContainer = document.getElementById('photoStagedListContainer');
+      const photoDiscardBtn = document.getElementById('photoDiscardBtn');
+      const photoStagedTotalAmt = document.getElementById('photoStagedTotalAmt');
+      const photoSyncAllBtn = document.getElementById('photoSyncAllBtn');
+      const photoSyncBtnLabel = document.getElementById('photoSyncBtnLabel');
+
+      // Photo Staged Item Edit Modal Elements
+      const photoItemEditModal = document.getElementById('photoItemEditModal');
+      const photoItemEditCard = document.getElementById('photoItemEditCard');
+      const photoItemEditCloseX = document.getElementById('photoItemEditCloseX');
+      const photoItemEditForm = document.getElementById('photoItemEditForm');
+      const photoItemEditId = document.getElementById('photoItemEditId');
+      const photoItemEditAmount = document.getElementById('photoItemEditAmount');
+      const photoItemEditReason = document.getElementById('photoItemEditReason');
+      const photoItemEditTag = document.getElementById('photoItemEditTag');
+      const photoItemEditDate = document.getElementById('photoItemEditDate');
+      const photoItemEditCancelBtn = document.getElementById('photoItemEditCancelBtn');
+
+      let stagedPhotoExpenses = [];
+      let currentUploadedPhotoDataUrl = null;
+      let activePhotoLongPressCard = null;
+      let photoLongPressTimer = null;
+      let isPhotoLongPressTriggered = false;
+      let photoLongPressStartX = 0;
+      let photoLongPressStartY = 0;
 
       // Export CSV Filter Modal Elements
       const exportCsvModal = document.getElementById('exportCsvModal');
@@ -3201,9 +3508,9 @@
         tabs.forEach(t => {
           if (!t.el) return;
           if (t.id === currentSummaryModalPeriod) {
-            t.el.className = 'px-2.5 py-1 rounded-lg text-xs font-black transition-all cursor-pointer bg-red-600 text-white shadow-sm';
+            t.el.className = 'px-3 py-1.5 rounded-xl text-xs sm:text-sm font-black transition-all cursor-pointer bg-red-600 text-white shadow-sm';
           } else {
-            t.el.className = 'px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer text-slate-400 hover:text-white';
+            t.el.className = 'px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer text-slate-400 hover:text-white';
           }
         });
 
@@ -3238,9 +3545,9 @@
         if (summaryModalListContainer) {
           if (filtered.length === 0) {
             summaryModalListContainer.innerHTML = `
-              <div class="h-28 flex flex-col items-center justify-center text-xs text-slate-500 text-center space-y-1">
-                <p class="font-bold text-slate-400">No expenses recorded for ${periodTitle.replace("'s Spending", "")} yet.</p>
-                <p class="text-[11px] text-slate-600">Enter an amount and reason above to record an expense.</p>
+              <div class="h-36 flex flex-col items-center justify-center text-sm text-slate-500 text-center space-y-1.5 p-4">
+                <p class="font-extrabold text-slate-300 text-sm sm:text-base">No expenses recorded for ${periodTitle.replace("'s Spending", "")} yet.</p>
+                <p class="text-xs text-slate-500">Enter an amount and reason above to record an expense.</p>
               </div>
             `;
           } else {
@@ -3253,25 +3560,26 @@
 
               return `
                 <div
+                  data-expense-item-id="${escapeHtml(item.id)}"
                   data-expense-id="${escapeHtml(item.id)}"
-                  class="expense-item-card px-2.5 py-3 hover:bg-slate-850/60 active:bg-slate-800/60 transition-colors flex items-center justify-between gap-3 select-none cursor-pointer"
-                  title="Long press to edit"
+                  class="expense-item-card p-3.5 sm:p-4 rounded-2xl bg-slate-950/70 border border-slate-800 hover:border-slate-700 active:bg-slate-800/60 transition-all flex items-center justify-between gap-3 select-none cursor-pointer shadow-sm"
+                  title="Tap or long-press to edit"
                 >
                   <div class="min-w-0 flex-1">
-                    <p class="expense-reason-text text-xs sm:text-sm font-bold text-slate-100 leading-snug break-words">
+                    <p class="expense-reason-text text-sm sm:text-base font-extrabold text-white leading-snug break-words">
                       ${escapeHtml(item.reason)}
                     </p>
-                    <div class="flex items-center gap-1.5 mt-1 flex-wrap">
-                      <span class="text-[9px] font-bold px-2 py-0.5 rounded-md border shrink-0 ${tagClass}">
+                    <div class="flex items-center gap-2 mt-1.5 flex-wrap">
+                      <span class="text-[11px] sm:text-xs font-bold px-2.5 py-1 rounded-lg border shrink-0 ${tagClass}">
                         ${escapeHtml(item.tag || 'Misc')}
                       </span>
-                      <span class="text-[10px] text-slate-400 tabular-nums">
+                      <span class="text-xs text-slate-300 tabular-nums font-medium">
                         ${dateStr} • ${timeStr}
                       </span>
                     </div>
                   </div>
-                  <div class="flex items-center gap-2 shrink-0">
-                    <span class="text-xs sm:text-sm font-black text-white tabular-nums">
+                  <div class="flex items-center gap-2.5 shrink-0">
+                    <span class="text-base sm:text-lg font-black text-rose-400 tabular-nums">
                       - ${formatINR(item.amount)}
                     </span>
                     <button
@@ -3279,10 +3587,10 @@
                       data-delete-id="${escapeHtml(item.id)}"
                       data-delete-amount="${item.amount}"
                       data-delete-reason="${escapeHtml(item.reason)}"
-                      class="delete-expense-btn w-7 h-7 rounded-xl bg-slate-950/60 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 border border-slate-800 flex items-center justify-center transition-colors cursor-pointer active:scale-95"
+                      class="delete-expense-btn w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-900 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 border border-slate-800 flex items-center justify-center transition-colors cursor-pointer active:scale-95 shadow-sm"
                       title="Delete Expense"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 sm:w-5 sm:h-5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                       </svg>
                     </button>
@@ -3313,7 +3621,7 @@
           }
           const card = e.target.closest('.expense-item-card');
           if (card) {
-            const id = card.getAttribute('data-expense-id');
+            const id = card.getAttribute('data-expense-item-id') || card.getAttribute('data-expense-id');
             const target = expenses.find(i => i.id === id);
             if (target) {
               openEditModal(target);
@@ -3556,9 +3864,9 @@
         tabs.forEach(t => {
           if (!t.el) return;
           if (t.id === currentBudgetModalTab) {
-            t.el.className = 'py-1.5 px-1 rounded-lg text-xs font-black transition-all cursor-pointer text-center bg-red-600 text-white shadow-sm';
+            t.el.className = 'py-2.5 px-2 rounded-xl text-xs sm:text-sm font-black transition-all cursor-pointer text-center bg-red-600 text-white shadow-sm';
           } else {
-            t.el.className = 'py-1.5 px-1 rounded-lg text-xs font-bold transition-all cursor-pointer text-center text-slate-400 hover:text-white';
+            t.el.className = 'py-2.5 px-2 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer text-center text-slate-400 hover:text-white';
           }
         });
 
@@ -3588,16 +3896,16 @@
           dotClass = 'bg-emerald-400';
         }
 
-        if (budgetModalFilterDot) budgetModalFilterDot.className = `w-2 h-2 rounded-full ${dotClass}`;
+        if (budgetModalFilterDot) budgetModalFilterDot.className = `w-2.5 h-2.5 rounded-full ${dotClass}`;
         if (budgetModalFilterStatus) budgetModalFilterStatus.textContent = statusText;
         if (budgetModalFilterTotal) budgetModalFilterTotal.textContent = formatINR(totalNum);
 
         if (budgetModalListContainer) {
           if (displayed.length === 0) {
             budgetModalListContainer.innerHTML = `
-              <div class="h-28 flex flex-col items-center justify-center text-xs text-slate-500 text-center space-y-1">
-                <p class="font-bold text-slate-400">No ${currentBudgetModalTab} budget items for ${formatMonthLabel(currentBudgetMonthKey)}.</p>
-                <p class="text-[11px] text-slate-600">Use the form on the Budget screen to plan upcoming expenses.</p>
+              <div class="h-36 flex flex-col items-center justify-center text-sm text-slate-500 text-center space-y-1.5 p-4">
+                <p class="font-extrabold text-slate-300 text-sm sm:text-base">No ${currentBudgetModalTab} budget items for ${formatMonthLabel(currentBudgetMonthKey)}.</p>
+                <p class="text-xs text-slate-500">Use the form on the Budget screen to plan upcoming expenses.</p>
               </div>
             `;
           } else {
@@ -3613,32 +3921,32 @@
                 return `
                   <div
                     data-budget-item-id="${escapeHtml(item.id)}"
-                    class="budget-item-card px-3 py-3 transition-all opacity-80 flex items-center justify-between gap-3 hover:bg-slate-850/40 select-none cursor-pointer"
-                    title="Completed task • Tap Restore to unlock"
+                    class="budget-item-card p-3.5 sm:p-4 rounded-2xl bg-slate-950/60 border border-slate-800/80 hover:border-slate-700 transition-all opacity-85 flex items-center justify-between gap-3 select-none cursor-pointer shadow-sm"
+                    title="Completed • Tap or long-press to edit"
                   >
-                    <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 text-xs font-black">
+                    <span class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center shrink-0 text-base font-black">
                       ✓
                     </span>
                     <div class="min-w-0 flex-1">
-                      <p class="budget-item-title text-xs sm:text-sm font-bold line-through text-slate-400 leading-snug break-words decoration-emerald-500 decoration-2">
+                      <p class="budget-item-title text-sm sm:text-base font-bold line-through text-slate-400 leading-snug break-words decoration-emerald-500 decoration-2">
                         ${escapeHtml(item.reason)}
                       </p>
-                      <div class="flex items-center gap-1.5 mt-0.5 flex-wrap">
-                        <span class="text-[9px] font-bold px-2 py-0.5 rounded-md border bg-slate-800/80 text-slate-400 border-slate-700 shrink-0">
+                      <div class="flex items-center gap-2 mt-1.5 flex-wrap">
+                        <span class="text-[11px] sm:text-xs font-bold px-2.5 py-1 rounded-lg border bg-slate-800/80 text-slate-400 border-slate-700 shrink-0">
                           ${escapeHtml(item.tag || 'Bills')}
                         </span>
-                        <span class="text-[10px] text-emerald-400 font-medium">✓ Paid & Locked</span>
-                        <span class="text-[10px] text-slate-500 tabular-nums">Due: ${escapeHtml(item.date)}</span>
+                        <span class="text-xs sm:text-sm text-emerald-400 font-bold">✓ Paid & Locked</span>
+                        <span class="text-xs text-slate-500 tabular-nums">Due: ${escapeHtml(item.date)}</span>
                       </div>
                     </div>
                     <div class="flex items-center gap-2 shrink-0">
-                      <span class="text-xs sm:text-sm font-black line-through text-slate-400 tabular-nums">
+                      <span class="text-sm sm:text-base font-black line-through text-slate-400 tabular-nums">
                         ${formatINR(item.amount)}
                       </span>
                       <button
                         type="button"
                         data-restore-budget-id="${escapeHtml(item.id)}"
-                        class="px-2 py-1 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[10px] font-bold transition-all cursor-pointer flex items-center gap-1 active:scale-95"
+                        class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 active:scale-95 border border-slate-700"
                         title="Restore to Pending"
                       >
                         <span>↩</span>
@@ -3647,10 +3955,10 @@
                       <button
                         type="button"
                         data-delete-budget-id="${escapeHtml(item.id)}"
-                        class="delete-budget-btn w-7 h-7 rounded-xl bg-slate-900 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 border border-slate-800 flex items-center justify-center transition-colors cursor-pointer active:scale-95"
+                        class="delete-budget-btn w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-900 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 border border-slate-800 flex items-center justify-center transition-colors cursor-pointer active:scale-95 shadow-sm"
                         title="Delete"
                       >
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 sm:w-5 sm:h-5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                           <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
                       </button>
@@ -3659,50 +3967,50 @@
                 `;
               }
 
-              // Pending Item Card (Tap to lock into expenses)
+              // Pending Item Card (Tap ₹ to lock into expenses • Tap card to edit)
               return `
                 <div
                   data-budget-item-id="${escapeHtml(item.id)}"
-                  class="budget-item-card px-3 py-3 hover:bg-slate-850/60 active:bg-slate-800/60 transition-colors flex items-center justify-between gap-3 select-none cursor-pointer"
-                  title="Tap to spend & lock into expenses • Long-press to edit"
+                  class="budget-item-card p-3.5 sm:p-4 rounded-2xl bg-slate-950/70 border border-slate-800 hover:border-slate-700 active:bg-slate-800/60 transition-all flex items-center justify-between gap-3 select-none cursor-pointer shadow-sm"
+                  title="Tap ₹ to lock into expenses • Tap card to edit"
                 >
                   <!-- Start Portion: Quick Spend / Lock Button -->
                   <button
                     type="button"
                     data-lock-budget-id="${escapeHtml(item.id)}"
-                    class="w-7 h-7 rounded-xl border border-amber-500/40 bg-amber-500/10 hover:bg-emerald-500/20 hover:border-emerald-500 text-amber-400 hover:text-emerald-400 flex items-center justify-center shrink-0 transition-all cursor-pointer active:scale-90"
+                    class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl border-2 border-amber-500/50 bg-amber-500/15 hover:bg-emerald-500/20 hover:border-emerald-500 text-amber-300 hover:text-emerald-300 flex items-center justify-center shrink-0 transition-all cursor-pointer active:scale-90 shadow-md"
                     title="Lock into Expenses"
                   >
-                    <span class="text-xs font-bold leading-none">₹</span>
+                    <span class="text-base sm:text-lg font-black leading-none">₹</span>
                   </button>
 
                   <!-- Center: Reason (break-words), Tag & Target Date -->
                   <div class="min-w-0 flex-1">
-                    <p class="budget-item-title text-xs sm:text-sm font-bold text-slate-100 leading-snug break-words">
+                    <p class="budget-item-title text-sm sm:text-base font-extrabold text-white leading-snug break-words">
                       ${escapeHtml(item.reason)}
                     </p>
-                    <div class="flex items-center gap-1.5 mt-1 flex-wrap">
-                      <span class="text-[9px] font-bold px-2 py-0.5 rounded-md border shrink-0 ${tagClass}">
+                    <div class="flex items-center gap-2 mt-1.5 flex-wrap">
+                      <span class="text-[11px] sm:text-xs font-bold px-2.5 py-1 rounded-lg border shrink-0 ${tagClass}">
                         ${escapeHtml(item.tag || 'Bills')}
                       </span>
-                      <span class="text-[10px] text-slate-400 tabular-nums">
+                      <span class="text-xs sm:text-sm text-slate-300 tabular-nums font-medium">
                         Target: ${escapeHtml(item.date)}
                       </span>
                     </div>
                   </div>
 
                   <!-- End Portion: Amount and Separate Delete Button -->
-                  <div class="flex items-center gap-2 shrink-0">
-                    <span class="text-xs sm:text-sm font-black text-white tabular-nums">
+                  <div class="flex items-center gap-2.5 shrink-0">
+                    <span class="text-base sm:text-lg font-black text-white tabular-nums">
                       ${formatINR(item.amount)}
                     </span>
                     <button
                       type="button"
                       data-delete-budget-id="${escapeHtml(item.id)}"
-                      class="delete-budget-btn w-7 h-7 rounded-xl bg-slate-950/60 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 border border-slate-800 flex items-center justify-center transition-colors cursor-pointer active:scale-95"
+                      class="delete-budget-btn w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-900 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 border border-slate-800 flex items-center justify-center transition-colors cursor-pointer active:scale-95 shadow-sm"
                       title="Delete"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 sm:w-5 sm:h-5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                       </svg>
                     </button>
@@ -3714,7 +4022,7 @@
         }
       }
 
-      // Budget Container Click Handlers (Lock into expenses, Restore, Delete)
+      // Budget Container Click Handlers (Lock into expenses, Restore, Delete, Edit)
       if (budgetModalListContainer) {
         budgetModalListContainer.addEventListener('click', e => {
           if (isBudgetLongPressTriggered) {
@@ -3741,18 +4049,19 @@
             return;
           }
 
+          const lockBtn = e.target.closest('[data-lock-budget-id]');
+          if (lockBtn) {
+            const id = lockBtn.getAttribute('data-lock-budget-id');
+            lockBudgetItemIntoExpenses(id);
+            return;
+          }
+
           const card = e.target.closest('.budget-item-card');
           if (card) {
             const id = card.getAttribute('data-budget-item-id');
             const target = budgetItems.find(b => b.id === id);
             if (target) {
-              if (target.completed) {
-                // Completed: tap opens edit modal
-                openEditBudgetModal(target);
-              } else {
-                // Pending: tap locks into expenses
-                lockBudgetItemIntoExpenses(id);
-              }
+              openEditBudgetModal(target);
             }
             return;
           }
@@ -4464,12 +4773,12 @@
         itemPendingDeleteId = item.id;
         isClearAllPending = false;
 
-        deleteModalTitle.textContent = 'Delete Expense?';
+        deleteModalTitle.textContent = 'You want to delete?';
         deleteModalReason.textContent = item.reason;
         deleteModalAmount.textContent = `- ${formatINR(item.amount)}`;
         deleteModalMeta.textContent = `${item.tag || 'Misc'} • ${formatExpenseDate(item.createdAt)}`;
         deleteModalDesc.textContent = 'This expense record will be permanently deleted from your phone.';
-        deleteConfirmBtn.textContent = 'Delete';
+        deleteConfirmBtn.textContent = 'Yes, Delete';
 
         deleteConfirmModal.classList.remove('opacity-0', 'pointer-events-none');
         deleteConfirmCard.classList.remove('scale-90');
@@ -4521,6 +4830,7 @@
           }
           if (navigator.vibrate) navigator.vibrate(35);
           closeDeleteModal();
+          closeEditModal();
         }
       });
 
@@ -4571,6 +4881,15 @@
 
       if (editModalCloseX) editModalCloseX.addEventListener('click', closeEditModal);
       if (editModalCancelBtn) editModalCancelBtn.addEventListener('click', closeEditModal);
+      if (editModalDeleteBtn) {
+        editModalDeleteBtn.addEventListener('click', () => {
+          const id = editModalId.value;
+          const target = expenses.find(i => i.id === id);
+          if (target) {
+            openDeleteModal(target);
+          }
+        });
+      }
       if (editExpenseModal) {
         editExpenseModal.addEventListener('click', e => {
           if (e.target === editExpenseModal) closeEditModal();
@@ -4648,7 +4967,7 @@
 
         longPressTimer = setTimeout(() => {
           isLongPressTriggered = true;
-          const id = card.getAttribute('data-expense-item-id');
+          const id = card.getAttribute('data-expense-item-id') || card.getAttribute('data-expense-id');
           cancelLongPress();
 
           if (id) {
@@ -4658,6 +4977,10 @@
               openEditModal(target);
             }
           }
+
+          setTimeout(() => {
+            isLongPressTriggered = false;
+          }, 350);
         }, 450); // 450ms long press duration
       }
 
@@ -4969,6 +5292,503 @@
           URL.revokeObjectURL(url);
 
           closeExportCsvModal();
+        });
+      }
+
+      // ==========================================
+      // RECORD EXPENSE VIA PHOTO - OCR & PARSER WORKFLOW
+      // ==========================================
+      function parsePaymentScreenshotText(text) {
+        if (!text) return [];
+        const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+        const items = [];
+
+        const extractAmount = (str) => {
+          const m = str.match(/(?:₹|INR|Rs\.?|-₹)\s*([\d,]+(?:\.\d{1,2})?)/i);
+          if (m) {
+            const num = parseFloat(m[1].replace(/,/g, ''));
+            if (!isNaN(num) && num > 0) return num;
+          }
+          const m2 = str.match(/(?:Paid|Debited|Transfer|Amount)\s*:?\s*₹?\s*([\d,]+(?:\.\d{1,2})?)/i);
+          if (m2) {
+            const num = parseFloat(m2[1].replace(/,/g, ''));
+            if (!isNaN(num) && num > 0) return num;
+          }
+          return null;
+        };
+
+        const inferCategory = (str) => {
+          const s = str.toLowerCase();
+          if (s.match(/swiggy|zomato|cafe|coffee|restaurant|hotel|food|tea|chai|bites|bakery|diner|kitchen|burger|pizza|biryani|juice|eats/i)) return 'Food';
+          if (s.match(/uber|ola|rapido|metro|fuel|petrol|diesel|hp|indianoil|bharat|shell|auto|cab|bus|irctc|railway|train|flight|toll|fastag/i)) return 'Travel';
+          if (s.match(/amazon|flipkart|myntra|ajio|meesho|nykaa|zara|h&m|store|mart|bazaar|retail|shopping|mall|decathlon/i)) return 'Shopping';
+          if (s.match(/recharge|airtel|jio|vi|vodafone|bescom|tneb|electric|water|gas|broadband|wifi|bill|dth|tata play|rent|maintenance/i)) return 'Bills';
+          if (s.match(/grocery|groceries|zepto|blinkit|instamart|bigbasket|supermarket|vegetable|fruits|milk|dairy/i)) return 'Groceries';
+          if (s.match(/pharmacy|apollo|medplus|medical|hospital|clinic|doctor|health|lab|pharma|dent/i)) return 'Health';
+          if (s.match(/movie|cinema|pvr|inox|bookmyshow|netflix|prime|hotstar|spotify|game|gaming/i)) return 'Entertainment';
+          return 'Misc';
+        };
+
+        const parseDateTime = (str) => {
+          try {
+            const now = new Date();
+            if (/yesterday/i.test(str)) {
+              const d = new Date(now);
+              d.setDate(d.getDate() - 1);
+              const timeMatch = str.match(/(\d{1,2}):(\d{2})\s*(AM|PM)?/i);
+              if (timeMatch) {
+                let h = parseInt(timeMatch[1], 10);
+                const m = parseInt(timeMatch[2], 10);
+                const isPM = (timeMatch[3] || '').toUpperCase() === 'PM';
+                if (isPM && h < 12) h += 12;
+                if (!isPM && h === 12) h = 0;
+                d.setHours(h, m, 0, 0);
+              }
+              return d.toISOString();
+            }
+
+            const dateMatch = str.match(/(?:(\d{1,2})\s+([A-Za-z]{3,9})(?:\s+(\d{4}))?)|(?:([A-Za-z]{3,9})\s+(\d{1,2})(?:,?\s*(\d{4}))?)/);
+            if (dateMatch) {
+              let day, monthStr, year;
+              if (dateMatch[1] && dateMatch[2]) {
+                day = parseInt(dateMatch[1], 10);
+                monthStr = dateMatch[2];
+                year = dateMatch[3] ? parseInt(dateMatch[3], 10) : now.getFullYear();
+              } else if (dateMatch[4] && dateMatch[5]) {
+                monthStr = dateMatch[4];
+                day = parseInt(dateMatch[5], 10);
+                year = dateMatch[6] ? parseInt(dateMatch[6], 10) : now.getFullYear();
+              }
+
+              const testDate = new Date(`${monthStr} ${day}, ${year}`);
+              if (!isNaN(testDate.getTime())) {
+                const timeMatch = str.match(/(\d{1,2}):(\d{2})(?:\s*(AM|PM))?/i);
+                if (timeMatch) {
+                  let h = parseInt(timeMatch[1], 10);
+                  const m = parseInt(timeMatch[2], 10);
+                  const ap = (timeMatch[3] || '').toUpperCase();
+                  if (ap === 'PM' && h < 12) h += 12;
+                  if (ap === 'AM' && h === 12) h = 0;
+                  testDate.setHours(h, m, 0, 0);
+                }
+                return testDate.toISOString();
+              }
+            }
+          } catch {}
+          return new Date().toISOString();
+        };
+
+        const isMetadataLine = (l) => {
+          return /^(Transaction (Successful|Failed|Pending)|Payment (Successful|Failed)|UPI ID|Debited from|Credited to|Banking Name|Txn ID|UTR|Google Pay|PhonePe|Amazon Pay|Paytm|Check Balance|Share Receipt|Done|Split with friends|Repeat Payment)/i.test(l);
+        };
+
+        for (let i = 0; i < lines.length; i++) {
+          const line = lines[i];
+          const amt = extractAmount(line);
+
+          if (amt) {
+            let reason = '';
+            let dateIso = new Date().toISOString();
+
+            for (let j = i - 1; j >= Math.max(0, i - 4); j--) {
+              const prev = lines[j];
+              if (isMetadataLine(prev)) continue;
+              const paidToMatch = prev.match(/Paid\s+to\s+(.+)/i) || prev.match(/To:\s*(.+)/i) || prev.match(/Paid\s+for\s+(.+)/i);
+              if (paidToMatch) {
+                reason = paidToMatch[1].trim();
+                break;
+              } else if (!reason && prev.length > 2 && !extractAmount(prev)) {
+                reason = prev;
+              }
+            }
+
+            if (!reason) {
+              for (let j = i + 1; j <= Math.min(lines.length - 1, i + 3); j++) {
+                const next = lines[j];
+                if (isMetadataLine(next)) continue;
+                const paidToMatch = next.match(/Paid\s+to\s+(.+)/i) || next.match(/To:\s*(.+)/i) || next.match(/Paid\s+for\s+(.+)/i);
+                if (paidToMatch) {
+                  reason = paidToMatch[1].trim();
+                  break;
+                } else if (!reason && next.length > 2 && !extractAmount(next)) {
+                  reason = next;
+                }
+              }
+            }
+
+            for (let j = Math.max(0, i - 3); j <= Math.min(lines.length - 1, i + 4); j++) {
+              const candidate = lines[j];
+              if (candidate.match(/(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|Yesterday|\d{1,2}:\d{2})/i)) {
+                const parsed = parseDateTime(candidate);
+                if (parsed) {
+                  dateIso = parsed;
+                  break;
+                }
+              }
+            }
+
+            reason = reason.replace(/^(Paid to|Paid for|To:)\s*/i, '').trim();
+            if (!reason) reason = 'Payment';
+
+            items.push({
+              id: 'photo_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7),
+              amount: amt,
+              reason: reason.charAt(0).toUpperCase() + reason.slice(1),
+              tag: inferCategory(reason),
+              date: dateIso
+            });
+          }
+        }
+
+        return items;
+      }
+
+      function openPhotoReviewModal() {
+        if (!photoReviewModal) return;
+        photoReviewModal.classList.remove('opacity-0', 'pointer-events-none');
+        if (photoReviewCard) {
+          photoReviewCard.classList.remove('scale-95');
+          photoReviewCard.classList.add('scale-100');
+        }
+      }
+
+      function closePhotoReviewModal() {
+        if (!photoReviewModal) return;
+        if (photoReviewCard) {
+          photoReviewCard.classList.remove('scale-100');
+          photoReviewCard.classList.add('scale-95');
+        }
+        photoReviewModal.classList.add('opacity-0', 'pointer-events-none');
+        if (photoExpenseInput) photoExpenseInput.value = '';
+        stagedPhotoExpenses = [];
+        currentUploadedPhotoDataUrl = null;
+      }
+
+      function renderPhotoStagedList() {
+        if (!photoStagedListContainer) return;
+
+        const totalAmt = stagedPhotoExpenses.reduce((acc, cur) => acc + (Number(cur.amount) || 0), 0);
+        if (photoStagedTotalAmt) photoStagedTotalAmt.textContent = formatINR(totalAmt);
+        if (photoReviewBadge) photoReviewBadge.textContent = `${stagedPhotoExpenses.length} detected`;
+        if (photoSyncBtnLabel) photoSyncBtnLabel.textContent = `Sync to Expenses (${stagedPhotoExpenses.length})`;
+
+        if (stagedPhotoExpenses.length === 0) {
+          photoStagedListContainer.innerHTML = `
+            <div class="h-32 flex flex-col items-center justify-center text-xs text-slate-500 text-center space-y-1.5 p-4 bg-slate-950/40 rounded-2xl border border-dashed border-slate-800">
+              <p class="font-extrabold text-slate-300 text-sm">No expenses in staged list</p>
+              <p class="text-[11px] text-slate-500">Tap '+ Add Item' above to manually add or upload another photo.</p>
+            </div>
+          `;
+          return;
+        }
+
+        photoStagedListContainer.innerHTML = stagedPhotoExpenses.map(item => {
+          const d = new Date(item.date || Date.now());
+          const timeStr = isNaN(d.getTime()) ? '' : d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          const dateStr = isNaN(d.getTime()) ? '' : d.toLocaleDateString([], { month: 'short', day: 'numeric' });
+          const tagClass = TAG_COLORS[item.tag] || 'bg-slate-800 text-slate-300 border-slate-700';
+
+          return `
+            <div
+              data-photo-item-id="${escapeHtml(item.id)}"
+              class="photo-staged-card p-3.5 sm:p-4 rounded-2xl bg-slate-950/70 border border-slate-800 hover:border-slate-700 active:bg-slate-800/60 transition-all flex items-center justify-between gap-3 select-none cursor-pointer shadow-sm"
+              title="Tap or long-press to edit"
+            >
+              <div class="min-w-0 flex-1">
+                <p class="photo-item-reason text-sm sm:text-base font-extrabold text-white leading-snug break-words">
+                  ${escapeHtml(item.reason || 'Payment')}
+                </p>
+                <div class="flex items-center gap-2 mt-1.5 flex-wrap">
+                  <span class="text-[11px] sm:text-xs font-bold px-2.5 py-1 rounded-lg border shrink-0 ${tagClass}">
+                    ${escapeHtml(item.tag || 'Misc')}
+                  </span>
+                  <span class="text-xs text-slate-300 tabular-nums font-medium">
+                    ${dateStr}${timeStr ? ' • ' + timeStr : ''}
+                  </span>
+                </div>
+              </div>
+              <div class="flex items-center gap-2.5 shrink-0">
+                <span class="text-base sm:text-lg font-black text-rose-400 tabular-nums">
+                  ${item.amount ? '- ' + formatINR(item.amount) : '₹ 0'}
+                </span>
+                <button
+                  type="button"
+                  data-delete-staged-id="${escapeHtml(item.id)}"
+                  class="delete-staged-btn w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-900 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 border border-slate-800 flex items-center justify-center transition-colors cursor-pointer active:scale-95 shadow-sm"
+                  title="Remove from List"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 sm:w-5 sm:h-5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      function openPhotoItemEditModal(item) {
+        if (!item || !photoItemEditModal) return;
+        photoItemEditId.value = item.id;
+        photoItemEditAmount.value = item.amount || '';
+        photoItemEditReason.value = item.reason || '';
+        photoItemEditTag.value = item.tag || 'Misc';
+
+        try {
+          const d = new Date(item.date || Date.now());
+          if (!isNaN(d.getTime())) {
+            const tzOffset = d.getTimezoneOffset() * 60000;
+            const localISOTime = new Date(d.getTime() - tzOffset).toISOString().slice(0, 16);
+            photoItemEditDate.value = localISOTime;
+          } else {
+            photoItemEditDate.value = '';
+          }
+        } catch {
+          photoItemEditDate.value = '';
+        }
+
+        photoItemEditModal.classList.remove('opacity-0', 'pointer-events-none');
+        if (photoItemEditCard) {
+          photoItemEditCard.classList.remove('scale-90');
+          photoItemEditCard.classList.add('scale-100');
+        }
+      }
+
+      function closePhotoItemEditModal() {
+        if (!photoItemEditModal) return;
+        if (photoItemEditCard) {
+          photoItemEditCard.classList.remove('scale-100');
+          photoItemEditCard.classList.add('scale-90');
+        }
+        photoItemEditModal.classList.add('opacity-0', 'pointer-events-none');
+      }
+
+      async function processPhotoFile(file) {
+        if (!file) return;
+        openPhotoReviewModal();
+        photoScanningBanner.classList.remove('hidden');
+        photoScanStatusText.textContent = 'Loading screenshot...';
+        photoScanPercent.textContent = '10%';
+        photoScanProgressBar.style.width = '10%';
+        photoThumbnailName.textContent = file.name || 'Screenshot.png';
+
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          currentUploadedPhotoDataUrl = e.target.result;
+          if (photoThumbnailImg) photoThumbnailImg.src = currentUploadedPhotoDataUrl;
+
+          try {
+            photoScanStatusText.textContent = 'Reading PhonePe/GPay/Amazon Pay details...';
+            photoScanPercent.textContent = '35%';
+            photoScanProgressBar.style.width = '35%';
+
+            let ocrText = '';
+
+            const img = new Image();
+            await new Promise((resolve, reject) => {
+              img.onload = resolve;
+              img.onerror = reject;
+              img.src = currentUploadedPhotoDataUrl;
+            });
+
+            const maxDim = 1600;
+            let w = img.width;
+            let h = img.height;
+            if (w > maxDim || h > maxDim) {
+              if (w > h) {
+                h = Math.round((h * maxDim) / w);
+                w = maxDim;
+              } else {
+                w = Math.round((w * maxDim) / h);
+                h = maxDim;
+              }
+            }
+
+            const canvas = document.createElement('canvas');
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, w, h);
+
+            if (typeof Tesseract !== 'undefined') {
+              const result = await Tesseract.recognize(canvas, 'eng', {
+                logger: m => {
+                  if (m.status === 'recognizing text') {
+                    const pct = 35 + Math.round((m.progress || 0) * 60);
+                    photoScanPercent.textContent = `${pct}%`;
+                    photoScanProgressBar.style.width = `${pct}%`;
+                  }
+                }
+              });
+              ocrText = result?.data?.text || '';
+            }
+
+            photoScanPercent.textContent = '100%';
+            photoScanProgressBar.style.width = '100%';
+
+            const extracted = parsePaymentScreenshotText(ocrText);
+            if (extracted && extracted.length > 0) {
+              stagedPhotoExpenses = extracted;
+              photoReviewSubtitle.textContent = `Found ${extracted.length} transaction${extracted.length === 1 ? '' : 's'} from screenshot`;
+            } else {
+              stagedPhotoExpenses = [{
+                id: 'photo_' + Date.now(),
+                amount: '',
+                reason: 'Payment',
+                tag: 'Food',
+                date: new Date().toISOString()
+              }];
+              photoReviewSubtitle.textContent = 'Screenshot loaded. Tap item below to edit with photo reference.';
+            }
+          } catch (err) {
+            console.error('OCR Error:', err);
+            stagedPhotoExpenses = [{
+              id: 'photo_' + Date.now(),
+              amount: '',
+              reason: 'Payment',
+              tag: 'Food',
+              date: new Date().toISOString()
+            }];
+            photoReviewSubtitle.textContent = 'Photo uploaded. Review and tap to enter amount/details.';
+          } finally {
+            photoScanningBanner.classList.add('hidden');
+            renderPhotoStagedList();
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+
+      if (recordViaPhotoBtn && photoExpenseInput) {
+        recordViaPhotoBtn.addEventListener('click', () => {
+          photoExpenseInput.click();
+        });
+
+        photoExpenseInput.addEventListener('change', e => {
+          if (e.target.files && e.target.files[0]) {
+            processPhotoFile(e.target.files[0]);
+          }
+        });
+      }
+
+      if (photoReviewCloseBtn) photoReviewCloseBtn.addEventListener('click', closePhotoReviewModal);
+      if (photoDiscardBtn) photoDiscardBtn.addEventListener('click', closePhotoReviewModal);
+      if (photoReviewModal) {
+        photoReviewModal.addEventListener('click', e => {
+          if (e.target === photoReviewModal) closePhotoReviewModal();
+        });
+      }
+
+      if (photoAddManualBtn) {
+        photoAddManualBtn.addEventListener('click', () => {
+          const newItem = {
+            id: 'photo_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
+            amount: '',
+            reason: 'Payment',
+            tag: 'Food',
+            date: new Date().toISOString()
+          };
+          stagedPhotoExpenses.push(newItem);
+          renderPhotoStagedList();
+          openPhotoItemEditModal(newItem);
+        });
+      }
+
+      if (photoStagedListContainer) {
+        photoStagedListContainer.addEventListener('click', e => {
+          if (isPhotoLongPressTriggered) {
+            isPhotoLongPressTriggered = false;
+            e.preventDefault();
+            e.stopPropagation();
+            return;
+          }
+          const delBtn = e.target.closest('[data-delete-staged-id]');
+          if (delBtn) {
+            const id = delBtn.getAttribute('data-delete-staged-id');
+            stagedPhotoExpenses = stagedPhotoExpenses.filter(i => i.id !== id);
+            renderPhotoStagedList();
+            if (navigator.vibrate) navigator.vibrate(20);
+            return;
+          }
+          const card = e.target.closest('.photo-staged-card');
+          if (card) {
+            const id = card.getAttribute('data-photo-item-id');
+            const target = stagedPhotoExpenses.find(i => i.id === id);
+            if (target) {
+              openPhotoItemEditModal(target);
+            }
+          }
+        });
+      }
+
+      if (photoItemEditCloseX) photoItemEditCloseX.addEventListener('click', closePhotoItemEditModal);
+      if (photoItemEditCancelBtn) photoItemEditCancelBtn.addEventListener('click', closePhotoItemEditModal);
+      if (photoItemEditModal) {
+        photoItemEditModal.addEventListener('click', e => {
+          if (e.target === photoItemEditModal) closePhotoItemEditModal();
+        });
+      }
+
+      if (photoItemEditForm) {
+        photoItemEditForm.addEventListener('submit', e => {
+          e.preventDefault();
+          const id = photoItemEditId.value;
+          const target = stagedPhotoExpenses.find(i => i.id === id);
+          if (!target) return;
+
+          const amt = parseFloat(photoItemEditAmount.value);
+          if (isNaN(amt) || amt <= 0) return;
+
+          const reason = photoItemEditReason.value.trim() || 'Payment';
+          const tag = photoItemEditTag.value.trim() || 'Misc';
+          let dateStr = new Date().toISOString();
+          if (photoItemEditDate.value) {
+            const d = new Date(photoItemEditDate.value);
+            if (!isNaN(d.getTime())) dateStr = d.toISOString();
+          }
+
+          target.amount = Math.round(amt * 100) / 100;
+          target.reason = reason;
+          target.tag = tag;
+          target.date = dateStr;
+
+          closePhotoItemEditModal();
+          renderPhotoStagedList();
+          if (navigator.vibrate) navigator.vibrate(25);
+          showToast('Updated item');
+        });
+      }
+
+      enforceFirstLetterCapital(photoItemEditReason);
+      enforceFirstLetterCapital(photoItemEditTag);
+
+      if (photoSyncAllBtn) {
+        photoSyncAllBtn.addEventListener('click', () => {
+          const validItems = stagedPhotoExpenses.filter(i => {
+            const amt = Number(i.amount);
+            return !isNaN(amt) && amt > 0 && String(i.reason || '').trim().length > 0;
+          });
+
+          if (validItems.length === 0) {
+            alert('Please ensure at least one item has a valid amount and description.');
+            return;
+          }
+
+          const newExpenses = validItems.map(item => ({
+            id: Date.now().toString(36) + Math.random().toString(36).substring(2, 6),
+            amount: Math.round(Number(item.amount) * 100) / 100,
+            reason: item.reason.trim(),
+            tag: item.tag.trim() || 'Misc',
+            remark: 'Imported via Photo Screenshot',
+            createdAt: item.date || new Date().toISOString()
+          }));
+
+          expenses.unshift(...newExpenses);
+          saveExpenses();
+          refreshUI();
+
+          if (navigator.vibrate) navigator.vibrate([40, 30, 40]);
+          closePhotoReviewModal();
+          showToast(`✓ Synced ${newExpenses.length} ${newExpenses.length === 1 ? 'expense' : 'expenses'} to your tracker!`);
         });
       }
 
