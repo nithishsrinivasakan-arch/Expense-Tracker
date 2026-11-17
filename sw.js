@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rupee-tracker-cache-v41';
+const CACHE_NAME = 'rupee-tracker-cache-v42';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -10,7 +10,8 @@ const ASSETS_TO_CACHE = [
   './icon-192.svg',
   './icon-512.svg',
   'https://cdn.tailwindcss.com',
-  'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js'
+  'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js',
+  'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js'
 ];
 
 // Install Event - Pre-cache core assets & activate immediately
