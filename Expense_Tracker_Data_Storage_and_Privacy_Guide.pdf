@@ -1,0 +1,185 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [6 0 R 8 0 R] /Count 2 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Oblique /Encoding /WinAnsiEncoding >>
+endobj
+6 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 7 0 R >>
+endobj
+7 0 obj
+<< /Length 5484 >>
+stream
+q 1.5 w 0.85 0.15 0.15 RG 0.06 0.07 0.09 rg 45.00 721.89 505.28 80.00 re B Q
+q 1 w 0.85 0.15 0.15 rg 45.00 721.89 6.00 80.00 re f Q
+BT /F2 14 Tf 1 1 1 rg 63.00 777.89 Td (EXPENSE TRACKER ARCHITECTURE & PRIVACY GUIDE) Tj ET
+BT /F1 10 Tf 0.9 0.35 0.35 rg 63.00 761.89 Td (How Your Data is Stored, Isolated, and Kept 100% Private) Tj ET
+BT /F3 8 Tf 0.65 0.7 0.75 rg 63.00 745.89 Td (Application URL: https://nithishsrinivasakan-arch.github.io/Expense-Tracker/) Tj ET
+BT /F1 7.5 Tf 0.5 0.55 0.6 rg 63.00 733.89 Td (Generated: November 2026  |  Storage Model: Client-First HTML5 LocalStorage  |  PWA Cache: v43) Tj ET
+q 1 w 0.85 0.1 0.1 rg 45.00 683.89 4.00 18.00 re f Q
+BT /F2 14 Tf 0.05 0.05 0.1 rg 57.00 685.89 Td (1. Executive Architecture Summary) Tj ET
+BT /F1 9.5 Tf 0.15 0.2 0.25 rg 45.00 663.89 Td (The Expense Tracker application is engineered as a Client-First Progressive Web App \(PWA\). Unlike typical online) Tj ET
+BT /F1 9.5 Tf 0.15 0.2 0.25 rg 45.00 649.89 Td (banking portals or cloud trackers that send every transaction to a remote company server, this application) Tj ET
+BT /F1 9.5 Tf 0.15 0.2 0.25 rg 45.00 635.89 Td (processes and stores 100% of your financial records directly on your local device.) Tj ET
+q 0.8 w 0.25 0.1 0.1 RG 0.07 0.08 0.1 rg 45.00 549.39 505.28 80.50 re B Q
+q 1 w 0.85 0.15 0.15 rg 45.00 549.39 4.00 80.50 re f Q
+BT /F2 10.5 Tf 1 1 1 rg 61.00 615.89 Td (CORE PRIVACY PRINCIPLE) Tj ET
+BT /F1 9 Tf 0.8 0.85 0.9 rg 61.00 599.89 Td (* No Remote Database: There is no backend server or cloud database collecting your transactions.) Tj ET
+BT /F1 9 Tf 0.8 0.85 0.9 rg 61.00 586.39 Td (* Device Isolation: When you and your friend use the same URL, each browser operates in a segregated sandbox.) Tj ET
+BT /F1 9 Tf 0.8 0.85 0.9 rg 61.00 572.89 Td (* Zero-Knowledge Architecture: Your income, spending amounts, categories, and PIN never traverse the internet.) Tj ET
+q 1 w 0.85 0.1 0.1 rg 45.00 523.39 4.00 18.00 re f Q
+BT /F2 14 Tf 0.05 0.05 0.1 rg 57.00 525.39 Td (2. Where and How Your Data is Stored) Tj ET
+BT /F1 9.5 Tf 0.15 0.2 0.25 rg 45.00 503.39 Td (Your data is securely written to HTML5 LocalStorage inside your phone or computer browser sandbox.) Tj ET
+BT /F1 9.5 Tf 0.15 0.2 0.25 rg 45.00 489.39 Td (LocalStorage is an encrypted, domain-isolated database allocated to https://nithishsrinivasakan-arch.github.io on) Tj ET
+BT /F1 9.5 Tf 0.15 0.2 0.25 rg 45.00 475.39 Td (your device.) Tj ET
+q 1 w 0.08 0.09 0.12 rg 45.00 439.39 505.28 20.00 re f Q
+BT /F2 9.5 Tf 1 1 1 rg 53.00 445.39 Td (Storage Key) Tj ET
+BT /F2 9.5 Tf 1 1 1 rg 213.00 445.39 Td (Purpose & Data Retained) Tj ET
+q 0.5 w 0.85 0.88 0.92 RG 0.98 0.98 0.99 rg 45.00 419.39 505.28 20.00 re B Q
+BT /F2 8.5 Tf 0.15 0.15 0.2 rg 53.00 425.39 Td (rupee_expenses_v2_fresh) Tj ET
+BT /F1 8.5 Tf 0.25 0.3 0.35 rg 213.00 425.39 Td (Complete transaction records \(Amount, merchant, tag, date/timestamp\).) Tj ET
+q 0.5 w 0.85 0.88 0.92 RG 0.94 0.95 0.97 rg 45.00 399.39 505.28 20.00 re B Q
+BT /F2 8.5 Tf 0.15 0.15 0.2 rg 53.00 405.39 Td (rupee_monthly_budgets_v1) Tj ET
+BT /F1 8.5 Tf 0.25 0.3 0.35 rg 213.00 405.39 Td (Planned monthly budgets, completed checklist flags, and spending targets.) Tj ET
+q 0.5 w 0.85 0.88 0.92 RG 0.98 0.98 0.99 rg 45.00 379.39 505.28 20.00 re B Q
+BT /F2 8.5 Tf 0.15 0.15 0.2 rg 53.00 385.39 Td (rupee_app_pin_v1) Tj ET
+BT /F1 8.5 Tf 0.25 0.3 0.35 rg 213.00 385.39 Td (Hashed 4-digit security PIN used by the lock screen.) Tj ET
+q 0.5 w 0.85 0.88 0.92 RG 0.94 0.95 0.97 rg 45.00 359.39 505.28 20.00 re B Q
+BT /F2 8.5 Tf 0.15 0.15 0.2 rg 53.00 365.39 Td (Service Worker Cache \(v43\)) Tj ET
+BT /F1 8.5 Tf 0.25 0.3 0.35 rg 213.00 365.39 Td (PWA assets \(HTML, styling, OCR libraries\) enabling 100% offline usage.) Tj ET
+q 1 w 0.85 0.1 0.1 rg 45.00 329.39 4.00 18.00 re f Q
+BT /F2 14 Tf 0.05 0.05 0.1 rg 57.00 331.39 Td (3. Multi-User Separation: You vs. Your Friend) Tj ET
+BT /F1 9.5 Tf 0.15 0.2 0.25 rg 45.00 309.39 Td (A common question arises: "If my friend and I both open the exact same link and record expenses, will our data) Tj ET
+BT /F1 9.5 Tf 0.15 0.2 0.25 rg 45.00 295.39 Td (collide or overwrite each other?") Tj ET
+q 1 w 0.85 0.1 0.1 rg 49.00 284.39 3.50 3.50 re f Q
+BT /F2 9.5 Tf 0.1 0.1 0.15 rg 61.00 281.39 Td (Complete Hardware Isolation: ) Tj ET
+BT /F1 9.5 Tf 0.25 0.3 0.35 rg 205.59 281.39 Td (Your phone only writes to its own flash memory. Your friend's phone only) Tj ET
+BT /F1 9.5 Tf 0.25 0.3 0.35 rg 61.00 267.89 Td (writes to his device flash memory. Neither phone has network access to the other.) Tj ET
+q 1 w 0.85 0.1 0.1 rg 49.00 254.39 3.50 3.50 re f Q
+BT /F2 9.5 Tf 0.1 0.1 0.15 rg 61.00 251.39 Td (Zero Data Leakage: ) Tj ET
+BT /F1 9.5 Tf 0.25 0.3 0.35 rg 155.43 251.39 Td (You will NEVER see your friend's transactions, and he will NEVER see your transactions.) Tj ET
+BT /F1 9.5 Tf 0.25 0.3 0.35 rg 61.00 237.89 Td (Each user has an independent, private ledger.) Tj ET
+q 1 w 0.85 0.1 0.1 rg 49.00 224.39 3.50 3.50 re f Q
+BT /F2 9.5 Tf 0.1 0.1 0.15 rg 61.00 221.39 Td (Independent PINs: ) Tj ET
+BT /F1 9.5 Tf 0.25 0.3 0.35 rg 153.72 221.39 Td (Your 4-digit PIN is stored exclusively on your phone. Your friend sets and manages his) Tj ET
+BT /F1 9.5 Tf 0.25 0.3 0.35 rg 61.00 207.89 Td (own PIN completely independently.) Tj ET
+q 0.88 0.9 0.92 rg 45 36 505.28 0.5 re f Q
+BT /F1 8 Tf 0.5 0.55 0.6 rg 45 24 Td (Client-First Progressive Web App - 100% Offline & Private) Tj ET
+BT /F1 8 Tf 0.5 0.55 0.6 rg 508.36 24 Td (Page 1 of 2) Tj ET
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 9 0 R >>
+endobj
+9 0 obj
+<< /Length 7350 >>
+stream
+q 1 w 0.85 0.1 0.1 rg 45.00 775.89 4.00 18.00 re f Q
+BT /F2 14 Tf 0.05 0.05 0.1 rg 57.00 777.89 Td (4. Privacy, Offline & Performance Benefits) Tj ET
+q 1 w 0.85 0.1 0.1 rg 49.00 758.89 3.50 3.50 re f Q
+BT /F2 9.5 Tf 0.1 0.1 0.15 rg 61.00 755.89 Td (100% Personal Privacy: ) Tj ET
+BT /F1 9.5 Tf 0.25 0.3 0.35 rg 169.40 755.89 Td (Financial data is sensitive. By eliminating external backend databases, no hacker,) Tj ET
+BT /F1 9.5 Tf 0.25 0.3 0.35 rg 61.00 742.39 Td (third-party advertiser, or cloud breach can ever compromise your records.) Tj ET
+q 1 w 0.85 0.1 0.1 rg 49.00 728.89 3.50 3.50 re f Q
+BT /F2 9.5 Tf 0.1 0.1 0.15 rg 61.00 725.89 Td (Works Fully Offline: ) Tj ET
+BT /F1 9.5 Tf 0.25 0.3 0.35 rg 155.43 725.89 Td (Because the PWA Service Worker caches the interface, you can record expenses in) Tj ET
+BT /F1 9.5 Tf 0.25 0.3 0.35 rg 61.00 712.39 Td (basements, on airplane flights, or when mobile network is unavailable.) Tj ET
+q 1 w 0.85 0.1 0.1 rg 49.00 698.89 3.50 3.50 re f Q
+BT /F2 9.5 Tf 0.1 0.1 0.15 rg 61.00 695.89 Td (Instant Zero-Latency UI: ) Tj ET
+BT /F1 9.5 Tf 0.25 0.3 0.35 rg 189.06 695.89 Td (Actions never stall waiting for server handshakes. Adding an expense, filtering) Tj ET
+BT /F1 9.5 Tf 0.25 0.3 0.35 rg 61.00 682.39 Td (months, or viewing spending summaries is instantaneous.) Tj ET
+q 1 w 0.85 0.1 0.1 rg 49.00 668.89 3.50 3.50 re f Q
+BT /F2 9.5 Tf 0.1 0.1 0.15 rg 61.00 665.89 Td (Zero Subscription Fees: ) Tj ET
+BT /F1 9.5 Tf 0.25 0.3 0.35 rg 176.71 665.89 Td (No cloud server hosting costs, bandwidth meters, or database quotas are needed to) Tj ET
+BT /F1 9.5 Tf 0.25 0.3 0.35 rg 61.00 652.39 Td (keep the system running indefinitely.) Tj ET
+q 1 w 0.85 0.1 0.1 rg 45.00 619.89 4.00 18.00 re f Q
+BT /F2 14 Tf 0.05 0.05 0.1 rg 57.00 621.89 Td (5. Data Maintenance, Backup & Recovery Procedures) Tj ET
+BT /F1 9.5 Tf 0.15 0.2 0.25 rg 45.00 599.89 Td (Because data is retained strictly on your device, proper data hygiene ensures you never lose records if you) Tj ET
+BT /F1 9.5 Tf 0.15 0.2 0.25 rg 45.00 585.89 Td (switch phones or clear browser data:) Tj ET
+q 0.8 w 0.95 0.8 0.8 RG 0.99 0.95 0.95 rg 45.00 499.39 505.28 80.50 re B Q
+q 1 w 0.85 0.15 0.15 rg 45.00 499.39 4.00 80.50 re f Q
+BT /F2 10.5 Tf 0.8 0.1 0.1 rg 61.00 565.89 Td (CRITICAL: BROWSER DATA CLEARING) Tj ET
+BT /F1 9 Tf 0.25 0.3 0.35 rg 61.00 549.89 Td (* Caution on Clear Cache: Selecting "Clear All Site Data / Cookies" in browser settings will wipe local storage.) Tj ET
+BT /F1 9 Tf 0.25 0.3 0.35 rg 61.00 536.39 Td (* Solution: Use the built-in Download / Export feature periodically to safeguard your history.) Tj ET
+BT /F1 9 Tf 0.25 0.3 0.35 rg 61.00 522.89 Td (* Switching Phones: To migrate your history, export your CSV/JSON backup from your old phone and import it.) Tj ET
+BT /F2 11 Tf 0.75 0.1 0.1 rg 45.00 481.39 Td (Recommended Backup Cadence:) Tj ET
+q 1 w 0.85 0.1 0.1 rg 49.00 468.39 3.50 3.50 re f Q
+BT /F2 9.5 Tf 0.1 0.1 0.15 rg 61.00 465.39 Td (End of Month Backup: ) Tj ET
+BT /F1 9.5 Tf 0.25 0.3 0.35 rg 163.60 465.39 Td (Export a CSV or JSON report using the Download console at the end of every calendar) Tj ET
+BT /F1 9.5 Tf 0.25 0.3 0.35 rg 61.00 451.89 Td (month.) Tj ET
+q 1 w 0.85 0.1 0.1 rg 49.00 438.39 3.50 3.50 re f Q
+BT /F2 9.5 Tf 0.1 0.1 0.15 rg 61.00 435.39 Td (Before Major OS Updates: ) Tj ET
+BT /F1 9.5 Tf 0.25 0.3 0.35 rg 184.50 435.39 Td (Download a fresh backup before performing full factory resets or system) Tj ET
+BT /F1 9.5 Tf 0.25 0.3 0.35 rg 61.00 421.89 Td (upgrades.) Tj ET
+q 1 w 0.85 0.1 0.1 rg 49.00 408.39 3.50 3.50 re f Q
+BT /F2 9.5 Tf 0.1 0.1 0.15 rg 61.00 405.39 Td (Dual Device Access: ) Tj ET
+BT /F1 9.5 Tf 0.25 0.3 0.35 rg 155.43 405.39 Td (If you want to view expenses on both laptop and mobile, export from phone and import to) Tj ET
+BT /F1 9.5 Tf 0.25 0.3 0.35 rg 61.00 391.89 Td (laptop.) Tj ET
+q 1 w 0.85 0.1 0.1 rg 45.00 359.39 4.00 18.00 re f Q
+BT /F2 14 Tf 0.05 0.05 0.1 rg 57.00 361.39 Td (6. Future Architecture: Shared Budgeting Options) Tj ET
+BT /F1 9.5 Tf 0.15 0.2 0.25 rg 45.00 339.39 Td (If you and your friend \(or family members\) decide you want a SHARED ledger in the future where both of you) Tj ET
+BT /F1 9.5 Tf 0.15 0.2 0.25 rg 45.00 325.39 Td (can pool expenses into a single unified dashboard, the following cloud backends can be connected without) Tj ET
+BT /F1 9.5 Tf 0.15 0.2 0.25 rg 45.00 311.39 Td (disrupting the offline PWA core:) Tj ET
+q 1 w 0.08 0.09 0.12 rg 45.00 275.39 505.28 20.00 re f Q
+BT /F2 9.5 Tf 1 1 1 rg 53.00 281.39 Td (Architecture Option) Tj ET
+BT /F2 9.5 Tf 1 1 1 rg 213.00 281.39 Td (Best Use Case & Implementation) Tj ET
+q 0.5 w 0.85 0.88 0.92 RG 0.98 0.98 0.99 rg 45.00 255.39 505.28 20.00 re B Q
+BT /F2 8.5 Tf 0.15 0.15 0.2 rg 53.00 261.39 Td (Firebase / Firestore) Tj ET
+BT /F1 8.5 Tf 0.25 0.3 0.35 rg 213.00 261.39 Td (Real-time multi-user syncing with Google login, instant push updates.) Tj ET
+q 0.5 w 0.85 0.88 0.92 RG 0.94 0.95 0.97 rg 45.00 235.39 505.28 20.00 re B Q
+BT /F2 8.5 Tf 0.15 0.15 0.2 rg 53.00 241.39 Td (Supabase \(PostgreSQL\)) Tj ET
+BT /F1 8.5 Tf 0.25 0.3 0.35 rg 213.00 241.39 Td (Relational database with row-level security and collaborative accounts.) Tj ET
+q 0.5 w 0.85 0.88 0.92 RG 0.98 0.98 0.99 rg 45.00 215.39 505.28 20.00 re B Q
+BT /F2 8.5 Tf 0.15 0.15 0.2 rg 53.00 221.39 Td (Google Sheets Sync) Tj ET
+BT /F1 8.5 Tf 0.25 0.3 0.35 rg 213.00 221.39 Td (Zero-cost cloud spreadsheet sync where both users post rows into one sheet.) Tj ET
+q 0.5 w 0.85 0.88 0.92 RG 0.94 0.95 0.97 rg 45.00 195.39 505.28 20.00 re B Q
+BT /F2 8.5 Tf 0.15 0.15 0.2 rg 53.00 201.39 Td (Local-First \(Current\)) Tj ET
+BT /F1 8.5 Tf 0.25 0.3 0.35 rg 213.00 201.39 Td (Maximum privacy, zero cloud footprint, zero cost, completely offline.) Tj ET
+q 1 w 0.85 0.1 0.1 rg 45.00 165.39 4.00 18.00 re f Q
+BT /F2 14 Tf 0.05 0.05 0.1 rg 57.00 167.39 Td (7. Frequently Asked Questions \(FAQ\)) Tj ET
+q 1 w 0.85 0.1 0.1 rg 49.00 148.39 3.50 3.50 re f Q
+BT /F2 9.5 Tf 0.1 0.1 0.15 rg 61.00 145.39 Td (Q: What happens if GitHub goes down?: ) Tj ET
+BT /F1 9.5 Tf 0.25 0.3 0.35 rg 241.69 145.39 Td (Nothing! The Service Worker caches the app on your phone, so it opens) Tj ET
+BT /F1 9.5 Tf 0.25 0.3 0.35 rg 61.00 131.89 Td (and functions normally even if GitHub is offline.) Tj ET
+q 1 w 0.85 0.1 0.1 rg 49.00 118.39 3.50 3.50 re f Q
+BT /F2 9.5 Tf 0.1 0.1 0.15 rg 61.00 115.39 Td (Q: How much storage does it use?: ) Tj ET
+BT /F1 9.5 Tf 0.25 0.3 0.35 rg 223.26 115.39 Td (Extremely small. 10,000 transactions take less than 2 megabytes of your) Tj ET
+BT /F1 9.5 Tf 0.25 0.3 0.35 rg 61.00 101.89 Td (phone storage.) Tj ET
+q 1 w 0.85 0.1 0.1 rg 49.00 88.39 3.50 3.50 re f Q
+BT /F2 9.5 Tf 0.1 0.1 0.15 rg 61.00 85.39 Td (Q: Is the Photo OCR safe?: ) Tj ET
+BT /F1 9.5 Tf 0.25 0.3 0.35 rg 190.77 85.39 Td (Yes! OCR processing uses in-browser Tesseract WebAssembly. Images are) Tj ET
+BT /F1 9.5 Tf 0.25 0.3 0.35 rg 61.00 71.89 Td (processed locally on your phone and never uploaded to any remote server.) Tj ET
+q 0.85 0.15 0.15 rg 45 806.89 505.28 1.5 re f Q
+BT /F2 8 Tf 0.4 0.45 0.5 rg 45 811.89 Td (EXPENSE TRACKER - ARCHITECTURE & DATA PRIVACY GUIDE) Tj ET
+q 0.88 0.9 0.92 rg 45 36 505.28 0.5 re f Q
+BT /F1 8 Tf 0.5 0.55 0.6 rg 45 24 Td (Client-First Progressive Web App - 100% Offline & Private) Tj ET
+BT /F1 8 Tf 0.5 0.55 0.6 rg 508.36 24 Td (Page 2 of 2) Tj ET
+endstream
+endobj
+xref
+0 10
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000121 00000 n 
+0000000218 00000 n 
+0000000320 00000 n 
+0000000425 00000 n 
+0000000577 00000 n 
+0000006113 00000 n 
+0000006265 00000 n 
+trailer
+<< /Size 10 /Root 1 0 R >>
+startxref
+13667
+%%EOF
