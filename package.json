@@ -7,7 +7,15 @@
     "start": "npx serve .",
     "desktop": "npx electron main.js"
   },
-  "keywords": ["expense-tracker", "pwa", "rupee", "finance"],
+  "keywords": [
+    "expense-tracker",
+    "pwa",
+    "rupee",
+    "finance"
+  ],
   "author": "nithishsrinivasakan-arch",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "tesseract.js": "^7.0.0"
+  }
 }
