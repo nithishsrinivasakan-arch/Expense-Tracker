@@ -5372,10 +5372,17 @@
         return s || 'Payment';
       }
 
-      function parsePaymentScreenshotText(text) {
+      function parsePaymentScreenshotText(text, refTimestamp) {
         if (!text) return [];
         const rawLines = text.split('\n').map(l => l.trim()).filter(Boolean);
         const items = [];
+        const baseTime = (refTimestamp && refTimestamp > 1577836800000) ? refTimestamp : Date.now();
+        const baseDate = new Date(baseTime);
+
+        const MONTHS = {
+          jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5,
+          jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11
+        };
 
         const isCredit = (str) => {
           return /\b(?:cashback|received|credited|refund|reward)\b/i.test(str) ||
@@ -5443,6 +5450,138 @@
           return 'Misc';
         };
 
+        const extractDateTimeFromContext = (lines) => {
+          for (const line of lines) {
+            if (!line) continue;
+
+            // 1. Explicit full date with time e.g. "18 Nov 2026, 08:57 AM"
+            let m = line.match(/\b(\d{1,2})\s+([A-Za-z]{3})[a-z]*\s+(\d{4})[,•\s]+(\d{1,2}):(\d{2})(?::\d{2})?\s*([AaPp][Mm])?\b/i);
+            if (m) {
+              const day = parseInt(m[1], 10);
+              const monStr = m[2].toLowerCase();
+              const year = parseInt(m[3], 10);
+              let hour = parseInt(m[4], 10);
+              const min = parseInt(m[5], 10);
+              const ampm = m[6] ? m[6].toUpperCase() : null;
+              if (ampm === 'PM' && hour < 12) hour += 12;
+              if (ampm === 'AM' && hour === 12) hour = 0;
+              if (MONTHS[monStr] !== undefined) {
+                const d = new Date(year, MONTHS[monStr], day, hour, min, 0);
+                if (!isNaN(d.getTime())) return d.toISOString();
+              }
+            }
+
+            // 1b. "Nov 18, 2026, 08:57 AM"
+            m = line.match(/\b([A-Za-z]{3})[a-z]*\s+(\d{1,2}),?\s+(\d{4})[,•\s]+(\d{1,2}):(\d{2})(?::\d{2})?\s*([AaPp][Mm])?\b/i);
+            if (m) {
+              const monStr = m[1].toLowerCase();
+              const day = parseInt(m[2], 10);
+              const year = parseInt(m[3], 10);
+              let hour = parseInt(m[4], 10);
+              const min = parseInt(m[5], 10);
+              const ampm = m[6] ? m[6].toUpperCase() : null;
+              if (ampm === 'PM' && hour < 12) hour += 12;
+              if (ampm === 'AM' && hour === 12) hour = 0;
+              if (MONTHS[monStr] !== undefined) {
+                const d = new Date(year, MONTHS[monStr], day, hour, min, 0);
+                if (!isNaN(d.getTime())) return d.toISOString();
+              }
+            }
+
+            // 2. Relative time: "X secs ago"
+            m = line.match(/\b(\d+)\s*(?:secs?|seconds?)\s*ago\b/i);
+            if (m) {
+              const secs = parseInt(m[1], 10);
+              return new Date(baseTime - secs * 1000).toISOString();
+            }
+
+            // 2b. Relative time: "X mins ago" / "X minutes ago"
+            m = line.match(/\b(\d+)\s*(?:mins?|minutes?)\s*ago\b/i);
+            if (m) {
+              const mins = parseInt(m[1], 10);
+              return new Date(baseTime - mins * 60 * 1000).toISOString();
+            }
+
+            // 2c. Relative time: "X hours ago" / "X hrs ago" / "X hr ago"
+            m = line.match(/\b(\d+)\s*(?:hours?|hrs?|hr)\s*ago\b/i);
+            if (m) {
+              const hours = parseInt(m[1], 10);
+              return new Date(baseTime - hours * 3600 * 1000).toISOString();
+            }
+
+            // 2d. Relative time: "X days ago" / "1 day ago"
+            m = line.match(/\b(\d+)\s*days?\s*ago\b/i);
+            if (m) {
+              const days = parseInt(m[1], 10);
+              return new Date(baseTime - days * 86400 * 1000).toISOString();
+            }
+
+            // 2e. "Yesterday" with optional time
+            m = line.match(/\byesterday(?:[,\s]+(?:at\s*)?(\d{1,2}):(\d{2})\s*([AaPp][Mm])?)?\b/i);
+            if (m) {
+              const yDate = new Date(baseTime - 86400 * 1000);
+              if (m[1]) {
+                let hour = parseInt(m[1], 10);
+                const min = parseInt(m[2], 10);
+                const ampm = m[3] ? m[3].toUpperCase() : null;
+                if (ampm === 'PM' && hour < 12) hour += 12;
+                if (ampm === 'AM' && hour === 12) hour = 0;
+                yDate.setHours(hour, min, 0, 0);
+              }
+              return yDate.toISOString();
+            }
+
+            // 2f. "Today" with time e.g. "Today, 04:12 PM"
+            m = line.match(/\btoday[,•\s]+(?:at\s*)?(\d{1,2}):(\d{2})\s*([AaPp][Mm])?\b/i);
+            if (m) {
+              const tDate = new Date(baseTime);
+              let hour = parseInt(m[1], 10);
+              const min = parseInt(m[2], 10);
+              const ampm = m[3] ? m[3].toUpperCase() : null;
+              if (ampm === 'PM' && hour < 12) hour += 12;
+              if (ampm === 'AM' && hour === 12) hour = 0;
+              tDate.setHours(hour, min, 0, 0);
+              return tDate.toISOString();
+            }
+
+            // 3. Date with time without year e.g. "Nov 17 • 08:07 PM" or "17 Nov, 08:07 PM"
+            m = line.match(/\b([A-Za-z]{3})[a-z]*\s+(\d{1,2})[,•\s]+(\d{1,2}):(\d{2})\s*([AaPp][Mm])?\b/i);
+            if (m && MONTHS[m[1].toLowerCase()] !== undefined) {
+              const monStr = m[1].toLowerCase();
+              const day = parseInt(m[2], 10);
+              let hour = parseInt(m[3], 10);
+              const min = parseInt(m[4], 10);
+              const ampm = m[5] ? m[5].toUpperCase() : null;
+              if (ampm === 'PM' && hour < 12) hour += 12;
+              if (ampm === 'AM' && hour === 12) hour = 0;
+              const d = new Date(baseDate.getFullYear(), MONTHS[monStr], day, hour, min, 0);
+              if (!isNaN(d.getTime())) return d.toISOString();
+            }
+
+            m = line.match(/\b(\d{1,2})\s+([A-Za-z]{3})[a-z]*[,•\s]+(\d{1,2}):(\d{2})\s*([AaPp][Mm])?\b/i);
+            if (m && MONTHS[m[2].toLowerCase()] !== undefined) {
+              const day = parseInt(m[1], 10);
+              const monStr = m[2].toLowerCase();
+              let hour = parseInt(m[3], 10);
+              const min = parseInt(m[4], 10);
+              const ampm = m[5] ? m[5].toUpperCase() : null;
+              if (ampm === 'PM' && hour < 12) hour += 12;
+              if (ampm === 'AM' && hour === 12) hour = 0;
+              const d = new Date(baseDate.getFullYear(), MONTHS[monStr], day, hour, min, 0);
+              if (!isNaN(d.getTime())) return d.toISOString();
+            }
+
+            // 4. Date only with year e.g. "18 Nov 2026"
+            m = line.match(/\b(\d{1,2})\s+([A-Za-z]{3})[a-z]*\s+(\d{4})\b/i);
+            if (m && MONTHS[m[2].toLowerCase()] !== undefined) {
+              const d = new Date(parseInt(m[3], 10), MONTHS[m[2].toLowerCase()], parseInt(m[1], 10), 12, 0, 0);
+              if (!isNaN(d.getTime())) return d.toISOString();
+            }
+          }
+
+          return new Date(baseTime).toISOString();
+        };
+
         // PASS 1: PhonePe style ("Debited from" anchors debit transactions)
         const isPhonePeFeed = rawLines.some(l => /Debited\s+from/i.test(l));
         if (isPhonePeFeed) {
@@ -5466,12 +5605,15 @@
               }
 
               if (amount) {
+                const contextLines = rawLines.slice(Math.max(0, i - 2), Math.min(rawLines.length, i + 2));
+                const dateIso = extractDateTimeFromContext(contextLines);
+
                 items.push({
                   id: 'photo_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7),
                   amount,
                   reason: merchant || 'Payment',
                   tag: inferCategory(merchant),
-                  date: new Date().toISOString()
+                  date: dateIso
                 });
               }
             }
@@ -5501,17 +5643,8 @@
                 else if (/Amazon/i.test(l)) reason = 'Paid on Amazon';
               }
 
-              let dateIso = new Date().toISOString();
-              for (let j = Math.max(0, i - 2); j <= Math.min(rawLines.length - 1, i + 3); j++) {
-                const cand = rawLines[j];
-                if (cand.match(/(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{4}/i) ||
-                    cand.match(/\d{1,2}\s+[A-Za-z]{3}\s+\d{4}/i)) {
-                  try {
-                    const d = new Date(cand);
-                    if (!isNaN(d.getTime())) { dateIso = d.toISOString(); break; }
-                  } catch {}
-                }
-              }
+              const contextLines = rawLines.slice(Math.max(0, i - 1), Math.min(rawLines.length, i + 4));
+              const dateIso = extractDateTimeFromContext(contextLines);
 
               items.push({
                 id: 'photo_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7),
@@ -5531,12 +5664,15 @@
             if (isCredit(l) || isFailed(l)) continue;
             const amt = extractAmountFromLine(l);
             if (amt) {
+              const contextLines = rawLines.slice(Math.max(0, i - 2), Math.min(rawLines.length, i + 3));
+              const dateIso = extractDateTimeFromContext(contextLines);
+
               items.push({
                 id: 'photo_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7),
                 amount: amt,
                 reason: cleanMerchantName(l) || 'Payment',
                 tag: inferCategory(l),
-                date: new Date().toISOString()
+                date: dateIso
               });
             }
           }
@@ -5714,6 +5850,14 @@
         const dateFormatted = !isNaN(d.getTime()) ? d.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' }) : 'Today';
         const timeFormatted = !isNaN(d.getTime()) ? d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
 
+        let localIsoDate = '';
+        try {
+          if (!isNaN(d.getTime())) {
+            const tzOffset = d.getTimezoneOffset() * 60000;
+            localIsoDate = new Date(d.getTime() - tzOffset).toISOString().slice(0, 16);
+          }
+        } catch {}
+
         let html = `
           <div class="relative w-full max-w-sm mx-auto h-[420px] flex items-center justify-center select-none">
         `;
@@ -5746,17 +5890,21 @@
                class="relative w-full h-[415px] rounded-3xl bg-zinc-950 border-2 border-red-900/80 p-4 sm:p-5 shadow-2xl shadow-black flex flex-col justify-between transition-all duration-300"
                style="z-index: 30;">
 
-            <!-- Top Bar: Debit pill, Date & Card Counter -->
-            <div class="flex items-center justify-between pb-2 border-b border-zinc-900 shrink-0">
-              <div class="flex items-center gap-1.5">
-                <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-md bg-red-600/30 text-rose-300 border border-red-500/40">
+            <!-- Top Bar: Debit pill, Editable Date/Time from image & Card Counter -->
+            <div class="flex items-center justify-between pb-2 border-b border-zinc-900 shrink-0 gap-2">
+              <div class="flex items-center gap-1.5 min-w-0">
+                <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-md bg-red-600/30 text-rose-300 border border-red-500/40 shrink-0">
                   DEBIT
                 </span>
-                <span class="text-[11px] text-zinc-400 font-medium tabular-nums">
-                  ${dateFormatted}${timeFormatted ? ' • ' + timeFormatted : ''}
-                </span>
+                <input
+                  type="datetime-local"
+                  id="stackedCardDateInput"
+                  class="bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-[11px] font-bold text-zinc-300 rounded-lg px-2 py-0.5 focus:outline-none focus:border-red-500 tabular-nums cursor-pointer truncate max-w-[170px]"
+                  value="${localIsoDate}"
+                  title="Transaction date & time from image (editable)"
+                />
               </div>
-              <span class="text-[11px] font-black text-zinc-500">
+              <span class="text-[11px] font-black text-zinc-500 shrink-0">
                 #${currentNum}/${total}
               </span>
             </div>
@@ -5846,6 +5994,7 @@
         // Wire up Active Card Elements
         const amtInput = document.getElementById('stackedCardAmountInput');
         const reasonInput = document.getElementById('stackedCardReasonInput');
+        const dateInput = document.getElementById('stackedCardDateInput');
         const skipBtn = document.getElementById('stackedCardSkipBtn');
         const saveBtn = document.getElementById('stackedCardSaveBtn');
         const activeCardEl = document.getElementById('activeStackedCard');
@@ -5860,6 +6009,14 @@
           enforceFirstLetterCapital(reasonInput);
           reasonInput.addEventListener('input', e => {
             currentItem.reason = e.target.value;
+          });
+        }
+        if (dateInput) {
+          dateInput.addEventListener('change', e => {
+            if (e.target.value) {
+              const parsed = new Date(e.target.value);
+              if (!isNaN(parsed.getTime())) currentItem.date = parsed.toISOString();
+            }
           });
         }
 
@@ -5913,7 +6070,9 @@
 
             const reason = (reasonInput ? reasonInput.value.trim() : currentItem.reason.trim()) || 'Payment';
             const tag = currentItem.tag || 'Misc';
-            const dateIso = currentItem.date || new Date().toISOString();
+            const dateIso = (dateInput && dateInput.value)
+              ? new Date(dateInput.value).toISOString()
+              : (currentItem.date || new Date().toISOString());
 
             const newExpense = {
               id: Date.now().toString(36) + Math.random().toString(36).substring(2, 6),
@@ -6116,7 +6275,8 @@
             photoScanPercent.textContent = '100%';
             photoScanProgressBar.style.width = '100%';
 
-            const extracted = parsePaymentScreenshotText(ocrText);
+            const fileRefTimestamp = (file && file.lastModified && file.lastModified > 1577836800000) ? file.lastModified : Date.now();
+            const extracted = parsePaymentScreenshotText(ocrText, fileRefTimestamp);
             currentStackedCardIndex = 0;
             savedCountFromPhoto = 0;
             savedTotalFromPhoto = 0;
@@ -6130,12 +6290,13 @@
                 amount: '',
                 reason: 'Payment',
                 tag: 'Food',
-                date: new Date().toISOString()
+                date: new Date(fileRefTimestamp).toISOString()
               }];
               photoReviewSubtitle.textContent = 'Screenshot loaded. Review card to enter details.';
             }
           } catch (err) {
             console.error('OCR Error:', err);
+            const fileRefTimestamp = (file && file.lastModified && file.lastModified > 1577836800000) ? file.lastModified : Date.now();
             currentStackedCardIndex = 0;
             savedCountFromPhoto = 0;
             savedTotalFromPhoto = 0;
@@ -6144,7 +6305,7 @@
               amount: '',
               reason: 'Payment',
               tag: 'Food',
-              date: new Date().toISOString()
+              date: new Date(fileRefTimestamp).toISOString()
             }];
             photoReviewSubtitle.textContent = 'Photo uploaded. Review card to enter details.';
           } finally {
