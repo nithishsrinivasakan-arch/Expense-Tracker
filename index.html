@@ -161,18 +161,20 @@
         </div>
       </button>
 
-      <!-- Header Actions (Top-right corner with Lock & Budget Buttons) -->
+      <!-- Header Actions (Top-right corner with Menu & Budget Buttons) -->
       <div class="flex items-center gap-1.5 shrink-0">
-        <!-- App PIN Lock Button -->
+        <!-- App Menu Button (Hamburger / Options Icon with PIN Indicator) -->
         <button
-          id="lockAppBtn"
+          id="appMenuBtn"
           type="button"
-          class="flex items-center justify-center w-8 h-8 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-750 active:scale-95 text-slate-300 hover:text-white transition-all cursor-pointer shadow-sm"
-          title="App PIN Lock & Security"
+          class="flex items-center justify-center w-8 h-8 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-750 hover:border-red-500/50 active:scale-95 text-slate-300 hover:text-white transition-all cursor-pointer shadow-sm relative group"
+          title="App Menu & Data Vault"
+          aria-label="App Menu"
         >
-          <svg id="lockAppIcon" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-300 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
           </svg>
+          <span id="menuLockIndicatorDot" class="hidden absolute top-1 right-1 w-2 h-2 rounded-full bg-amber-400 ring-2 ring-slate-950"></span>
         </button>
 
         <!-- Budget Button on Top Right Corner -->
@@ -1947,6 +1949,220 @@
           <span>Restore CSV</span>
         </button>
         <input type="file" id="importCsvFileInput" accept=".csv,text/csv" class="hidden" />
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       APP MENU, DATA VAULT & SECURITY MODAL
+       ========================================== -->
+  <div
+    id="appMenuModal"
+    class="fixed inset-0 z-50 flex items-start justify-center p-3 sm:p-4 pt-6 bg-black/85 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-200 overflow-y-auto"
+    role="dialog"
+    aria-modal="true"
+  >
+    <div
+      id="appMenuCard"
+      class="w-full max-w-sm bg-zinc-950 border border-zinc-800 rounded-3xl p-5 shadow-2xl shadow-black flex flex-col text-left transform scale-95 transition-all duration-200 space-y-4"
+    >
+      <!-- Header -->
+      <div class="flex items-center justify-between pb-3 border-b border-zinc-800 shrink-0">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-2xl bg-red-950/70 border border-red-500/40 flex items-center justify-center text-red-400 font-black text-sm">
+            ₹
+          </div>
+          <div>
+            <h3 class="text-sm font-black text-white">Rupee Tracker</h3>
+            <p class="text-[10px] text-zinc-400 font-medium">100% Offline • Zero-Cloud Vault</p>
+          </div>
+        </div>
+        <button
+          id="appMenuCloseBtn"
+          type="button"
+          class="w-8 h-8 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center text-xs font-bold transition-colors cursor-pointer"
+        >
+          ✕
+        </button>
+      </div>
+
+      <!-- SECTION 1: PERMANENT DATA BACKUP & MULTI-FILE RESTORE -->
+      <div class="p-3.5 bg-zinc-900/80 rounded-2xl border border-zinc-800/80 space-y-2.5">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <div class="w-7 h-7 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+              </svg>
+            </div>
+            <div>
+              <p class="text-xs font-black text-white">Permanent Data Restore</p>
+              <p class="text-[10px] text-zinc-400">Upload 1 or multiple CSV/Excel backups</p>
+            </div>
+          </div>
+        </div>
+
+        <p class="text-[11px] text-zinc-300 leading-relaxed">
+          Restore past expenses and budget plans permanently. You can select multiple month backups at once — records are deduplicated automatically.
+        </p>
+
+        <div class="pt-1 flex items-center gap-2">
+          <button
+            id="menuRestoreCsvBtn"
+            type="button"
+            class="flex-1 py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-extrabold text-xs flex items-center justify-center gap-1.5 transition-all shadow-md shadow-emerald-950/80 cursor-pointer"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+            </svg>
+            <span>Restore Files (Multi)</span>
+          </button>
+          <input type="file" id="menuMultiCsvInput" multiple accept=".csv,text/csv" class="hidden" />
+
+          <button
+            id="menuExportAllBtn"
+            type="button"
+            class="py-2.5 px-3 rounded-xl bg-zinc-900 hover:bg-zinc-800 active:scale-95 text-zinc-300 hover:text-white border border-zinc-800 text-xs font-bold transition-all cursor-pointer flex items-center gap-1"
+            title="Download full database backup"
+          >
+            <span>Export All 📥</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- SECTION 2: SECURITY & PIN LOCK -->
+      <div class="p-3.5 bg-zinc-900/80 rounded-2xl border border-zinc-800/80 space-y-2.5">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <div class="w-7 h-7 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </div>
+            <div>
+              <p class="text-xs font-black text-white">App PIN Security</p>
+              <p id="menuPinStatusText" class="text-[10px] text-zinc-400">Not configured</p>
+            </div>
+          </div>
+          <span id="menuPinBadge" class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-400 border border-zinc-700">OFF</span>
+        </div>
+
+        <div class="flex items-center gap-2 pt-1">
+          <button
+            id="menuPinSettingsBtn"
+            type="button"
+            class="flex-1 py-2 px-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 active:scale-95 text-xs font-bold text-white transition-all cursor-pointer text-center"
+          >
+            Manage 4-Digit PIN
+          </button>
+          <button
+            id="menuLockNowBtn"
+            type="button"
+            class="hidden py-2 px-3 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 active:scale-95 text-xs font-bold text-amber-300 border border-amber-500/30 transition-all cursor-pointer text-center"
+          >
+            Lock Now 🔒
+          </button>
+        </div>
+      </div>
+
+      <!-- SECTION 3: MONTHLY SCHEDULED AUTO-BACKUP CONTROLS -->
+      <div class="p-3.5 bg-zinc-900/80 rounded-2xl border border-zinc-800/80 space-y-2">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <div class="w-7 h-7 rounded-xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <div>
+              <p class="text-xs font-black text-white">Monthly Auto-Backup</p>
+              <p class="text-[10px] text-zinc-400">Prompts every 28th to save local file</p>
+            </div>
+          </div>
+          <span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/40">28th</span>
+        </div>
+
+        <button
+          id="menuDownloadMonthNowBtn"
+          type="button"
+          class="w-full py-2 px-3 rounded-xl bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/40 text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5"
+        >
+          <span>Download This Month's Backup</span>
+          <span>📥</span>
+        </button>
+      </div>
+
+      <!-- Zero-Cloud Offline Security Guarantee Footer -->
+      <div class="pt-2 text-center text-[10px] text-zinc-500 flex items-center justify-center gap-1.5">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+        <span>100% Local Storage • Zero Cloud • Complete Privacy</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MONTHLY SCHEDULED AUTO-BACKUP PROMPT (28th OF MONTH)
+       ========================================== -->
+  <div
+    id="monthlyBackupModal"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-200"
+    role="dialog"
+    aria-modal="true"
+  >
+    <div
+      id="monthlyBackupCard"
+      class="w-full max-w-sm bg-zinc-950 border-2 border-amber-500/60 rounded-3xl p-5 shadow-2xl shadow-black flex flex-col text-left transform scale-95 transition-all duration-200 space-y-3.5"
+    >
+      <!-- Header -->
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 rounded-2xl bg-amber-500/20 border border-amber-500/50 flex items-center justify-center text-amber-400 text-xl font-black shrink-0 shadow-lg shadow-amber-950/50">
+          📅
+        </div>
+        <div>
+          <span class="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/40">
+            MONTH-END SAFEGUARD
+          </span>
+          <h3 id="monthlyBackupTitle" class="text-sm sm:text-base font-black text-white mt-1">
+            Download Offline Backup
+          </h3>
+          <p id="monthlyBackupSub" class="text-[11px] text-zinc-400">Save a permanent copy to your phone</p>
+        </div>
+      </div>
+
+      <!-- Explanatory note -->
+      <div class="p-3 bg-zinc-900/90 rounded-2xl border border-zinc-800 text-xs text-zinc-300 space-y-1.5">
+        <p class="font-bold text-white flex items-center gap-1.5">
+          <span>🛡️</span>
+          <span>Zero-Cloud Local Protection</span>
+        </p>
+        <p class="text-[11px] text-zinc-400 leading-relaxed">
+          Because Rupee Tracker stores data 100% on this phone without the cloud, saving this monthly Excel/CSV file ensures you have an offline archive you can re-upload anytime!
+        </p>
+        <div class="pt-1.5 border-t border-zinc-800 flex items-center justify-between text-[11px] font-semibold text-zinc-300">
+          <span id="monthlyBackupRecordCount">0 transactions recorded</span>
+          <span id="monthlyBackupBudgetCount" class="text-amber-400">0 budget items</span>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="pt-1 flex flex-col gap-2">
+        <button
+          id="monthlyBackupConfirmBtn"
+          type="button"
+          class="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white font-black text-xs sm:text-sm shadow-xl shadow-red-950 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+        >
+          <span>Download & Save Backup Now</span>
+          <span>📥</span>
+        </button>
+
+        <button
+          id="monthlyBackupLaterBtn"
+          type="button"
+          class="w-full py-2 text-xs font-bold text-zinc-400 hover:text-white transition-colors cursor-pointer text-center"
+        >
+          Remind Me Tomorrow
+        </button>
       </div>
     </div>
   </div>
@@ -4364,6 +4580,29 @@
 
       const lockAppBtn = document.getElementById('lockAppBtn');
       const lockAppIcon = document.getElementById('lockAppIcon');
+      const appMenuBtn = document.getElementById('appMenuBtn');
+      const menuLockIndicatorDot = document.getElementById('menuLockIndicatorDot');
+      const appMenuModal = document.getElementById('appMenuModal');
+      const appMenuCard = document.getElementById('appMenuCard');
+      const appMenuCloseBtn = document.getElementById('appMenuCloseBtn');
+      const menuRestoreCsvBtn = document.getElementById('menuRestoreCsvBtn');
+      const menuMultiCsvInput = document.getElementById('menuMultiCsvInput');
+      const menuExportAllBtn = document.getElementById('menuExportAllBtn');
+      const menuPinStatusText = document.getElementById('menuPinStatusText');
+      const menuPinBadge = document.getElementById('menuPinBadge');
+      const menuPinSettingsBtn = document.getElementById('menuPinSettingsBtn');
+      const menuLockNowBtn = document.getElementById('menuLockNowBtn');
+      const menuDownloadMonthNowBtn = document.getElementById('menuDownloadMonthNowBtn');
+
+      const monthlyBackupModal = document.getElementById('monthlyBackupModal');
+      const monthlyBackupCard = document.getElementById('monthlyBackupCard');
+      const monthlyBackupTitle = document.getElementById('monthlyBackupTitle');
+      const monthlyBackupSub = document.getElementById('monthlyBackupSub');
+      const monthlyBackupRecordCount = document.getElementById('monthlyBackupRecordCount');
+      const monthlyBackupBudgetCount = document.getElementById('monthlyBackupBudgetCount');
+      const monthlyBackupConfirmBtn = document.getElementById('monthlyBackupConfirmBtn');
+      const monthlyBackupLaterBtn = document.getElementById('monthlyBackupLaterBtn');
+
       const pinSettingsModal = document.getElementById('pinSettingsModal');
       const pinSettingsCard = document.getElementById('pinSettingsCard');
       const pinSettingsCloseBtn = document.getElementById('pinSettingsCloseBtn');
@@ -4396,6 +4635,30 @@
         }
       }
 
+      function updateMenuPinState() {
+        const hasPin = Boolean(getSavedPin());
+        if (menuLockIndicatorDot) {
+          if (hasPin) menuLockIndicatorDot.classList.remove('hidden');
+          else menuLockIndicatorDot.classList.add('hidden');
+        }
+        if (menuPinStatusText) {
+          menuPinStatusText.textContent = hasPin ? 'PIN Protection Active' : 'Not configured';
+        }
+        if (menuPinBadge) {
+          if (hasPin) {
+            menuPinBadge.textContent = 'ACTIVE';
+            menuPinBadge.className = 'text-[9px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40';
+          } else {
+            menuPinBadge.textContent = 'OFF';
+            menuPinBadge.className = 'text-[9px] font-bold px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-400 border border-zinc-700';
+          }
+        }
+        if (menuLockNowBtn) {
+          if (hasPin) menuLockNowBtn.classList.remove('hidden');
+          else menuLockNowBtn.classList.add('hidden');
+        }
+      }
+
       function updateLockIconState() {
         const pin = getSavedPin();
         if (pin && lockAppIcon && lockAppBtn) {
@@ -4409,6 +4672,7 @@
           lockAppBtn.classList.remove('border-amber-500/30', 'bg-amber-950/20');
           lockAppBtn.title = 'Set 4-Digit PIN Lock';
         }
+        updateMenuPinState();
       }
 
       function openPinSettingsModal() {
@@ -4475,6 +4739,9 @@
         isPinOverlayActive = false;
         currentPinInput = '';
         pinLockOverlay.classList.add('opacity-0', 'pointer-events-none');
+        if (typeof checkMonthlyBackupPrompt === 'function') {
+          setTimeout(checkMonthlyBackupPrompt, 350);
+        }
       }
 
       function updatePinDots() {
@@ -4652,7 +4919,54 @@
         }
       });
 
-      // Lock App Header Button Listener
+      // App Menu Button & Modal Functions
+      function openAppMenuModal() {
+        if (!appMenuModal) return;
+        updateMenuPinState();
+        appMenuModal.classList.remove('opacity-0', 'pointer-events-none');
+        if (appMenuCard) {
+          appMenuCard.classList.remove('scale-95');
+          appMenuCard.classList.add('scale-100');
+        }
+      }
+
+      function closeAppMenuModal() {
+        if (!appMenuModal) return;
+        if (appMenuCard) {
+          appMenuCard.classList.remove('scale-100');
+          appMenuCard.classList.add('scale-95');
+        }
+        appMenuModal.classList.add('opacity-0', 'pointer-events-none');
+      }
+
+      if (appMenuBtn) appMenuBtn.addEventListener('click', openAppMenuModal);
+      if (appMenuCloseBtn) appMenuCloseBtn.addEventListener('click', closeAppMenuModal);
+      if (appMenuModal) {
+        appMenuModal.addEventListener('click', e => {
+          if (e.target === appMenuModal) closeAppMenuModal();
+        });
+      }
+
+      if (menuPinSettingsBtn) {
+        menuPinSettingsBtn.addEventListener('click', () => {
+          closeAppMenuModal();
+          const pin = getSavedPin();
+          if (!pin) {
+            showPinLockOverlay('CREATE_STEP1');
+          } else {
+            openPinSettingsModal();
+          }
+        });
+      }
+
+      if (menuLockNowBtn) {
+        menuLockNowBtn.addEventListener('click', () => {
+          closeAppMenuModal();
+          showPinLockOverlay('UNLOCK');
+        });
+      }
+
+      // Lock App Header Button Listener (Fallback if present)
       if (lockAppBtn) {
         lockAppBtn.addEventListener('click', () => {
           const pin = getSavedPin();
@@ -5368,157 +5682,441 @@
         });
       }
 
-      // Import / Restore CSV Backup Logic
+      // ==========================================
+      // CSV BACKUP, MULTI-FILE RESTORE & SCHEDULED VAULT ENGINE
+      // ==========================================
+      function parseCsvLine(line) {
+        const values = [];
+        let current = '';
+        let insideQuotes = false;
+        for (let i = 0; i < line.length; i++) {
+          const ch = line[i];
+          if (ch === '"') {
+            if (insideQuotes && line[i + 1] === '"') {
+              current += '"';
+              i++;
+            } else {
+              insideQuotes = !insideQuotes;
+            }
+          } else if (ch === ',' && !insideQuotes) {
+            values.push(current.trim());
+            current = '';
+          } else {
+            current += ch;
+          }
+        }
+        values.push(current.trim());
+        return values;
+      }
+
+      function parseFullBackupCsv(text) {
+        const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
+        if (lines.length <= 1) return { expenses: [], budgets: [] };
+
+        const headerValues = parseCsvLine(lines[0]).map(h => h.toLowerCase());
+        let dateCol = 0, timeCol = 1, amtCol = 2, reasonCol = 3, tagCol = 4, remarkCol = 5, typeCol = -1;
+
+        headerValues.forEach((h, idx) => {
+          if (h.includes('type')) typeCol = idx;
+          else if (h.includes('date')) dateCol = idx;
+          else if (h.includes('time')) timeCol = idx;
+          else if (h.includes('amount')) amtCol = idx;
+          else if (h.includes('reason') || h.includes('merchant') || h.includes('item') || h.includes('title')) reasonCol = idx;
+          else if (h.includes('tag') || h.includes('category')) tagCol = idx;
+          else if (h.includes('remark') || h.includes('note')) remarkCol = idx;
+        });
+
+        const parsedExpenses = [];
+        const parsedBudgets = [];
+
+        for (let i = 1; i < lines.length; i++) {
+          const cols = parseCsvLine(lines[i]);
+          if (!cols || cols.length === 0) continue;
+
+          const rawAmt = parseFloat(String(cols[amtCol] || '').replace(/[^0-9.]/g, ''));
+          if (isNaN(rawAmt) || rawAmt <= 0) continue;
+
+          const reason = (cols[reasonCol] || 'Expense').trim() || 'Expense';
+          const tag = (cols[tagCol] || 'Misc').trim() || 'Misc';
+          const remark = cols[remarkCol] ? cols[remarkCol].trim() : '';
+          const rawType = (typeCol >= 0 && cols[typeCol]) ? cols[typeCol].trim().toLowerCase() : '';
+
+          let dateIso = new Date().toISOString();
+          let targetDateStr = '';
+          const rawDate = cols[dateCol];
+          const rawTime = cols[timeCol];
+
+          if (rawDate) {
+            let parsedDate = null;
+            const ymd = rawDate.match(/^(\d{4})[\/\-\.](\d{1,2})[\/\-\.](\d{1,2})/);
+            const dmy = rawDate.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})/);
+            if (ymd) {
+              const y = parseInt(ymd[1], 10);
+              const m = parseInt(ymd[2], 10) - 1;
+              const d = parseInt(ymd[3], 10);
+              parsedDate = new Date(y, m, d, 12, 0, 0);
+            } else if (dmy) {
+              const d = parseInt(dmy[1], 10);
+              const m = parseInt(dmy[2], 10) - 1;
+              const y = parseInt(dmy[3], 10);
+              parsedDate = new Date(y, m, d, 12, 0, 0);
+            } else {
+              const testD = new Date(rawDate);
+              if (!isNaN(testD.getTime())) parsedDate = testD;
+            }
+
+            if (parsedDate && rawTime) {
+              const tm = rawTime.match(/(\d{1,2}):(\d{2})(?::(\d{2}))?\s*([AaPp][Mm])?/);
+              if (tm) {
+                let hr = parseInt(tm[1], 10);
+                const min = parseInt(tm[2], 10);
+                const sec = tm[3] ? parseInt(tm[3], 10) : 0;
+                const ap = tm[4] ? tm[4].toUpperCase() : null;
+                if (ap === 'PM' && hr < 12) hr += 12;
+                if (ap === 'AM' && hr === 12) hr = 0;
+                parsedDate.setHours(hr, min, sec, 0);
+              }
+            }
+
+            if (parsedDate && !isNaN(parsedDate.getTime())) {
+              dateIso = parsedDate.toISOString();
+              const y = parsedDate.getFullYear();
+              const m = String(parsedDate.getMonth() + 1).padStart(2, '0');
+              const d = String(parsedDate.getDate()).padStart(2, '0');
+              targetDateStr = `${y}-${m}-${d}`;
+            }
+          }
+          if (!targetDateStr) {
+            targetDateStr = dateIso.slice(0, 10);
+          }
+
+          if (rawType.includes('budget') || rawType.includes('planned')) {
+            const isCompleted = remark.toLowerCase().includes('completed') || remark.toLowerCase().includes('paid');
+            parsedBudgets.push({
+              id: 'bgt_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+              amount: Math.round(rawAmt * 100) / 100,
+              reason,
+              tag: tag === 'Misc' ? 'Bills' : tag,
+              date: targetDateStr,
+              monthKey: targetDateStr.slice(0, 7),
+              completed: isCompleted,
+              createdAt: dateIso
+            });
+          } else {
+            parsedExpenses.push({
+              id: Date.now().toString(36) + Math.random().toString(36).substring(2, 6),
+              amount: Math.round(rawAmt * 100) / 100,
+              reason,
+              tag,
+              remark,
+              createdAt: dateIso
+            });
+          }
+        }
+
+        return { expenses: parsedExpenses, budgets: parsedBudgets };
+      }
+
+      function triggerFullBackupDownload() {
+        if (expenses.length === 0 && budgetItems.length === 0) {
+          alert('No data to export.');
+          return;
+        }
+
+        const csvRows = [
+          ['"Date"', '"Time"', '"Amount (INR)"', '"Reason"', '"Tag"', '"Remark"', '"Type"']
+        ];
+
+        expenses.forEach(item => {
+          const d = new Date(item.createdAt);
+          const dateStr = !isNaN(d.getTime()) ? d.toLocaleDateString('en-IN') : '';
+          const timeStr = !isNaN(d.getTime()) ? d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true }) : '';
+          const safeReason = (item.reason || 'Expense').replace(/"/g, '""');
+          const safeTag = (item.tag || 'Misc').replace(/"/g, '""');
+          const safeRemark = (item.remark || '').replace(/"/g, '""');
+          csvRows.push([`"${dateStr}"`, `"${timeStr}"`, `"${item.amount}"`, `"${safeReason}"`, `"${safeTag}"`, `"${safeRemark}"`, '"Expense"']);
+        });
+
+        budgetItems.forEach(item => {
+          const d = item.createdAt ? new Date(item.createdAt) : new Date(item.date || Date.now());
+          const dateStr = item.date || (!isNaN(d.getTime()) ? d.toLocaleDateString('en-IN') : '');
+          const timeStr = '12:00 PM';
+          const safeReason = (item.reason || 'Budget Item').replace(/"/g, '""');
+          const safeTag = (item.tag || 'Bills').replace(/"/g, '""');
+          const safeRemark = (item.completed ? 'Completed' : 'Pending').replace(/"/g, '""');
+          csvRows.push([`"${dateStr}"`, `"${timeStr}"`, `"${item.amount}"`, `"${safeReason}"`, `"${safeTag}"`, `"${safeRemark}"`, '"Planned Budget"']);
+        });
+
+        const csvContent = csvRows.map(row => row.join(',')).join('\r\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        const todayStr = new Date().toISOString().slice(0, 10);
+        a.download = `rupee-tracker-backup-all-${todayStr}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+
+      function triggerMonthlyBackupDownload(monthKey) {
+        const targetMonth = monthKey || getMonthKey(new Date());
+        const monthLabel = formatMonthLabel(targetMonth);
+
+        const filteredExpenses = expenses.filter(e => getMonthKey(e.createdAt) === targetMonth);
+        const filteredBudgets = budgetItems.filter(b => (b.monthKey || (b.date && b.date.slice(0, 7))) === targetMonth);
+
+        if (filteredExpenses.length === 0 && filteredBudgets.length === 0) {
+          alert(`No expenses or budget items found for ${monthLabel}.`);
+          return;
+        }
+
+        const csvRows = [
+          ['"Date"', '"Time"', '"Amount (INR)"', '"Reason"', '"Tag"', '"Remark"', '"Type"']
+        ];
+
+        filteredExpenses.forEach(item => {
+          const d = new Date(item.createdAt);
+          const dateStr = !isNaN(d.getTime()) ? d.toLocaleDateString('en-IN') : '';
+          const timeStr = !isNaN(d.getTime()) ? d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true }) : '';
+          const safeReason = (item.reason || 'Expense').replace(/"/g, '""');
+          const safeTag = (item.tag || 'Misc').replace(/"/g, '""');
+          const safeRemark = (item.remark || '').replace(/"/g, '""');
+          csvRows.push([`"${dateStr}"`, `"${timeStr}"`, `"${item.amount}"`, `"${safeReason}"`, `"${safeTag}"`, `"${safeRemark}"`, '"Expense"']);
+        });
+
+        filteredBudgets.forEach(item => {
+          const d = item.createdAt ? new Date(item.createdAt) : new Date(item.date || Date.now());
+          const dateStr = item.date || (!isNaN(d.getTime()) ? d.toLocaleDateString('en-IN') : '');
+          const timeStr = '12:00 PM';
+          const safeReason = (item.reason || 'Budget Item').replace(/"/g, '""');
+          const safeTag = (item.tag || 'Bills').replace(/"/g, '""');
+          const safeRemark = (item.completed ? 'Completed' : 'Pending').replace(/"/g, '""');
+          csvRows.push([`"${dateStr}"`, `"${timeStr}"`, `"${item.amount}"`, `"${safeReason}"`, `"${safeTag}"`, `"${safeRemark}"`, '"Planned Budget"']);
+        });
+
+        const csvContent = csvRows.map(row => row.join(',')).join('\r\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `rupee-tracker-backup-${targetMonth}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+
+      // Restore CSV Logic Helper (handles multi-file or single-file merge & deduplication)
+      async function processCsvRestore(fileList) {
+        const files = Array.from(fileList || []);
+        if (!files || files.length === 0) return;
+
+        try {
+          const fileReadPromises = files.map(file => {
+            return new Promise((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onload = evt => resolve(evt.target.result || '');
+              reader.onerror = err => reject(err);
+              reader.readAsText(file);
+            });
+          });
+
+          const contents = await Promise.all(fileReadPromises);
+          let allParsedExpenses = [];
+          let allParsedBudgets = [];
+
+          contents.forEach(txt => {
+            const parsed = parseFullBackupCsv(txt);
+            allParsedExpenses = allParsedExpenses.concat(parsed.expenses);
+            allParsedBudgets = allParsedBudgets.concat(parsed.budgets);
+          });
+
+          if (allParsedExpenses.length === 0 && allParsedBudgets.length === 0) {
+            alert('No valid expenses or budgets found in the selected CSV file(s).');
+            return;
+          }
+
+          const totalItems = allParsedExpenses.length + allParsedBudgets.length;
+          const fileCountMsg = files.length > 1 ? `across ${files.length} files` : `from ${files[0].name}`;
+          const confirmMsg = `Found ${allParsedExpenses.length} expenses and ${allParsedBudgets.length} planned budgets (${totalItems} total) ${fileCountMsg}.\n\nDo you want to restore and merge them into your tracker? Existing records will not be duplicated.`;
+
+          if (confirm(confirmMsg)) {
+            const existingExpKeys = new Set(expenses.map(exp => `${exp.amount}_${(exp.reason || '').trim().toLowerCase()}_${(exp.createdAt || '').slice(0, 16)}`));
+            let restoredExpCount = 0;
+
+            allParsedExpenses.forEach(p => {
+              const key = `${p.amount}_${(p.reason || '').trim().toLowerCase()}_${(p.createdAt || '').slice(0, 16)}`;
+              if (!existingExpKeys.has(key)) {
+                expenses.push(p);
+                existingExpKeys.add(key);
+                restoredExpCount++;
+              }
+            });
+
+            const existingBgtKeys = new Set(budgetItems.map(b => `${b.amount}_${(b.reason || '').trim().toLowerCase()}_${b.date || ''}`));
+            let restoredBgtCount = 0;
+
+            allParsedBudgets.forEach(b => {
+              const key = `${b.amount}_${(b.reason || '').trim().toLowerCase()}_${b.date || ''}`;
+              if (!existingBgtKeys.has(key)) {
+                budgetItems.push(b);
+                existingBgtKeys.add(key);
+                restoredBgtCount++;
+              }
+            });
+
+            expenses.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            saveExpenses();
+            saveBudgets();
+            refreshUI();
+            renderBudget();
+            closeAppMenuModal();
+            closeExportCsvModal();
+
+            if (navigator.vibrate) navigator.vibrate([60, 40, 60]);
+            showToast(`✓ Restored ${restoredExpCount} expenses & ${restoredBgtCount} budgets permanently!`);
+          }
+        } catch (err) {
+          console.error('CSV Restore Error:', err);
+          alert('Could not parse one or more CSV files. Please make sure they are valid CSV files.');
+        }
+      }
+
+      // App Menu Data Vault Event Listeners
+      if (menuRestoreCsvBtn && menuMultiCsvInput) {
+        menuRestoreCsvBtn.addEventListener('click', () => {
+          menuMultiCsvInput.click();
+        });
+
+        menuMultiCsvInput.addEventListener('change', e => {
+          processCsvRestore(e.target.files).finally(() => {
+            menuMultiCsvInput.value = '';
+          });
+        });
+      }
+
+      if (menuExportAllBtn) {
+        menuExportAllBtn.addEventListener('click', () => {
+          closeAppMenuModal();
+          triggerFullBackupDownload();
+          showToast('✓ Complete backup downloaded!');
+        });
+      }
+
+      if (menuDownloadMonthNowBtn) {
+        menuDownloadMonthNowBtn.addEventListener('click', () => {
+          closeAppMenuModal();
+          const curKey = getMonthKey(new Date());
+          triggerMonthlyBackupDownload(curKey);
+          try {
+            localStorage.setItem('rupee_last_monthly_backup_prompt', curKey);
+          } catch {}
+          showToast(`✓ ${formatMonthLabel(curKey)} backup downloaded!`);
+        });
+      }
+
+      // Existing Export Modal Import Support (forward to processCsvRestore)
       const importCsvBtn = document.getElementById('importCsvBtn');
       const importCsvFileInput = document.getElementById('importCsvFileInput');
-
       if (importCsvBtn && importCsvFileInput) {
         importCsvBtn.addEventListener('click', () => {
           importCsvFileInput.click();
         });
 
         importCsvFileInput.addEventListener('change', e => {
-          const file = e.target.files && e.target.files[0];
-          if (!file) return;
+          processCsvRestore(e.target.files).finally(() => {
+            importCsvFileInput.value = '';
+          });
+        });
+      }
 
-          const reader = new FileReader();
-          reader.onload = evt => {
-            try {
-              const text = evt.target.result || '';
-              const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
-              if (lines.length <= 1) {
-                alert('The selected CSV file appears to be empty.');
-                return;
-              }
+      // Monthly Scheduled Auto-Backup Prompt (28th of every month)
+      let pendingMonthlyBackupKey = null;
 
-              const parseCsvLine = (line) => {
-                const values = [];
-                let current = '';
-                let insideQuotes = false;
-                for (let i = 0; i < line.length; i++) {
-                  const ch = line[i];
-                  if (ch === '"') {
-                    if (insideQuotes && line[i + 1] === '"') {
-                      current += '"';
-                      i++;
-                    } else {
-                      insideQuotes = !insideQuotes;
-                    }
-                  } else if (ch === ',' && !insideQuotes) {
-                    values.push(current.trim());
-                    current = '';
-                  } else {
-                    current += ch;
-                  }
-                }
-                values.push(current.trim());
-                return values;
-              };
+      function openMonthlyBackupModal(monthKey, expCount, bgtCount) {
+        if (!monthlyBackupModal) return;
+        pendingMonthlyBackupKey = monthKey || getMonthKey(new Date());
 
-              const headerValues = parseCsvLine(lines[0]).map(h => h.toLowerCase());
-              let dateCol = 0, timeCol = 1, amtCol = 2, reasonCol = 3, tagCol = 4, remarkCol = 5;
+        const monthLabel = formatMonthLabel(pendingMonthlyBackupKey);
+        if (monthlyBackupTitle) {
+          monthlyBackupTitle.textContent = `${monthLabel} Offline Backup`;
+        }
+        if (monthlyBackupSub) {
+          monthlyBackupSub.textContent = `Month-end auto safeguard (${monthLabel})`;
+        }
 
-              headerValues.forEach((h, idx) => {
-                if (h.includes('date')) dateCol = idx;
-                else if (h.includes('time')) timeCol = idx;
-                else if (h.includes('amount')) amtCol = idx;
-                else if (h.includes('reason') || h.includes('merchant') || h.includes('item') || h.includes('title')) reasonCol = idx;
-                else if (h.includes('tag') || h.includes('category')) tagCol = idx;
-                else if (h.includes('remark') || h.includes('note')) remarkCol = idx;
-              });
+        const expTotal = typeof expCount === 'number' ? expCount : expenses.filter(e => getMonthKey(e.createdAt) === pendingMonthlyBackupKey).length;
+        const bgtTotal = typeof bgtCount === 'number' ? bgtCount : budgetItems.filter(b => (b.monthKey || (b.date && b.date.slice(0, 7))) === pendingMonthlyBackupKey).length;
 
-              const parsedExpenses = [];
-              for (let i = 1; i < lines.length; i++) {
-                const cols = parseCsvLine(lines[i]);
-                if (!cols || cols.length === 0) continue;
+        if (monthlyBackupRecordCount) {
+          monthlyBackupRecordCount.textContent = `${expTotal} transactions recorded`;
+        }
+        if (monthlyBackupBudgetCount) {
+          monthlyBackupBudgetCount.textContent = `${bgtTotal} planned budgets`;
+        }
 
-                const rawAmt = parseFloat(String(cols[amtCol] || '').replace(/[^0-9.]/g, ''));
-                if (isNaN(rawAmt) || rawAmt <= 0) continue;
+        monthlyBackupModal.classList.remove('opacity-0', 'pointer-events-none');
+        if (monthlyBackupCard) {
+          monthlyBackupCard.classList.remove('scale-95');
+          monthlyBackupCard.classList.add('scale-100');
+        }
+      }
 
-                const reason = (cols[reasonCol] || 'Expense').trim() || 'Expense';
-                const tag = (cols[tagCol] || 'Misc').trim() || 'Misc';
-                const remark = cols[remarkCol] ? cols[remarkCol].trim() : '';
+      function closeMonthlyBackupModal() {
+        if (!monthlyBackupModal) return;
+        if (monthlyBackupCard) {
+          monthlyBackupCard.classList.remove('scale-100');
+          monthlyBackupCard.classList.add('scale-95');
+        }
+        monthlyBackupModal.classList.add('opacity-0', 'pointer-events-none');
+      }
 
-                let dateIso = new Date().toISOString();
-                const rawDate = cols[dateCol];
-                const rawTime = cols[timeCol];
+      function checkMonthlyBackupPrompt() {
+        try {
+          const today = new Date();
+          const dayOfMonth = today.getDate();
+          if (dayOfMonth < 28) return;
 
-                if (rawDate) {
-                  let parsedDate = null;
-                  const dmy = rawDate.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})/);
-                  if (dmy) {
-                    const d = parseInt(dmy[1], 10);
-                    const m = parseInt(dmy[2], 10) - 1;
-                    const y = parseInt(dmy[3], 10);
-                    parsedDate = new Date(y, m, d, 12, 0, 0);
-                  } else {
-                    const testD = new Date(rawDate);
-                    if (!isNaN(testD.getTime())) parsedDate = testD;
-                  }
+          const currentMonthKey = getMonthKey(today);
+          const PROMPT_STORAGE_KEY = 'rupee_last_monthly_backup_prompt';
+          const lastPromptedMonth = localStorage.getItem(PROMPT_STORAGE_KEY);
 
-                  if (parsedDate && rawTime) {
-                    const tm = rawTime.match(/(\d{1,2}):(\d{2})(?::(\d{2}))?\s*([AaPp][Mm])?/);
-                    if (tm) {
-                      let hr = parseInt(tm[1], 10);
-                      const min = parseInt(tm[2], 10);
-                      const sec = tm[3] ? parseInt(tm[3], 10) : 0;
-                      const ap = tm[4] ? tm[4].toUpperCase() : null;
-                      if (ap === 'PM' && hr < 12) hr += 12;
-                      if (ap === 'AM' && hr === 12) hr = 0;
-                      parsedDate.setHours(hr, min, sec, 0);
-                    }
-                  }
+          if (lastPromptedMonth === currentMonthKey) return;
 
-                  if (parsedDate && !isNaN(parsedDate.getTime())) {
-                    dateIso = parsedDate.toISOString();
-                  }
-                }
+          const thisMonthExpenses = expenses.filter(e => getMonthKey(e.createdAt) === currentMonthKey);
+          const thisMonthBudgets = budgetItems.filter(b => (b.monthKey || (b.date && b.date.slice(0, 7))) === currentMonthKey);
 
-                parsedExpenses.push({
-                  id: Date.now().toString(36) + Math.random().toString(36).substring(2, 6),
-                  amount: Math.round(rawAmt * 100) / 100,
-                  reason,
-                  tag,
-                  remark,
-                  createdAt: dateIso
-                });
-              }
+          if (thisMonthExpenses.length === 0 && thisMonthBudgets.length === 0) return;
 
-              if (parsedExpenses.length === 0) {
-                alert('No valid expenses found in the uploaded CSV.');
-                return;
-              }
+          openMonthlyBackupModal(currentMonthKey, thisMonthExpenses.length, thisMonthBudgets.length);
+        } catch (err) {
+          console.error('Check monthly backup prompt error:', err);
+        }
+      }
 
-              const confirmMsg = `Found ${parsedExpenses.length} transactions in your CSV backup.\n\nDo you want to restore them to your tracker?`;
-              if (confirm(confirmMsg)) {
-                const existingKeys = new Set(expenses.map(e => `${e.amount}_${e.reason}_${e.createdAt.slice(0, 16)}`));
-                let restoredCount = 0;
+      if (monthlyBackupConfirmBtn) {
+        monthlyBackupConfirmBtn.addEventListener('click', () => {
+          const key = pendingMonthlyBackupKey || getMonthKey(new Date());
+          triggerMonthlyBackupDownload(key);
+          try {
+            localStorage.setItem('rupee_last_monthly_backup_prompt', key);
+          } catch {}
+          closeMonthlyBackupModal();
+          showToast(`✓ ${formatMonthLabel(key)} backup downloaded & saved to phone!`);
+        });
+      }
 
-                parsedExpenses.forEach(p => {
-                  const key = `${p.amount}_${p.reason}_${p.createdAt.slice(0, 16)}`;
-                  if (!existingKeys.has(key)) {
-                    expenses.push(p);
-                    existingKeys.add(key);
-                    restoredCount++;
-                  }
-                });
+      if (monthlyBackupLaterBtn) {
+        monthlyBackupLaterBtn.addEventListener('click', () => {
+          closeMonthlyBackupModal();
+        });
+      }
 
-                expenses.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-                saveExpenses();
-                refreshUI();
-                closeExportCsvModal();
-
-                if (navigator.vibrate) navigator.vibrate([50, 40, 50]);
-                showToast(`✓ Successfully restored ${restoredCount} expenses from CSV!`);
-              }
-            } catch (err) {
-              console.error('CSV Import Error:', err);
-              alert('Could not parse the CSV file. Please make sure it is a valid Rupee Tracker CSV.');
-            } finally {
-              importCsvFileInput.value = '';
-            }
-          };
-          reader.readAsText(file);
+      if (monthlyBackupModal) {
+        monthlyBackupModal.addEventListener('click', e => {
+          if (e.target === monthlyBackupModal) closeMonthlyBackupModal();
         });
       }
 
@@ -6730,6 +7328,8 @@
             const pin = getSavedPin();
             if (pin && lastHiddenTimestamp > 0 && (Date.now() - lastHiddenTimestamp > 60000)) {
               showPinLockOverlay('UNLOCK');
+            } else {
+              checkMonthlyBackupPrompt();
             }
           }
         });
@@ -6744,6 +7344,8 @@
       // Check PIN lock on launch
       if (getSavedPin()) {
         showPinLockOverlay('UNLOCK');
+      } else {
+        checkMonthlyBackupPrompt();
       }
     })();
   </script>
