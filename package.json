@@ -5,7 +5,10 @@
   "main": "main.js",
   "scripts": {
     "start": "npx serve .",
-    "desktop": "npx electron main.js"
+    "desktop": "npx electron main.js",
+    "build": "node copy-assets.js && npx cap copy",
+    "android:sync": "node copy-assets.js && npx cap sync",
+    "android:open": "npx cap open android"
   },
   "keywords": [
     "expense-tracker",
@@ -16,6 +19,9 @@
   "author": "nithishsrinivasakan-arch",
   "license": "MIT",
   "dependencies": {
+    "@capacitor/android": "^8.6.2",
+    "@capacitor/cli": "^8.6.2",
+    "@capacitor/core": "^8.6.2",
     "tesseract.js": "^7.0.0"
   }
 }
