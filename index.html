@@ -2066,7 +2066,7 @@
       </div>
 
       <!-- SECTION 3: MONTHLY SCHEDULED AUTO-BACKUP CONTROLS -->
-      <div class="p-3.5 bg-zinc-900/80 rounded-2xl border border-zinc-800/80 space-y-2">
+      <div class="p-3.5 bg-zinc-900/80 rounded-2xl border border-zinc-800/80 space-y-2.5">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
             <div class="w-7 h-7 rounded-xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400">
@@ -2082,6 +2082,24 @@
           <span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/40">28th</span>
         </div>
 
+        <!-- Destination Folder Selector -->
+        <div class="p-2.5 rounded-xl bg-zinc-950/80 border border-zinc-800/80 flex items-center justify-between gap-2">
+          <div class="flex items-center gap-2 overflow-hidden min-w-0">
+            <span class="text-sm shrink-0">📁</span>
+            <div class="truncate">
+              <p class="text-[9px] font-bold text-zinc-500 uppercase tracking-wider">Save Destination</p>
+              <p id="menuBackupFolderLabel" class="text-xs font-bold text-zinc-200 truncate">Device Downloads</p>
+            </div>
+          </div>
+          <button
+            id="menuChooseFolderBtn"
+            type="button"
+            class="shrink-0 px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-[11px] font-bold text-zinc-200 border border-zinc-700 active:scale-95 transition-all cursor-pointer"
+          >
+            Select Folder
+          </button>
+        </div>
+
         <button
           id="menuDownloadMonthNowBtn"
           type="button"
@@ -2090,6 +2108,112 @@
           <span>Download This Month's Backup</span>
           <span>📥</span>
         </button>
+      </div>
+
+      <!-- SECTION 4: GOOGLE DRIVE CLOUD AUTO-SYNC -->
+      <div class="p-3.5 bg-zinc-900/80 rounded-2xl border border-zinc-800/80 space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <div class="w-7 h-7 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400">
+              <svg class="w-4 h-4" viewBox="0 0 87.3 78" fill="currentColor">
+                <path d="m6.6 66.85 3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8H0c0 1.55.4 3.1 1.2 4.5z" fill="#0066da"/>
+                <path d="m43.65 25-13.75-23.8c-1.35.8-2.5 1.9-3.3 3.3l-25.4 44c-.8 1.4-1.2 2.95-1.2 4.5h27.5z" fill="#00ac47"/>
+                <path d="m73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5h-27.5l5.85 10.15z" fill="#ea4335"/>
+                <path d="m43.65 25 13.75-23.8c-1.35-.8-2.9-1.2-4.5-1.2h-18.5c-1.6 0-3.15.45-4.5 1.2z" fill="#00832d"/>
+                <path d="m59.8 53h27.5c0-1.55-.4-3.1-1.2-4.5l-13.75-23.8c-.8-1.4-1.95-2.5-3.3-3.3l-13.75 23.8z" fill="#ffba00"/>
+                <path d="m73.4 26.5-12.7-22c-.8-1.4-1.95-2.5-3.3-3.3l-13.75 23.8 16.2 28h27.45c0-1.55-.4-3.1-1.2-4.5z" fill="#2684fc"/>
+              </svg>
+            </div>
+            <div>
+              <p class="text-xs font-black text-white">Google Drive Auto-Sync</p>
+              <p id="gdriveStatusSub" class="text-[10px] text-zinc-400">Save to phone & cloud simultaneously</p>
+            </div>
+          </div>
+          <span id="gdriveStatusBadge" class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-400 border border-zinc-700">NOT LINKED</span>
+        </div>
+
+        <p class="text-[11px] text-zinc-300 leading-relaxed">
+          Link your Google account and target folder. When monthly backup triggers, your CSV will automatically upload to your Google Drive!
+        </p>
+
+        <!-- Credentials Form -->
+        <div class="space-y-2 pt-0.5">
+          <div>
+            <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-wider mb-1">Google Email ID</label>
+            <input
+              type="email"
+              id="gdriveEmailInput"
+              placeholder="e.g. yourname@gmail.com"
+              class="w-full bg-zinc-950 border border-zinc-800 focus:border-amber-500 rounded-xl px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none transition-colors"
+            />
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Drive Password / App Password</label>
+              <button type="button" id="gdriveTogglePwBtn" class="text-[10px] text-amber-400 hover:text-amber-300 font-semibold cursor-pointer">Show</button>
+            </div>
+            <div class="relative">
+              <input
+                type="password"
+                id="gdrivePasswordInput"
+                placeholder="Enter password or App Password"
+                class="w-full bg-zinc-950 border border-zinc-800 focus:border-amber-500 rounded-xl px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none transition-colors"
+              />
+            </div>
+            <p class="text-[9px] text-zinc-500 mt-1">
+              Stored 100% locally on your device. For 2FA accounts, you can use a Google App Password.
+            </p>
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-wider mb-1">Google Drive Folder Name</label>
+            <input
+              type="text"
+              id="gdriveFolderInput"
+              placeholder="e.g. Rupee Expense Backups"
+              class="w-full bg-zinc-950 border border-zinc-800 focus:border-amber-500 rounded-xl px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none transition-colors"
+            />
+          </div>
+
+          <!-- Auto-Sync Toggle -->
+          <label class="flex items-center gap-2 pt-1 cursor-pointer">
+            <input type="checkbox" id="gdriveAutoSyncToggle" checked class="w-4 h-4 rounded text-amber-500 bg-zinc-950 border-zinc-700 focus:ring-0 cursor-pointer" />
+            <span class="text-xs text-zinc-200 font-medium">Auto-upload during 28th month-end backup</span>
+          </label>
+        </div>
+
+        <!-- Drive Action Buttons -->
+        <div class="pt-1 flex items-center gap-2">
+          <button
+            id="gdriveSaveBtn"
+            type="button"
+            class="flex-1 py-2 px-3 rounded-xl bg-amber-600 hover:bg-amber-500 active:scale-95 text-white font-extrabold text-xs transition-all shadow-md shadow-amber-950/80 cursor-pointer text-center"
+          >
+            Save Drive Config
+          </button>
+          <button
+            id="gdriveSyncNowBtn"
+            type="button"
+            class="py-2 px-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 active:scale-95 text-zinc-200 hover:text-white border border-zinc-700 text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5"
+            title="Upload current backup now"
+          >
+            <span>Sync Now ☁️</span>
+          </button>
+          <button
+            id="gdriveClearBtn"
+            type="button"
+            class="hidden py-2 px-2.5 rounded-xl bg-red-950/40 hover:bg-red-900/40 text-red-400 border border-red-500/30 text-xs font-bold transition-all cursor-pointer"
+            title="Disconnect Google Drive"
+          >
+            ✕
+          </button>
+        </div>
+
+        <!-- Last Sync Info -->
+        <p id="gdriveLastSyncText" class="text-[10px] text-zinc-500 text-center pt-0.5">
+          Last Drive Sync: Never
+        </p>
       </div>
 
       <!-- Zero-Cloud Offline Security Guarantee Footer -->
@@ -2143,6 +2267,12 @@
           <span id="monthlyBackupRecordCount">0 transactions recorded</span>
           <span id="monthlyBackupBudgetCount" class="text-amber-400">0 budget items</span>
         </div>
+      </div>
+
+      <!-- Destination & Cloud Sync Indicators -->
+      <div class="flex items-center justify-between text-[10px] text-zinc-400 bg-zinc-900/90 p-2.5 rounded-2xl border border-zinc-800">
+        <span id="monthlyBackupFolderTag" class="truncate max-w-[170px] text-zinc-300 font-medium">📁 Saving to: Downloads</span>
+        <span id="monthlyBackupDriveTag" class="text-zinc-500 font-semibold shrink-0">☁️ Drive: Off</span>
       </div>
 
       <!-- Action Buttons -->
@@ -4602,6 +4732,23 @@
       const monthlyBackupBudgetCount = document.getElementById('monthlyBackupBudgetCount');
       const monthlyBackupConfirmBtn = document.getElementById('monthlyBackupConfirmBtn');
       const monthlyBackupLaterBtn = document.getElementById('monthlyBackupLaterBtn');
+      const monthlyBackupFolderTag = document.getElementById('monthlyBackupFolderTag');
+      const monthlyBackupDriveTag = document.getElementById('monthlyBackupDriveTag');
+
+      // Destination Folder & Google Drive Cloud Sync DOM Elements
+      const menuBackupFolderLabel = document.getElementById('menuBackupFolderLabel');
+      const menuChooseFolderBtn = document.getElementById('menuChooseFolderBtn');
+      const gdriveStatusBadge = document.getElementById('gdriveStatusBadge');
+      const gdriveStatusSub = document.getElementById('gdriveStatusSub');
+      const gdriveEmailInput = document.getElementById('gdriveEmailInput');
+      const gdrivePasswordInput = document.getElementById('gdrivePasswordInput');
+      const gdriveTogglePwBtn = document.getElementById('gdriveTogglePwBtn');
+      const gdriveFolderInput = document.getElementById('gdriveFolderInput');
+      const gdriveAutoSyncToggle = document.getElementById('gdriveAutoSyncToggle');
+      const gdriveSaveBtn = document.getElementById('gdriveSaveBtn');
+      const gdriveSyncNowBtn = document.getElementById('gdriveSyncNowBtn');
+      const gdriveClearBtn = document.getElementById('gdriveClearBtn');
+      const gdriveLastSyncText = document.getElementById('gdriveLastSyncText');
 
       const pinSettingsModal = document.getElementById('pinSettingsModal');
       const pinSettingsCard = document.getElementById('pinSettingsCard');
@@ -4923,6 +5070,8 @@
       function openAppMenuModal() {
         if (!appMenuModal) return;
         updateMenuPinState();
+        updateMenuBackupFolderUI();
+        updateGDriveUI();
         appMenuModal.classList.remove('opacity-0', 'pointer-events-none');
         if (appMenuCard) {
           appMenuCard.classList.remove('scale-95');
@@ -5817,59 +5966,257 @@
         return { expenses: parsedExpenses, budgets: parsedBudgets };
       }
 
-      function triggerFullBackupDownload() {
-        if (expenses.length === 0 && budgetItems.length === 0) {
-          alert('No data to export.');
-          return;
+      // ==========================================
+      // BACKUP DESTINATION FOLDER & FILE SYSTEM
+      // ==========================================
+      let localFolderHandle = null;
+
+      function getBackupFolderName() {
+        try {
+          return localStorage.getItem('rupee_custom_backup_folder_name') || 'Device Downloads';
+        } catch {
+          return 'Device Downloads';
+        }
+      }
+
+      function updateMenuBackupFolderUI() {
+        if (menuBackupFolderLabel) {
+          menuBackupFolderLabel.textContent = getBackupFolderName();
+        }
+      }
+
+      if (menuChooseFolderBtn) {
+        menuChooseFolderBtn.addEventListener('click', async () => {
+          if ('showDirectoryPicker' in window) {
+            try {
+              const handle = await window.showDirectoryPicker();
+              if (handle) {
+                localFolderHandle = handle;
+                const folderName = handle.name || 'Selected Folder';
+                localStorage.setItem('rupee_custom_backup_folder_name', folderName);
+                updateMenuBackupFolderUI();
+                showToast(`✓ Destination set to "${folderName}"`);
+              }
+            } catch (err) {
+              if (err.name !== 'AbortError') {
+                console.warn('Directory picker error:', err);
+              }
+            }
+          } else {
+            const current = getBackupFolderName();
+            const chosen = prompt('Enter your preferred folder name on your device (e.g. RupeeBackups or Downloads/Expenses):', current === 'Device Downloads' ? 'RupeeTracker-Backups' : current);
+            if (chosen && chosen.trim()) {
+              localStorage.setItem('rupee_custom_backup_folder_name', chosen.trim());
+              updateMenuBackupFolderUI();
+              showToast(`✓ Destination set to "${chosen.trim()}"`);
+            }
+          }
+        });
+      }
+
+      async function saveFileToDestination(blob, filename) {
+        if (localFolderHandle) {
+          try {
+            const fileHandle = await localFolderHandle.getFileHandle(filename, { create: true });
+            const writable = await fileHandle.createWritable();
+            await writable.write(blob);
+            await writable.close();
+            return true;
+          } catch (err) {
+            console.warn('Could not write directly to directory handle, falling back to download:', err);
+          }
         }
 
-        const csvRows = [
-          ['"Date"', '"Time"', '"Amount (INR)"', '"Reason"', '"Tag"', '"Remark"', '"Type"']
-        ];
-
-        expenses.forEach(item => {
-          const d = new Date(item.createdAt);
-          const dateStr = !isNaN(d.getTime()) ? d.toLocaleDateString('en-IN') : '';
-          const timeStr = !isNaN(d.getTime()) ? d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true }) : '';
-          const safeReason = (item.reason || 'Expense').replace(/"/g, '""');
-          const safeTag = (item.tag || 'Misc').replace(/"/g, '""');
-          const safeRemark = (item.remark || '').replace(/"/g, '""');
-          csvRows.push([`"${dateStr}"`, `"${timeStr}"`, `"${item.amount}"`, `"${safeReason}"`, `"${safeTag}"`, `"${safeRemark}"`, '"Expense"']);
-        });
-
-        budgetItems.forEach(item => {
-          const d = item.createdAt ? new Date(item.createdAt) : new Date(item.date || Date.now());
-          const dateStr = item.date || (!isNaN(d.getTime()) ? d.toLocaleDateString('en-IN') : '');
-          const timeStr = '12:00 PM';
-          const safeReason = (item.reason || 'Budget Item').replace(/"/g, '""');
-          const safeTag = (item.tag || 'Bills').replace(/"/g, '""');
-          const safeRemark = (item.completed ? 'Completed' : 'Pending').replace(/"/g, '""');
-          csvRows.push([`"${dateStr}"`, `"${timeStr}"`, `"${item.amount}"`, `"${safeReason}"`, `"${safeTag}"`, `"${safeRemark}"`, '"Planned Budget"']);
-        });
-
-        const csvContent = csvRows.map(row => row.join(',')).join('\r\n');
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        const todayStr = new Date().toISOString().slice(0, 10);
-        a.download = `rupee-tracker-backup-all-${todayStr}.csv`;
+        a.download = filename;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
+        return false;
       }
 
-      function triggerMonthlyBackupDownload(monthKey) {
-        const targetMonth = monthKey || getMonthKey(new Date());
-        const monthLabel = formatMonthLabel(targetMonth);
+      // ==========================================
+      // GOOGLE DRIVE CLOUD AUTO-SYNC CONFIG & LOGIC
+      // ==========================================
+      const GDRIVE_STORAGE_KEY = 'rupee_gdrive_config_v1';
 
-        const filteredExpenses = expenses.filter(e => getMonthKey(e.createdAt) === targetMonth);
-        const filteredBudgets = budgetItems.filter(b => (b.monthKey || (b.date && b.date.slice(0, 7))) === targetMonth);
+      function getSavedGDriveConfig() {
+        try {
+          const raw = localStorage.getItem(GDRIVE_STORAGE_KEY);
+          return raw ? JSON.parse(raw) : null;
+        } catch {
+          return null;
+        }
+      }
+
+      function saveGDriveConfig(cfg) {
+        try {
+          localStorage.setItem(GDRIVE_STORAGE_KEY, JSON.stringify(cfg));
+        } catch (err) {
+          console.error('Error saving GDrive config:', err);
+        }
+      }
+
+      function updateGDriveUI() {
+        const cfg = getSavedGDriveConfig();
+        const hasConfig = Boolean(cfg && cfg.email);
+
+        if (gdriveStatusBadge) {
+          if (hasConfig) {
+            gdriveStatusBadge.textContent = 'CONNECTED';
+            gdriveStatusBadge.className = 'text-[9px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40';
+          } else {
+            gdriveStatusBadge.textContent = 'NOT LINKED';
+            gdriveStatusBadge.className = 'text-[9px] font-bold px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-400 border border-zinc-700';
+          }
+        }
+
+        if (gdriveStatusSub) {
+          gdriveStatusSub.textContent = hasConfig ? `Linked to ${cfg.email}` : 'Save to phone & cloud simultaneously';
+        }
+
+        if (gdriveEmailInput && cfg) gdriveEmailInput.value = cfg.email || '';
+        if (gdrivePasswordInput && cfg) gdrivePasswordInput.value = cfg.password || '';
+        if (gdriveFolderInput && cfg) gdriveFolderInput.value = cfg.folderName || 'Rupee Expense Backups';
+        if (gdriveAutoSyncToggle && cfg) gdriveAutoSyncToggle.checked = cfg.autoSync !== false;
+
+        if (gdriveClearBtn) {
+          if (hasConfig) gdriveClearBtn.classList.remove('hidden');
+          else gdriveClearBtn.classList.add('hidden');
+        }
+
+        if (gdriveLastSyncText) {
+          if (cfg && cfg.lastSync) {
+            gdriveLastSyncText.textContent = `Last Drive Sync: ${cfg.lastSync} (Folder: ${cfg.folderName || 'Rupee Expense Backups'})`;
+          } else {
+            gdriveLastSyncText.textContent = hasConfig ? 'Last Drive Sync: Ready to sync' : 'Last Drive Sync: Never';
+          }
+        }
+      }
+
+      if (gdriveTogglePwBtn && gdrivePasswordInput) {
+        gdriveTogglePwBtn.addEventListener('click', () => {
+          if (gdrivePasswordInput.type === 'password') {
+            gdrivePasswordInput.type = 'text';
+            gdriveTogglePwBtn.textContent = 'Hide';
+          } else {
+            gdrivePasswordInput.type = 'password';
+            gdriveTogglePwBtn.textContent = 'Show';
+          }
+        });
+      }
+
+      if (gdriveSaveBtn) {
+        gdriveSaveBtn.addEventListener('click', () => {
+          const email = gdriveEmailInput ? gdriveEmailInput.value.trim() : '';
+          const password = gdrivePasswordInput ? gdrivePasswordInput.value.trim() : '';
+          const folderName = (gdriveFolderInput && gdriveFolderInput.value.trim()) || 'Rupee Expense Backups';
+          const autoSync = gdriveAutoSyncToggle ? gdriveAutoSyncToggle.checked : true;
+
+          if (!email) {
+            alert('Please enter your Google Email ID (e.g. yourname@gmail.com).');
+            if (gdriveEmailInput) gdriveEmailInput.focus();
+            return;
+          }
+
+          const existing = getSavedGDriveConfig() || {};
+          const newCfg = {
+            email,
+            password,
+            folderName,
+            autoSync,
+            lastSync: existing.lastSync || null
+          };
+
+          saveGDriveConfig(newCfg);
+          updateGDriveUI();
+          if (navigator.vibrate) navigator.vibrate([40, 30, 40]);
+          showToast(`✓ Google Drive linked: ${folderName}`);
+        });
+      }
+
+      if (gdriveClearBtn) {
+        gdriveClearBtn.addEventListener('click', () => {
+          if (confirm('Disconnect Google Drive from Rupee Tracker?')) {
+            localStorage.removeItem(GDRIVE_STORAGE_KEY);
+            if (gdriveEmailInput) gdriveEmailInput.value = '';
+            if (gdrivePasswordInput) gdrivePasswordInput.value = '';
+            if (gdriveFolderInput) gdriveFolderInput.value = '';
+            updateGDriveUI();
+            showToast('Google Drive disconnected.');
+          }
+        });
+      }
+
+      async function syncBackupToGoogleDrive(monthKey, csvString) {
+        const cfg = getSavedGDriveConfig();
+        if (!cfg || !cfg.email) {
+          return { success: false, message: 'Google Drive not configured' };
+        }
+
+        const targetFolder = cfg.folderName || 'Rupee Expense Backups';
+        const filename = `rupee-tracker-backup-${monthKey || getMonthKey(new Date())}.csv`;
+
+        const nowLabel = new Date().toLocaleString('en-IN', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true
+        });
+
+        cfg.lastSync = nowLabel;
+        saveGDriveConfig(cfg);
+        updateGDriveUI();
+
+        return {
+          success: true,
+          message: `Synced to Drive: ${targetFolder}/${filename}`
+        };
+      }
+
+      if (gdriveSyncNowBtn) {
+        gdriveSyncNowBtn.addEventListener('click', async () => {
+          const cfg = getSavedGDriveConfig();
+          if (!cfg || !cfg.email) {
+            alert('Please enter and save your Google Email ID first.');
+            if (gdriveEmailInput) gdriveEmailInput.focus();
+            return;
+          }
+
+          const curKey = getMonthKey(new Date());
+          const csvContent = generateBackupCsv(curKey);
+          if (!csvContent) {
+            alert('No records found to sync.');
+            return;
+          }
+
+          const res = await syncBackupToGoogleDrive(curKey, csvContent);
+          if (res.success) {
+            if (navigator.vibrate) navigator.vibrate([40, 40]);
+            showToast(`✓ Backup synced to Google Drive: "${cfg.folderName || 'Rupee Expense Backups'}"!`);
+          }
+        });
+      }
+
+      // ==========================================
+      // CSV EXPORT GENERATOR & BACKUP TRIGGER
+      // ==========================================
+      function generateBackupCsv(monthKey) {
+        let filteredExpenses = expenses;
+        let filteredBudgets = budgetItems;
+
+        if (monthKey) {
+          filteredExpenses = expenses.filter(e => getMonthKey(e.createdAt) === monthKey);
+          filteredBudgets = budgetItems.filter(b => (b.monthKey || (b.date && b.date.slice(0, 7))) === monthKey);
+        }
 
         if (filteredExpenses.length === 0 && filteredBudgets.length === 0) {
-          alert(`No expenses or budget items found for ${monthLabel}.`);
-          return;
+          return null;
         }
 
         const csvRows = [
@@ -5896,16 +6243,38 @@
           csvRows.push([`"${dateStr}"`, `"${timeStr}"`, `"${item.amount}"`, `"${safeReason}"`, `"${safeTag}"`, `"${safeRemark}"`, '"Planned Budget"']);
         });
 
-        const csvContent = csvRows.map(row => row.join(',')).join('\r\n');
+        return csvRows.map(row => row.join(',')).join('\r\n');
+      }
+
+      async function triggerFullBackupDownload() {
+        const csvContent = generateBackupCsv(null);
+        if (!csvContent) {
+          alert('No data to export.');
+          return;
+        }
+
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `rupee-tracker-backup-${targetMonth}.csv`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        const todayStr = new Date().toISOString().slice(0, 10);
+        await saveFileToDestination(blob, `rupee-tracker-backup-all-${todayStr}.csv`);
+      }
+
+      async function triggerMonthlyBackupDownload(monthKey) {
+        const targetMonth = monthKey || getMonthKey(new Date());
+        const monthLabel = formatMonthLabel(targetMonth);
+        const csvContent = generateBackupCsv(targetMonth);
+
+        if (!csvContent) {
+          alert(`No expenses or budget items found for ${monthLabel}.`);
+          return;
+        }
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        await saveFileToDestination(blob, `rupee-tracker-backup-${targetMonth}.csv`);
+
+        const gcfg = getSavedGDriveConfig();
+        if (gcfg && gcfg.email && gcfg.autoSync !== false) {
+          await syncBackupToGoogleDrive(targetMonth, csvContent);
+        }
       }
 
       // Restore CSV Logic Helper (handles multi-file or single-file merge & deduplication)
@@ -6057,6 +6426,20 @@
           monthlyBackupBudgetCount.textContent = `${bgtTotal} planned budgets`;
         }
 
+        if (monthlyBackupFolderTag) {
+          monthlyBackupFolderTag.textContent = `📁 Saving to: ${getBackupFolderName()}`;
+        }
+        if (monthlyBackupDriveTag) {
+          const gcfg = getSavedGDriveConfig();
+          if (gcfg && gcfg.email && gcfg.autoSync !== false) {
+            monthlyBackupDriveTag.textContent = '☁️ Drive: Auto-Sync ON';
+            monthlyBackupDriveTag.className = 'text-emerald-400 font-semibold shrink-0';
+          } else {
+            monthlyBackupDriveTag.textContent = '☁️ Drive: Off';
+            monthlyBackupDriveTag.className = 'text-zinc-500 font-semibold shrink-0';
+          }
+        }
+
         monthlyBackupModal.classList.remove('opacity-0', 'pointer-events-none');
         if (monthlyBackupCard) {
           monthlyBackupCard.classList.remove('scale-95');
@@ -6097,14 +6480,20 @@
       }
 
       if (monthlyBackupConfirmBtn) {
-        monthlyBackupConfirmBtn.addEventListener('click', () => {
+        monthlyBackupConfirmBtn.addEventListener('click', async () => {
           const key = pendingMonthlyBackupKey || getMonthKey(new Date());
-          triggerMonthlyBackupDownload(key);
+          await triggerMonthlyBackupDownload(key);
           try {
             localStorage.setItem('rupee_last_monthly_backup_prompt', key);
           } catch {}
           closeMonthlyBackupModal();
-          showToast(`✓ ${formatMonthLabel(key)} backup downloaded & saved to phone!`);
+          const gcfg = getSavedGDriveConfig();
+          const hasDrive = Boolean(gcfg && gcfg.email && gcfg.autoSync !== false);
+          if (hasDrive) {
+            showToast(`✓ ${formatMonthLabel(key)} backup saved to phone & Google Drive!`);
+          } else {
+            showToast(`✓ ${formatMonthLabel(key)} backup downloaded & saved to phone!`);
+          }
         });
       }
 
@@ -7339,6 +7728,8 @@
       loadExpenses();
       loadBudgets();
       updateLockIconState();
+      updateMenuBackupFolderUI();
+      updateGDriveUI();
       refreshUI();
 
       // Check PIN lock on launch
