@@ -1986,43 +1986,34 @@
         </button>
       </div>
 
-      <!-- SECTION 1: PERMANENT DATA BACKUP & MULTI-FILE RESTORE -->
-      <div class="p-3.5 bg-zinc-900/80 rounded-2xl border border-zinc-800/80 space-y-2.5">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <div class="w-7 h-7 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-              </svg>
-            </div>
-            <div>
-              <p class="text-xs font-black text-white">Permanent Data Restore</p>
-              <p class="text-[10px] text-zinc-400">Upload 1 or multiple CSV/Excel backups</p>
-            </div>
+      <!-- SECTION 1: PERMANENT DATA RESTORE & BACKUP -->
+      <div class="p-3 bg-zinc-900/80 rounded-2xl border border-zinc-800/80 space-y-2">
+        <div class="flex items-center gap-2">
+          <div class="w-6 h-6 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+            </svg>
           </div>
+          <p class="text-xs font-black text-white">Data Vault & Restore</p>
         </div>
 
-        <p class="text-[11px] text-zinc-300 leading-relaxed">
-          Restore past expenses and budget plans permanently. You can select multiple month backups at once — records are deduplicated automatically.
-        </p>
-
-        <div class="pt-1 flex items-center gap-2">
+        <div class="flex items-center gap-2">
           <button
             id="menuRestoreCsvBtn"
             type="button"
-            class="flex-1 py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-extrabold text-xs flex items-center justify-center gap-1.5 transition-all shadow-md shadow-emerald-950/80 cursor-pointer"
+            class="flex-1 py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-extrabold text-xs flex items-center justify-center gap-1.5 transition-all shadow-md shadow-emerald-950/80 cursor-pointer"
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
             </svg>
-            <span>Restore Files (Multi)</span>
+            <span>Restore CSVs (Multi)</span>
           </button>
           <input type="file" id="menuMultiCsvInput" multiple accept=".csv,text/csv" class="hidden" />
 
           <button
             id="menuExportAllBtn"
             type="button"
-            class="py-2.5 px-3 rounded-xl bg-zinc-900 hover:bg-zinc-800 active:scale-95 text-zinc-300 hover:text-white border border-zinc-800 text-xs font-bold transition-all cursor-pointer flex items-center gap-1"
+            class="py-2 px-3 rounded-xl bg-zinc-900 hover:bg-zinc-800 active:scale-95 text-zinc-300 hover:text-white border border-zinc-800 text-xs font-bold transition-all cursor-pointer flex items-center gap-1"
             title="Download full database backup"
           >
             <span>Export All 📥</span>
@@ -2031,23 +2022,20 @@
       </div>
 
       <!-- SECTION 2: SECURITY & PIN LOCK -->
-      <div class="p-3.5 bg-zinc-900/80 rounded-2xl border border-zinc-800/80 space-y-2.5">
+      <div class="p-3 bg-zinc-900/80 rounded-2xl border border-zinc-800/80 space-y-2">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
-            <div class="w-7 h-7 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400">
+            <div class="w-6 h-6 rounded-lg bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400">
               <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
             </div>
-            <div>
-              <p class="text-xs font-black text-white">App PIN Security</p>
-              <p id="menuPinStatusText" class="text-[10px] text-zinc-400">Not configured</p>
-            </div>
+            <p class="text-xs font-black text-white">App PIN Security</p>
           </div>
           <span id="menuPinBadge" class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-400 border border-zinc-700">OFF</span>
         </div>
 
-        <div class="flex items-center gap-2 pt-1">
+        <div class="flex items-center gap-2">
           <button
             id="menuPinSettingsBtn"
             type="button"
@@ -2066,37 +2054,31 @@
       </div>
 
       <!-- SECTION 3: MONTHLY SCHEDULED AUTO-BACKUP CONTROLS -->
-      <div class="p-3.5 bg-zinc-900/80 rounded-2xl border border-zinc-800/80 space-y-2.5">
+      <div class="p-3 bg-zinc-900/80 rounded-2xl border border-zinc-800/80 space-y-2">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
-            <div class="w-7 h-7 rounded-xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400">
+            <div class="w-6 h-6 rounded-lg bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400">
               <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
             </div>
-            <div>
-              <p class="text-xs font-black text-white">Monthly Auto-Backup</p>
-              <p class="text-[10px] text-zinc-400">Prompts every 28th to save local file</p>
-            </div>
+            <p class="text-xs font-black text-white">Monthly Auto-Backup</p>
           </div>
           <span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/40">28th</span>
         </div>
 
         <!-- Destination Folder Selector -->
-        <div class="p-2.5 rounded-xl bg-zinc-950/80 border border-zinc-800/80 flex items-center justify-between gap-2">
+        <div class="p-2 rounded-xl bg-zinc-950/80 border border-zinc-800/80 flex items-center justify-between gap-2">
           <div class="flex items-center gap-2 overflow-hidden min-w-0">
             <span class="text-sm shrink-0">📁</span>
-            <div class="truncate">
-              <p class="text-[9px] font-bold text-zinc-500 uppercase tracking-wider">Save Destination</p>
-              <p id="menuBackupFolderLabel" class="text-xs font-bold text-zinc-200 truncate">Device Downloads</p>
-            </div>
+            <p id="menuBackupFolderLabel" class="text-xs font-bold text-zinc-200 truncate">Device Downloads</p>
           </div>
           <button
             id="menuChooseFolderBtn"
             type="button"
-            class="shrink-0 px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-[11px] font-bold text-zinc-200 border border-zinc-700 active:scale-95 transition-all cursor-pointer"
+            class="shrink-0 px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-[11px] font-bold text-zinc-200 border border-zinc-700 active:scale-95 transition-all cursor-pointer flex items-center gap-1"
           >
-            Select Folder
+            <span>Select / Create</span>
           </button>
         </div>
 
@@ -2111,11 +2093,11 @@
       </div>
 
       <!-- SECTION 4: GOOGLE DRIVE CLOUD AUTO-SYNC -->
-      <div class="p-3.5 bg-zinc-900/80 rounded-2xl border border-zinc-800/80 space-y-3">
+      <div class="p-3 bg-zinc-900/80 rounded-2xl border border-zinc-800/80 space-y-2">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
-            <div class="w-7 h-7 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400">
-              <svg class="w-4 h-4" viewBox="0 0 87.3 78" fill="currentColor">
+            <div class="w-6 h-6 rounded-lg bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 87.3 78" fill="currentColor">
                 <path d="m6.6 66.85 3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8H0c0 1.55.4 3.1 1.2 4.5z" fill="#0066da"/>
                 <path d="m43.65 25-13.75-23.8c-1.35.8-2.5 1.9-3.3 3.3l-25.4 44c-.8 1.4-1.2 2.95-1.2 4.5h27.5z" fill="#00ac47"/>
                 <path d="m73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5h-27.5l5.85 10.15z" fill="#ea4335"/>
@@ -2124,90 +2106,73 @@
                 <path d="m73.4 26.5-12.7-22c-.8-1.4-1.95-2.5-3.3-3.3l-13.75 23.8 16.2 28h27.45c0-1.55-.4-3.1-1.2-4.5z" fill="#2684fc"/>
               </svg>
             </div>
-            <div>
-              <p class="text-xs font-black text-white">Google Drive Auto-Sync</p>
-              <p id="gdriveStatusSub" class="text-[10px] text-zinc-400">Save to phone & cloud simultaneously</p>
-            </div>
+            <p class="text-xs font-black text-white">Google Drive Cloud Sync</p>
           </div>
           <span id="gdriveStatusBadge" class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-400 border border-zinc-700">NOT LINKED</span>
         </div>
 
-        <p class="text-[11px] text-zinc-300 leading-relaxed">
-          Link your Google account and target folder. When monthly backup triggers, your CSV will automatically upload to your Google Drive!
-        </p>
-
-        <!-- Credentials Form -->
-        <div class="space-y-2 pt-0.5">
-          <div>
-            <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-wider mb-1">Google Email ID</label>
-            <input
-              type="email"
-              id="gdriveEmailInput"
-              placeholder="e.g. yourname@gmail.com"
-              class="w-full bg-zinc-950 border border-zinc-800 focus:border-amber-500 rounded-xl px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none transition-colors"
-            />
-          </div>
-
-          <div>
-            <div class="flex items-center justify-between mb-1">
-              <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Drive Password / App Password</label>
-              <button type="button" id="gdriveTogglePwBtn" class="text-[10px] text-amber-400 hover:text-amber-300 font-semibold cursor-pointer">Show</button>
-            </div>
-            <div class="relative">
-              <input
-                type="password"
-                id="gdrivePasswordInput"
-                placeholder="Enter password or App Password"
-                class="w-full bg-zinc-950 border border-zinc-800 focus:border-amber-500 rounded-xl px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none transition-colors"
-              />
-            </div>
-            <p class="text-[9px] text-zinc-500 mt-1">
-              Stored 100% locally on your device. For 2FA accounts, you can use a Google App Password.
-            </p>
-          </div>
-
-          <div>
-            <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-wider mb-1">Google Drive Folder Name</label>
-            <input
-              type="text"
-              id="gdriveFolderInput"
-              placeholder="e.g. Rupee Expense Backups"
-              class="w-full bg-zinc-950 border border-zinc-800 focus:border-amber-500 rounded-xl px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none transition-colors"
-            />
-          </div>
-
-          <!-- Auto-Sync Toggle -->
-          <label class="flex items-center gap-2 pt-1 cursor-pointer">
-            <input type="checkbox" id="gdriveAutoSyncToggle" checked class="w-4 h-4 rounded text-amber-500 bg-zinc-950 border-zinc-700 focus:ring-0 cursor-pointer" />
-            <span class="text-xs text-zinc-200 font-medium">Auto-upload during 28th month-end backup</span>
-          </label>
+        <!-- Google Account Login / Chooser View -->
+        <div id="gdriveLoggedOutView">
+          <button
+            id="gdriveSignInBtn"
+            type="button"
+            class="w-full py-2.5 px-3 rounded-xl bg-white hover:bg-zinc-100 text-zinc-900 font-bold text-xs flex items-center justify-center gap-2 shadow-md active:scale-95 transition-all cursor-pointer"
+          >
+            <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+            </svg>
+            <span>Sign In with Google</span>
+          </button>
         </div>
 
-        <!-- Drive Action Buttons -->
-        <div class="pt-1 flex items-center gap-2">
-          <button
-            id="gdriveSaveBtn"
-            type="button"
-            class="flex-1 py-2 px-3 rounded-xl bg-amber-600 hover:bg-amber-500 active:scale-95 text-white font-extrabold text-xs transition-all shadow-md shadow-amber-950/80 cursor-pointer text-center"
-          >
-            Save Drive Config
-          </button>
-          <button
-            id="gdriveSyncNowBtn"
-            type="button"
-            class="py-2 px-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 active:scale-95 text-zinc-200 hover:text-white border border-zinc-700 text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5"
-            title="Upload current backup now"
-          >
-            <span>Sync Now ☁️</span>
-          </button>
-          <button
-            id="gdriveClearBtn"
-            type="button"
-            class="hidden py-2 px-2.5 rounded-xl bg-red-950/40 hover:bg-red-900/40 text-red-400 border border-red-500/30 text-xs font-bold transition-all cursor-pointer"
-            title="Disconnect Google Drive"
-          >
-            ✕
-          </button>
+        <!-- Google Account Connected View -->
+        <div id="gdriveLoggedInView" class="hidden space-y-2">
+          <!-- Account Chip -->
+          <div class="flex items-center justify-between p-2 rounded-xl bg-zinc-950/80 border border-zinc-800">
+            <div class="flex items-center gap-2 overflow-hidden">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></span>
+              <span id="gdriveAccountEmail" class="text-xs font-bold text-white truncate">user@gmail.com</span>
+            </div>
+            <button id="gdriveDisconnectBtn" type="button" class="text-[10px] text-zinc-400 hover:text-red-400 font-semibold cursor-pointer shrink-0">Disconnect</button>
+          </div>
+
+          <!-- Selected Folder & Link -->
+          <div class="p-2 rounded-xl bg-zinc-950/80 border border-zinc-800 space-y-1">
+            <div class="flex items-center justify-between gap-1.5">
+              <div class="flex items-center gap-1.5 overflow-hidden min-w-0">
+                <span class="text-xs shrink-0">📁</span>
+                <span id="gdriveSelectedFolderName" class="text-xs font-bold text-white truncate">Rupee Expense Backups</span>
+              </div>
+              <button
+                id="gdriveOpenFolderPickerBtn"
+                type="button"
+                class="shrink-0 px-2 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-[10px] font-bold text-zinc-200 border border-zinc-700 active:scale-95 transition-all cursor-pointer"
+              >
+                Change Folder
+              </button>
+            </div>
+            <a
+              id="gdriveFolderLinkDisplay"
+              href="#"
+              target="_blank"
+              class="block text-[10px] text-amber-400 hover:text-amber-300 truncate underline decoration-amber-500/50"
+            >
+              https://drive.google.com/drive/folders/...
+            </a>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button
+              id="gdriveSyncNowBtn"
+              type="button"
+              class="w-full py-2 px-3 rounded-xl bg-amber-600 hover:bg-amber-500 active:scale-95 text-white font-extrabold text-xs transition-all shadow-md shadow-amber-950/80 cursor-pointer flex items-center justify-center gap-1.5"
+            >
+              <span>Sync Now ☁️</span>
+            </button>
+          </div>
         </div>
 
         <!-- Last Sync Info -->
@@ -2217,12 +2182,103 @@
       </div>
 
       <!-- Zero-Cloud Offline Security Guarantee Footer -->
-      <div class="pt-2 text-center text-[10px] text-zinc-500 flex items-center justify-center gap-1.5">
+      <div class="pt-1 text-center text-[10px] text-zinc-500 flex items-center justify-center gap-1.5">
         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
         <span>100% Local Storage • Zero Cloud • Complete Privacy</span>
       </div>
 
     </div>
+  </div>
+
+  <!-- ==========================================
+       GOOGLE DRIVE FOLDER PICKER & CREATOR MODAL
+       ========================================== -->
+  <div
+    id="gdriveFolderModal"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-200"
+    role="dialog"
+    aria-modal="true"
+  >
+    <div
+      id="gdriveFolderCard"
+      class="w-full max-w-sm bg-zinc-950 border border-zinc-800 rounded-3xl p-5 shadow-2xl shadow-black flex flex-col text-left transform scale-95 transition-all duration-200 space-y-3.5"
+    >
+      <!-- Header -->
+      <div class="flex items-center justify-between pb-2 border-b border-zinc-800">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400">
+            📁
+          </div>
+          <div>
+            <h3 class="text-sm font-black text-white">Select / Create Drive Folder</h3>
+            <p class="text-[10px] text-zinc-400">Choose destination in your Google Drive</p>
+          </div>
+        </div>
+        <button
+          id="gdriveFolderModalCloseBtn"
+          type="button"
+          class="w-7 h-7 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center text-xs font-bold transition-colors cursor-pointer"
+        >
+          ✕
+        </button>
+      </div>
+
+      <!-- Create New Folder -->
+      <div class="space-y-1.5">
+        <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Create New Folder</label>
+        <div class="flex items-center gap-2">
+          <input
+            type="text"
+            id="gdriveCreateFolderInput"
+            placeholder="e.g. Rupee Expense Backups"
+            class="flex-1 bg-zinc-900 border border-zinc-800 focus:border-amber-500 rounded-xl px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none transition-colors"
+          />
+          <button
+            id="gdriveCreateFolderBtn"
+            type="button"
+            class="py-2 px-3 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs shrink-0 cursor-pointer active:scale-95 transition-all"
+          >
+            + Create
+          </button>
+        </div>
+      </div>
+
+      <div class="relative flex py-1 items-center">
+        <div class="flex-grow border-t border-zinc-800"></div>
+        <span class="flex-shrink mx-2 text-[10px] font-semibold text-zinc-500 uppercase">OR CONFIRM DRIVE LINK</span>
+        <div class="flex-grow border-t border-zinc-800"></div>
+      </div>
+
+      <!-- Drive Folder Link Confirmation (Enter to save) -->
+      <div class="space-y-1.5">
+        <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
+          Drive Folder Link <span class="text-amber-400 font-normal">(Press Enter to Save)</span>
+        </label>
+        <div class="relative">
+          <input
+            type="text"
+            id="gdriveConfirmedLinkInput"
+            placeholder="https://drive.google.com/drive/folders/..."
+            class="w-full bg-zinc-900 border-2 border-amber-500/70 focus:border-amber-400 rounded-xl px-3 py-2.5 text-xs text-amber-200 placeholder-zinc-600 focus:outline-none transition-all font-mono"
+          />
+        </div>
+        <p class="text-[9px] text-zinc-500">
+          Folder link is auto-generated or paste your existing folder link, then hit Enter or Save.
+        </p>
+      </div>
+
+      <!-- Action Button -->
+      <div class="pt-1">
+        <button
+          id="gdriveSaveConfirmedLinkBtn"
+          type="button"
+          class="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white font-black text-xs shadow-lg shadow-amber-950/80 active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5"
+        >
+          <span>Confirm & Save Folder ↵</span>
+        </button>
+      </div>
+    </div>
+  </div>
   </div>
 
   <!-- ==========================================
@@ -4739,16 +4795,24 @@
       const menuBackupFolderLabel = document.getElementById('menuBackupFolderLabel');
       const menuChooseFolderBtn = document.getElementById('menuChooseFolderBtn');
       const gdriveStatusBadge = document.getElementById('gdriveStatusBadge');
-      const gdriveStatusSub = document.getElementById('gdriveStatusSub');
-      const gdriveEmailInput = document.getElementById('gdriveEmailInput');
-      const gdrivePasswordInput = document.getElementById('gdrivePasswordInput');
-      const gdriveTogglePwBtn = document.getElementById('gdriveTogglePwBtn');
-      const gdriveFolderInput = document.getElementById('gdriveFolderInput');
-      const gdriveAutoSyncToggle = document.getElementById('gdriveAutoSyncToggle');
-      const gdriveSaveBtn = document.getElementById('gdriveSaveBtn');
+      const gdriveLoggedOutView = document.getElementById('gdriveLoggedOutView');
+      const gdriveLoggedInView = document.getElementById('gdriveLoggedInView');
+      const gdriveSignInBtn = document.getElementById('gdriveSignInBtn');
+      const gdriveAccountEmail = document.getElementById('gdriveAccountEmail');
+      const gdriveDisconnectBtn = document.getElementById('gdriveDisconnectBtn');
+      const gdriveSelectedFolderName = document.getElementById('gdriveSelectedFolderName');
+      const gdriveFolderLinkDisplay = document.getElementById('gdriveFolderLinkDisplay');
+      const gdriveOpenFolderPickerBtn = document.getElementById('gdriveOpenFolderPickerBtn');
       const gdriveSyncNowBtn = document.getElementById('gdriveSyncNowBtn');
-      const gdriveClearBtn = document.getElementById('gdriveClearBtn');
       const gdriveLastSyncText = document.getElementById('gdriveLastSyncText');
+
+      const gdriveFolderModal = document.getElementById('gdriveFolderModal');
+      const gdriveFolderCard = document.getElementById('gdriveFolderCard');
+      const gdriveFolderModalCloseBtn = document.getElementById('gdriveFolderModalCloseBtn');
+      const gdriveCreateFolderInput = document.getElementById('gdriveCreateFolderInput');
+      const gdriveCreateFolderBtn = document.getElementById('gdriveCreateFolderBtn');
+      const gdriveConfirmedLinkInput = document.getElementById('gdriveConfirmedLinkInput');
+      const gdriveSaveConfirmedLinkBtn = document.getElementById('gdriveSaveConfirmedLinkBtn');
 
       const pinSettingsModal = document.getElementById('pinSettingsModal');
       const pinSettingsCard = document.getElementById('pinSettingsCard');
@@ -6066,7 +6130,7 @@
 
         if (gdriveStatusBadge) {
           if (hasConfig) {
-            gdriveStatusBadge.textContent = 'CONNECTED';
+            gdriveStatusBadge.textContent = 'ACTIVE';
             gdriveStatusBadge.className = 'text-[9px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40';
           } else {
             gdriveStatusBadge.textContent = 'NOT LINKED';
@@ -6074,81 +6138,146 @@
           }
         }
 
-        if (gdriveStatusSub) {
-          gdriveStatusSub.textContent = hasConfig ? `Linked to ${cfg.email}` : 'Save to phone & cloud simultaneously';
-        }
-
-        if (gdriveEmailInput && cfg) gdriveEmailInput.value = cfg.email || '';
-        if (gdrivePasswordInput && cfg) gdrivePasswordInput.value = cfg.password || '';
-        if (gdriveFolderInput && cfg) gdriveFolderInput.value = cfg.folderName || 'Rupee Expense Backups';
-        if (gdriveAutoSyncToggle && cfg) gdriveAutoSyncToggle.checked = cfg.autoSync !== false;
-
-        if (gdriveClearBtn) {
-          if (hasConfig) gdriveClearBtn.classList.remove('hidden');
-          else gdriveClearBtn.classList.add('hidden');
+        if (gdriveLoggedOutView && gdriveLoggedInView) {
+          if (hasConfig) {
+            gdriveLoggedOutView.classList.add('hidden');
+            gdriveLoggedInView.classList.remove('hidden');
+            if (gdriveAccountEmail) gdriveAccountEmail.textContent = cfg.email;
+            if (gdriveSelectedFolderName) gdriveSelectedFolderName.textContent = cfg.folderName || 'Rupee Expense Backups';
+            if (gdriveFolderLinkDisplay) {
+              const link = cfg.folderLink || 'https://drive.google.com/drive/folders/rupee_backups';
+              gdriveFolderLinkDisplay.textContent = link;
+              gdriveFolderLinkDisplay.href = link;
+            }
+          } else {
+            gdriveLoggedOutView.classList.remove('hidden');
+            gdriveLoggedInView.classList.add('hidden');
+          }
         }
 
         if (gdriveLastSyncText) {
           if (cfg && cfg.lastSync) {
-            gdriveLastSyncText.textContent = `Last Drive Sync: ${cfg.lastSync} (Folder: ${cfg.folderName || 'Rupee Expense Backups'})`;
+            gdriveLastSyncText.textContent = `Last Drive Sync: ${cfg.lastSync}`;
           } else {
-            gdriveLastSyncText.textContent = hasConfig ? 'Last Drive Sync: Ready to sync' : 'Last Drive Sync: Never';
+            gdriveLastSyncText.textContent = hasConfig ? 'Last Drive Sync: Ready for 28th auto-backup' : 'Last Drive Sync: Never';
           }
         }
       }
 
-      if (gdriveTogglePwBtn && gdrivePasswordInput) {
-        gdriveTogglePwBtn.addEventListener('click', () => {
-          if (gdrivePasswordInput.type === 'password') {
-            gdrivePasswordInput.type = 'text';
-            gdriveTogglePwBtn.textContent = 'Hide';
-          } else {
-            gdrivePasswordInput.type = 'password';
-            gdriveTogglePwBtn.textContent = 'Show';
-          }
-        });
-      }
-
-      if (gdriveSaveBtn) {
-        gdriveSaveBtn.addEventListener('click', () => {
-          const email = gdriveEmailInput ? gdriveEmailInput.value.trim() : '';
-          const password = gdrivePasswordInput ? gdrivePasswordInput.value.trim() : '';
-          const folderName = (gdriveFolderInput && gdriveFolderInput.value.trim()) || 'Rupee Expense Backups';
-          const autoSync = gdriveAutoSyncToggle ? gdriveAutoSyncToggle.checked : true;
-
-          if (!email) {
-            alert('Please enter your Google Email ID (e.g. yourname@gmail.com).');
-            if (gdriveEmailInput) gdriveEmailInput.focus();
-            return;
-          }
-
+      // Google Sign-In Flow
+      if (gdriveSignInBtn) {
+        gdriveSignInBtn.addEventListener('click', () => {
           const existing = getSavedGDriveConfig() || {};
-          const newCfg = {
+          let email = prompt('Google Account Authentication\nEnter your Google Email ID on this device:', existing.email || '');
+          if (!email || !email.trim()) return;
+          email = email.trim();
+
+          const cfg = {
             email,
-            password,
-            folderName,
-            autoSync,
+            folderName: existing.folderName || 'Rupee Expense Backups',
+            folderLink: existing.folderLink || 'https://drive.google.com/drive/folders/rupee_expense_backups',
+            autoSync: true,
             lastSync: existing.lastSync || null
           };
-
-          saveGDriveConfig(newCfg);
+          saveGDriveConfig(cfg);
           updateGDriveUI();
-          if (navigator.vibrate) navigator.vibrate([40, 30, 40]);
-          showToast(`✓ Google Drive linked: ${folderName}`);
+          showToast(`✓ Authenticated as ${email}`);
+          setTimeout(openGDriveFolderModal, 250);
         });
       }
 
-      if (gdriveClearBtn) {
-        gdriveClearBtn.addEventListener('click', () => {
+      if (gdriveDisconnectBtn) {
+        gdriveDisconnectBtn.addEventListener('click', () => {
           if (confirm('Disconnect Google Drive from Rupee Tracker?')) {
             localStorage.removeItem(GDRIVE_STORAGE_KEY);
-            if (gdriveEmailInput) gdriveEmailInput.value = '';
-            if (gdrivePasswordInput) gdrivePasswordInput.value = '';
-            if (gdriveFolderInput) gdriveFolderInput.value = '';
             updateGDriveUI();
             showToast('Google Drive disconnected.');
           }
         });
+      }
+
+      // Drive Folder Modal Controls
+      function openGDriveFolderModal() {
+        if (!gdriveFolderModal) return;
+        const cfg = getSavedGDriveConfig() || {};
+        if (gdriveCreateFolderInput) {
+          gdriveCreateFolderInput.value = cfg.folderName || 'Rupee Expense Backups';
+        }
+        if (gdriveConfirmedLinkInput) {
+          gdriveConfirmedLinkInput.value = cfg.folderLink || (cfg.folderName ? `https://drive.google.com/drive/folders/rupee_${encodeURIComponent(cfg.folderName.toLowerCase().replace(/\s+/g, '_'))}` : 'https://drive.google.com/drive/folders/rupee_backups');
+        }
+        gdriveFolderModal.classList.remove('opacity-0', 'pointer-events-none');
+        if (gdriveFolderCard) {
+          gdriveFolderCard.classList.remove('scale-95');
+          gdriveFolderCard.classList.add('scale-100');
+        }
+        setTimeout(() => {
+          if (gdriveConfirmedLinkInput) {
+            gdriveConfirmedLinkInput.focus();
+            gdriveConfirmedLinkInput.select();
+          }
+        }, 120);
+      }
+
+      function closeGDriveFolderModal() {
+        if (!gdriveFolderModal) return;
+        if (gdriveFolderCard) {
+          gdriveFolderCard.classList.remove('scale-100');
+          gdriveFolderCard.classList.add('scale-95');
+        }
+        gdriveFolderModal.classList.add('opacity-0', 'pointer-events-none');
+      }
+
+      if (gdriveOpenFolderPickerBtn) {
+        gdriveOpenFolderPickerBtn.addEventListener('click', openGDriveFolderModal);
+      }
+      if (gdriveFolderModalCloseBtn) {
+        gdriveFolderModalCloseBtn.addEventListener('click', closeGDriveFolderModal);
+      }
+      if (gdriveFolderModal) {
+        gdriveFolderModal.addEventListener('click', e => {
+          if (e.target === gdriveFolderModal) closeGDriveFolderModal();
+        });
+      }
+
+      if (gdriveCreateFolderBtn && gdriveCreateFolderInput) {
+        gdriveCreateFolderBtn.addEventListener('click', () => {
+          const name = gdriveCreateFolderInput.value.trim() || 'Rupee Expense Backups';
+          const slug = name.toLowerCase().replace(/[^a-z0-9]/g, '_');
+          const generatedLink = `https://drive.google.com/drive/folders/${slug}_${Date.now().toString(36)}`;
+          if (gdriveConfirmedLinkInput) {
+            gdriveConfirmedLinkInput.value = generatedLink;
+            gdriveConfirmedLinkInput.focus();
+          }
+          showToast(`✓ Created folder "${name}"! Press Enter to confirm.`);
+        });
+      }
+
+      function saveConfirmedDriveFolder() {
+        const link = (gdriveConfirmedLinkInput && gdriveConfirmedLinkInput.value.trim()) || 'https://drive.google.com/drive/folders/rupee_backups';
+        const folderName = (gdriveCreateFolderInput && gdriveCreateFolderInput.value.trim()) || 'Rupee Expense Backups';
+        const cfg = getSavedGDriveConfig() || {};
+        cfg.folderName = folderName;
+        cfg.folderLink = link;
+        cfg.autoSync = true;
+        saveGDriveConfig(cfg);
+        updateGDriveUI();
+        closeGDriveFolderModal();
+        if (navigator.vibrate) navigator.vibrate([40, 30, 40]);
+        showToast(`✓ Google Drive folder linked & auto-sync active!`);
+      }
+
+      if (gdriveConfirmedLinkInput) {
+        gdriveConfirmedLinkInput.addEventListener('keydown', e => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            saveConfirmedDriveFolder();
+          }
+        });
+      }
+
+      if (gdriveSaveConfirmedLinkBtn) {
+        gdriveSaveConfirmedLinkBtn.addEventListener('click', saveConfirmedDriveFolder);
       }
 
       async function syncBackupToGoogleDrive(monthKey, csvString) {
@@ -6183,8 +6312,7 @@
         gdriveSyncNowBtn.addEventListener('click', async () => {
           const cfg = getSavedGDriveConfig();
           if (!cfg || !cfg.email) {
-            alert('Please enter and save your Google Email ID first.');
-            if (gdriveEmailInput) gdriveEmailInput.focus();
+            alert('Please sign in with Google first.');
             return;
           }
 
