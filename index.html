@@ -1503,7 +1503,7 @@
 
       <div class="px-1 pb-1 flex items-center justify-between text-xs text-slate-400 shrink-0 font-medium">
         <span class="flex items-center gap-1.5">⚡ <span>Tap ₹ icon to lock into expenses</span></span>
-        <span class="text-slate-500">Tap / long-press to edit</span>
+        <span class="text-slate-500">Tap arrow to view, edit, or delete</span>
       </div>
 
       <!-- Free Flow Scrollable Budget List Container -->
@@ -1513,7 +1513,7 @@
 
       <!-- Footer Micro-tip & Close -->
       <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400 shrink-0">
-        <span>💡 Tap to spend • Button to restore</span>
+        <span>💡 Tap ₹ to lock into expense • Tap arrow for details</span>
         <button id="budgetModalDoneBtn" type="button" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-extrabold text-xs sm:text-sm cursor-pointer active:scale-95">
           Done
         </button>
@@ -1726,22 +1726,35 @@
           />
         </div>
 
-        <!-- Buttons -->
-        <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-800/80">
+        <!-- Action Buttons: Delete on LEFT, Cancel & Save on RIGHT -->
+        <div class="flex items-center justify-between gap-2 pt-2 border-t border-slate-800/80">
           <button
-            id="photoItemEditCancelBtn"
+            id="photoItemEditDeleteBtn"
             type="button"
-            class="py-2.5 px-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-xs font-bold text-slate-300 transition-all text-center cursor-pointer"
+            class="py-2.5 px-3.5 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 active:scale-95 border border-rose-500/30 text-rose-400 hover:text-rose-300 text-xs font-bold transition-all text-center cursor-pointer flex items-center gap-1.5"
+            title="Delete this item"
           >
-            Cancel
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+            <span>Delete</span>
           </button>
-          <button
-            id="photoItemEditSaveBtn"
-            type="submit"
-            class="py-2.5 px-4.5 rounded-xl bg-red-600 hover:bg-red-500 active:scale-95 text-xs font-black text-white shadow-md shadow-red-950 transition-all cursor-pointer text-center"
-          >
-            Update Item
-          </button>
+          <div class="flex items-center gap-2">
+            <button
+              id="photoItemEditCancelBtn"
+              type="button"
+              class="py-2.5 px-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-xs font-bold text-slate-300 transition-all text-center cursor-pointer"
+            >
+              Cancel
+            </button>
+            <button
+              id="photoItemEditSaveBtn"
+              type="submit"
+              class="py-2.5 px-4.5 rounded-xl bg-red-600 hover:bg-red-500 active:scale-95 text-xs font-black text-white shadow-md shadow-red-950 transition-all cursor-pointer text-center"
+            >
+              Save Changes
+            </button>
+          </div>
         </div>
       </form>
     </div>
@@ -2800,7 +2813,7 @@
         });
       }
 
-      // Expense Item HTML Template with Long-Press to Edit & Delete Button
+      // Expense Item HTML Template with Right-side Arrow to View/Edit/Delete
       function createExpenseItemHTML(item) {
         const tagClass = TAG_COLORS[item.tag] || 'bg-rose-500/15 text-rose-300 border-rose-500/30';
         const hasRemark = item.remark && item.remark.trim().length > 0;
@@ -2808,11 +2821,13 @@
         return `
           <div
             data-expense-item-id="${escapeHtml(item.id)}"
-            class="expense-item-card bg-slate-900 border border-slate-800 hover:border-slate-700/80 rounded-2xl p-3 flex items-start justify-between gap-2.5 shadow-sm transition-all select-none active:scale-[0.99] cursor-pointer relative"
+            data-expense-id="${escapeHtml(item.id)}"
+            class="expense-item-card group bg-slate-900 border border-slate-800 hover:border-red-500/40 rounded-2xl p-3 flex items-start justify-between gap-2.5 shadow-sm transition-all select-none active:scale-[0.99] cursor-pointer relative"
+            title="Click to view details, edit, or delete"
           >
             <div class="min-w-0 flex-1 pointer-events-none">
               <div class="flex items-center flex-wrap gap-1.5">
-                <span class="text-xs sm:text-sm font-bold text-slate-100 truncate">${escapeHtml(item.reason)}</span>
+                <span class="text-xs sm:text-sm font-bold text-slate-100 truncate group-hover:text-red-300 transition-colors">${escapeHtml(item.reason)}</span>
                 <span class="text-[9px] font-bold px-2 py-0.5 rounded-full border ${tagClass}">
                   ${escapeHtml(item.tag || 'Misc')}
                 </span>
@@ -2822,17 +2837,12 @@
             </div>
             <div class="flex items-center gap-2 shrink-0">
               <span class="text-xs sm:text-sm font-black text-rose-400 tabular-nums pointer-events-none">- ${formatINR(item.amount)}</span>
-              <!-- Delete Expense Button -->
-              <button
-                type="button"
-                data-delete-id="${escapeHtml(item.id)}"
-                class="delete-expense-btn w-7 h-7 rounded-xl bg-slate-800 hover:bg-rose-500/20 active:scale-95 text-slate-400 hover:text-rose-400 flex items-center justify-center transition-colors cursor-pointer"
-                title="Delete"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              <!-- Small Arrow in right side corner -->
+              <div class="expense-arrow-btn w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-slate-800 group-hover:bg-red-950/60 border border-slate-700 group-hover:border-red-500/50 flex items-center justify-center text-slate-400 group-hover:text-red-400 transition-all shrink-0 shadow-sm" title="View details, edit or delete">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                 </svg>
-              </button>
+              </div>
             </div>
           </div>
         `;
@@ -3931,33 +3941,29 @@
                       <button
                         type="button"
                         data-restore-budget-id="${escapeHtml(item.id)}"
-                        class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 active:scale-95 border border-slate-700"
+                        class="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-black transition-all cursor-pointer flex items-center gap-1 active:scale-95 border border-slate-700"
                         title="Restore to Pending"
                       >
                         <span>↩</span>
                         <span>Restore</span>
                       </button>
-                      <button
-                        type="button"
-                        data-delete-budget-id="${escapeHtml(item.id)}"
-                        class="delete-budget-btn w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-900 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 border border-slate-800 flex items-center justify-center transition-colors cursor-pointer active:scale-95 shadow-sm"
-                        title="Delete"
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 sm:w-5 sm:h-5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      <!-- Arrow Chevron Button in right corner -->
+                      <div class="budget-arrow-btn w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-900 group-hover:bg-yellow-950/60 border border-slate-800 group-hover:border-yellow-500/50 flex items-center justify-center text-slate-400 group-hover:text-yellow-400 transition-all shrink-0 shadow-sm" title="View details, edit or delete">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                         </svg>
-                      </button>
+                      </div>
                     </div>
                   </div>
                 `;
               }
 
-              // Pending Item Card (Tap ₹ to lock into expenses • Tap card to edit)
+              // Pending Item Card (Tap ₹ to lock into expenses • Tap card or arrow to view full details, edit, or delete)
               return `
                 <div
                   data-budget-item-id="${escapeHtml(item.id)}"
-                  class="budget-item-card p-3.5 sm:p-4 rounded-2xl bg-slate-950/70 border border-slate-800 hover:border-slate-700 active:bg-slate-800/60 transition-all flex items-center justify-between gap-3 select-none cursor-pointer shadow-sm"
-                  title="Tap ₹ to lock into expenses • Tap card to edit"
+                  class="budget-item-card group p-3.5 sm:p-4 rounded-2xl bg-slate-950/70 border border-slate-800 hover:border-yellow-500/40 active:bg-slate-800/60 transition-all flex items-center justify-between gap-3 select-none cursor-pointer shadow-sm"
+                  title="Tap ₹ to lock into expenses • Tap card or arrow to view full details, edit, or delete"
                 >
                   <!-- Start Portion: Quick Spend / Lock Button (Yellow outline for Planned Credit / Budget) -->
                   <button
@@ -3971,7 +3977,7 @@
 
                   <!-- Center: Reason (break-words), Tag & Target Date -->
                   <div class="min-w-0 flex-1">
-                    <p class="budget-item-title text-sm sm:text-base font-extrabold text-white leading-snug break-words">
+                    <p class="budget-item-title text-sm sm:text-base font-extrabold text-white leading-snug break-words group-hover:text-yellow-300 transition-colors">
                       ${escapeHtml(item.reason)}
                     </p>
                     <div class="flex items-center gap-2 mt-1.5 flex-wrap">
@@ -3984,21 +3990,17 @@
                     </div>
                   </div>
 
-                  <!-- End Portion: Amount and Separate Delete Button -->
+                  <!-- End Portion: Amount and Small Arrow Chevron in Right Side Corner -->
                   <div class="flex items-center gap-2.5 shrink-0">
                     <span class="text-base sm:text-lg font-black text-yellow-400 tabular-nums">
                       ${formatINR(item.amount)}
                     </span>
-                    <button
-                      type="button"
-                      data-delete-budget-id="${escapeHtml(item.id)}"
-                      class="delete-budget-btn w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-900 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 border border-slate-800 flex items-center justify-center transition-colors cursor-pointer active:scale-95 shadow-sm"
-                      title="Delete"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 sm:w-5 sm:h-5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    <!-- Small Arrow in right side corner -->
+                    <div class="budget-arrow-btn w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-900 group-hover:bg-yellow-950/60 border border-slate-800 group-hover:border-yellow-500/50 flex items-center justify-center text-slate-400 group-hover:text-yellow-400 transition-all shrink-0 shadow-sm" title="View details, edit or delete">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                       </svg>
-                    </button>
+                    </div>
                   </div>
                 </div>
               `;
@@ -5017,7 +5019,31 @@
         }
       });
 
-      expenseListContainer.addEventListener('click', handleDeleteClick);
+      expenseListContainer.addEventListener('click', e => {
+        if (isLongPressTriggered) {
+          isLongPressTriggered = false;
+          e.preventDefault();
+          e.stopPropagation();
+          return;
+        }
+
+        const deleteBtn = e.target.closest('.delete-expense-btn');
+        if (deleteBtn) {
+          handleDeleteClick(e);
+          return;
+        }
+
+        const card = e.target.closest('.expense-item-card');
+        if (card) {
+          const id = card.getAttribute('data-expense-item-id') || card.getAttribute('data-expense-id');
+          if (id) {
+            const target = expenses.find(i => i.id === id);
+            if (target) {
+              openEditModal(target);
+            }
+          }
+        }
+      });
 
       // Filters & Search
       searchFilterInput.addEventListener('input', renderHistory);
@@ -5554,16 +5580,12 @@
                 <span class="text-base sm:text-lg font-black text-rose-400 tabular-nums">
                   ${item.amount ? '- ' + formatINR(item.amount) : '₹ 0'}
                 </span>
-                <button
-                  type="button"
-                  data-delete-staged-id="${escapeHtml(item.id)}"
-                  class="delete-staged-btn w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-900 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 border border-slate-800 flex items-center justify-center transition-colors cursor-pointer active:scale-95 shadow-sm"
-                  title="Remove from List"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 sm:w-5 sm:h-5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                <!-- Small Arrow in right side corner -->
+                <div class="photo-arrow-btn w-8 h-8 rounded-full bg-slate-900 group-hover:bg-red-950/60 border border-slate-800 group-hover:border-red-500/50 flex items-center justify-center text-slate-400 group-hover:text-red-400 transition-all shrink-0 shadow-sm" title="View details, edit or delete">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                   </svg>
-                </button>
+                </div>
               </div>
             </div>
           `;
@@ -5779,6 +5801,17 @@
 
       if (photoItemEditCloseX) photoItemEditCloseX.addEventListener('click', closePhotoItemEditModal);
       if (photoItemEditCancelBtn) photoItemEditCancelBtn.addEventListener('click', closePhotoItemEditModal);
+      const photoItemEditDeleteBtn = document.getElementById('photoItemEditDeleteBtn');
+      if (photoItemEditDeleteBtn) {
+        photoItemEditDeleteBtn.addEventListener('click', () => {
+          const id = photoItemEditId.value;
+          stagedPhotoExpenses = stagedPhotoExpenses.filter(i => i.id !== id);
+          closePhotoItemEditModal();
+          renderPhotoStagedList();
+          if (navigator.vibrate) navigator.vibrate(25);
+          showToast('Item deleted');
+        });
+      }
       if (photoItemEditModal) {
         photoItemEditModal.addEventListener('click', e => {
           if (e.target === photoItemEditModal) closePhotoItemEditModal();
