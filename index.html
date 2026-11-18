@@ -130,6 +130,26 @@
       transition: transform 0.26s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.22s !important;
       pointer-events: none !important;
     }
+  
+    /* PRIVACY PIN KEYPAD: ZERO TAP HIGHLIGHT & DISCREET SHOULDER-SURFING SHIELD */
+    .pin-key, #pinBackspaceBtn, #pinSubmitBtn {
+      -webkit-tap-highlight-color: transparent !important;
+      -webkit-touch-callout: none !important;
+      user-select: none !important;
+      -webkit-user-select: none !important;
+      outline: none !important;
+    }
+    .pin-key:hover, .pin-key:focus, .pin-key:active {
+      background-color: #09090b !important;
+      border-color: #27272a !important;
+      color: #ffffff !important;
+      box-shadow: none !important;
+      transform: none !important;
+    }
+    .pin-key span {
+      transition: none !important;
+    }
+
   </style>
 </head>
 
@@ -161,23 +181,21 @@
         </div>
       </button>
 
-      <!-- Header Actions (Top-right corner with Menu & Budget Buttons) -->
+      <!-- Header Actions (Top-right corner: Budget on Left, Menu on Right Edge) -->
       <div class="flex items-center gap-1.5 shrink-0">
-        <!-- App Menu Button (Hamburger / Options Icon with PIN Indicator) -->
+        <!-- Install App Button (if available) -->
         <button
-          id="appMenuBtn"
+          id="installAppBtn"
           type="button"
-          class="flex items-center justify-center w-8 h-8 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-750 hover:border-red-500/50 active:scale-95 text-slate-300 hover:text-white transition-all cursor-pointer shadow-sm relative group"
-          title="App Menu & Data Vault"
-          aria-label="App Menu"
+          class="hidden items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-red-600 hover:bg-red-500 active:scale-95 text-white font-extrabold text-xs shadow-md shadow-red-950/60 transition-all"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-300 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V3" />
           </svg>
-          <span id="menuLockIndicatorDot" class="hidden absolute top-1 right-1 w-2 h-2 rounded-full bg-amber-400 ring-2 ring-slate-950"></span>
+          <span>Install</span>
         </button>
 
-        <!-- Budget Button on Top Right Corner -->
+        <!-- Budget Button (Left side of actions) -->
         <button
           id="openBudgetBtn"
           type="button"
@@ -190,16 +208,18 @@
           <span>Budget</span>
         </button>
 
-        <!-- Install App Button (if available) -->
+        <!-- App Menu Button (Hamburger / Options Icon with PIN Indicator at the Far Right) -->
         <button
-          id="installAppBtn"
+          id="appMenuBtn"
           type="button"
-          class="hidden items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-red-600 hover:bg-red-500 active:scale-95 text-white font-extrabold text-xs shadow-md shadow-red-950/60 transition-all"
+          class="flex items-center justify-center w-8 h-8 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-750 hover:border-red-500/50 active:scale-95 text-slate-300 hover:text-white transition-all cursor-pointer shadow-sm relative group"
+          title="App Menu & Data Vault"
+          aria-label="App Menu"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V3" />
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-300 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
           </svg>
-          <span>Install</span>
+          <span id="menuLockIndicatorDot" class="hidden absolute top-1 right-1 w-2 h-2 rounded-full bg-amber-400 ring-2 ring-slate-950"></span>
         </button>
       </div>
     </header>
@@ -2021,39 +2041,7 @@
         </div>
       </div>
 
-      <!-- SECTION 2: SECURITY & PIN LOCK -->
-      <div class="p-3 bg-zinc-900/80 rounded-2xl border border-zinc-800/80 space-y-2">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <div class="w-6 h-6 rounded-lg bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
-            </div>
-            <p class="text-xs font-black text-white">App PIN Security</p>
-          </div>
-          <span id="menuPinBadge" class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-400 border border-zinc-700">OFF</span>
-        </div>
-
-        <div class="flex items-center gap-2">
-          <button
-            id="menuPinSettingsBtn"
-            type="button"
-            class="flex-1 py-2 px-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 active:scale-95 text-xs font-bold text-white transition-all cursor-pointer text-center"
-          >
-            Manage 4-Digit PIN
-          </button>
-          <button
-            id="menuLockNowBtn"
-            type="button"
-            class="hidden py-2 px-3 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 active:scale-95 text-xs font-bold text-amber-300 border border-amber-500/30 transition-all cursor-pointer text-center"
-          >
-            Lock Now 🔒
-          </button>
-        </div>
-      </div>
-
-      <!-- SECTION 3: MONTHLY SCHEDULED AUTO-BACKUP CONTROLS -->
+      <!-- SECTION 2: MONTHLY SCHEDULED AUTO-BACKUP & DEVICE STORAGE -->
       <div class="p-3 bg-zinc-900/80 rounded-2xl border border-zinc-800/80 space-y-2">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
@@ -2181,12 +2169,212 @@
         </p>
       </div>
 
+      <!-- SECTION 4: SECURITY & PIN LOCK (PLACED AT BOTTOM OF MENU) -->
+      <div class="p-3 bg-zinc-900/80 rounded-2xl border border-zinc-800/80 space-y-2">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <div class="w-6 h-6 rounded-lg bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </div>
+            <p class="text-xs font-black text-white">App PIN Security</p>
+          </div>
+          <span id="menuPinBadge" class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-400 border border-zinc-700">OFF</span>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button
+            id="menuPinSettingsBtn"
+            type="button"
+            class="flex-1 py-2 px-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 active:scale-95 text-xs font-bold text-white transition-all cursor-pointer text-center"
+          >
+            Manage 4-Digit PIN
+          </button>
+          <button
+            id="menuLockNowBtn"
+            type="button"
+            class="hidden py-2 px-3 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 active:scale-95 text-xs font-bold text-amber-300 border border-amber-500/30 transition-all cursor-pointer text-center"
+          >
+            Lock Now 🔒
+          </button>
+        </div>
+      </div>
+
+      
+
       <!-- Zero-Cloud Offline Security Guarantee Footer -->
       <div class="pt-1 text-center text-[10px] text-zinc-500 flex items-center justify-center gap-1.5">
         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
         <span>100% Local Storage • Zero Cloud • Complete Privacy</span>
       </div>
 
+    </div>
+  </div>
+
+  <!-- ==========================================
+       DEVICE STORAGE & FOLDER MODAL (NO PROMPT FALLBACK)
+       ========================================== -->
+  <div
+    id="deviceFolderModal"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-200"
+    role="dialog"
+    aria-modal="true"
+  >
+    <div
+      id="deviceFolderCard"
+      class="w-full max-w-sm bg-zinc-950 border border-zinc-800 rounded-3xl p-5 shadow-2xl shadow-black flex flex-col text-left transform scale-95 transition-all duration-200 space-y-3.5"
+    >
+      <!-- Header -->
+      <div class="flex items-center justify-between pb-2 border-b border-zinc-800">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400">
+            📁
+          </div>
+          <div>
+            <h3 class="text-sm font-black text-white">Device Storage & Folder</h3>
+            <p class="text-[10px] text-zinc-400">Monthly Excel / CSV destination</p>
+          </div>
+        </div>
+        <button
+          id="deviceFolderModalCloseBtn"
+          type="button"
+          class="w-7 h-7 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center text-xs font-bold transition-colors cursor-pointer"
+        >
+          ✕
+        </button>
+      </div>
+
+      <!-- Current Phone Storage Path -->
+      <div class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800/80 space-y-1">
+        <p class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Device Storage Path</p>
+        <p class="text-xs font-bold text-emerald-400 font-mono">/Internal Storage/Download/</p>
+        <p class="text-[10px] text-zinc-500">Android web browsers save exported backup files directly to your phone's Downloads directory.</p>
+      </div>
+
+      <!-- Custom Folder Label -->
+      <div class="space-y-1.5">
+        <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Preferred Subfolder Label</label>
+        <input
+          type="text"
+          id="deviceFolderCustomNameInput"
+          placeholder="e.g. RupeeTracker-Backups"
+          class="w-full bg-zinc-900 border border-zinc-800 focus:border-blue-500 rounded-xl px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none transition-colors"
+        />
+      </div>
+
+      <!-- Informative Note: Browser PWA vs Native APK -->
+      <div class="p-2.5 rounded-xl bg-blue-950/40 border border-blue-800/50 text-[10px] text-blue-300 leading-relaxed">
+        <p class="font-bold mb-0.5">ℹ️ PWA vs. Native Android APK:</p>
+        <p class="text-blue-200/90">
+          In this Brave/Chrome browser PWA, Android security routes all CSV downloads directly into your phone's <strong>Downloads</strong> directory. Once bundled as a native Android APK, the native Android Storage Access Framework (SAF) opens directly to let you pick or create any custom phone folder.
+        </p>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-2 pt-1">
+        <button
+          id="deviceFolderSaveBtn"
+          type="button"
+          class="flex-1 py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-md shadow-blue-950/80 active:scale-95 transition-all cursor-pointer text-center"
+        >
+          Save Destination
+        </button>
+        <button
+          id="deviceFolderTestDownloadBtn"
+          type="button"
+          class="py-2.5 px-3 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-200 hover:text-white font-bold text-xs active:scale-95 transition-all cursor-pointer text-center"
+          title="Verify file download on this phone"
+        >
+          Test Download 📥
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       GOOGLE DRIVE AUTH & CONNECTION MODAL (NO PROMPT FALLBACK)
+       ========================================== -->
+  <div
+    id="gdriveAuthModal"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-200"
+    role="dialog"
+    aria-modal="true"
+  >
+    <div
+      id="gdriveAuthCard"
+      class="w-full max-w-sm bg-zinc-950 border border-zinc-800 rounded-3xl p-5 shadow-2xl shadow-black flex flex-col text-left transform scale-95 transition-all duration-200 space-y-3.5"
+    >
+      <!-- Header -->
+      <div class="flex items-center justify-between pb-2 border-b border-zinc-800">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400">
+            ☁️
+          </div>
+          <div>
+            <h3 class="text-sm font-black text-white">Google Drive Cloud Sync</h3>
+            <p class="text-[10px] text-zinc-400">Optional automatic backup sync</p>
+          </div>
+        </div>
+        <button
+          id="gdriveAuthModalCloseBtn"
+          type="button"
+          class="w-7 h-7 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center text-xs font-bold transition-colors cursor-pointer"
+        >
+          ✕
+        </button>
+      </div>
+
+      <!-- Google Email Input -->
+      <div class="space-y-1.5">
+        <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Your Google Account Email</label>
+        <input
+          type="email"
+          id="gdriveAuthEmailInput"
+          placeholder="yourname@gmail.com"
+          class="w-full bg-zinc-900 border border-zinc-800 focus:border-amber-500 rounded-xl px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none transition-colors"
+        />
+      </div>
+
+      <!-- Google Drive Folder Input -->
+      <div class="space-y-1.5">
+        <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Drive Backup Folder Name</label>
+        <input
+          type="text"
+          id="gdriveAuthFolderNameInput"
+          placeholder="Rupee Expense Backups"
+          value="Rupee Expense Backups"
+          class="w-full bg-zinc-900 border border-zinc-800 focus:border-amber-500 rounded-xl px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none transition-colors"
+        />
+      </div>
+
+      <!-- Informative Note: Optional & Native APK -->
+      <div class="p-2.5 rounded-xl bg-amber-950/40 border border-amber-800/50 text-[10px] text-amber-300 leading-relaxed">
+        <p class="font-bold mb-0.5">☁️ Recommended / Optional Feature:</p>
+        <p class="text-amber-200/90">
+          In this browser PWA, your data is 100% safely kept on your phone's offline storage. The native Android 1-tap Google Account bottom-sheet and direct Drive folder creation will activate when the app is bundled into the native Android APK using Google Play Services.
+        </p>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="space-y-2 pt-1">
+        <button
+          id="gdriveAuthSaveBtn"
+          type="button"
+          class="w-full py-2.5 px-3 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-black text-xs shadow-md shadow-amber-950/80 active:scale-95 transition-all cursor-pointer text-center"
+        >
+          Connect Account & Set Destination
+        </button>
+        <a
+          id="gdriveOpenWebBtn"
+          href="https://drive.google.com"
+          target="_blank"
+          rel="noopener"
+          class="w-full py-2 px-3 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-300 hover:text-white font-bold text-xs active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5"
+        >
+          <span>Open Google Drive App / Web ↗</span>
+        </a>
+      </div>
     </div>
   </div>
 
@@ -2527,7 +2715,7 @@
         <!-- 1 -->
         <button
           type="button"
-          class="pin-key w-[84px] h-[84px] sm:w-[92px] sm:h-[92px] rounded-full border-[1.5px] border-zinc-700/80 hover:border-red-500 bg-zinc-950/80 hover:bg-zinc-900 active:bg-red-600 active:border-red-500 active:text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-lg shadow-black/60 select-none touch-manipulation flex flex-col items-center justify-center group"
+          class="pin-key w-[84px] h-[84px] sm:w-[92px] sm:h-[92px] rounded-full border border-zinc-800 bg-zinc-950 select-none touch-manipulation flex flex-col items-center justify-center cursor-pointer shadow-md shadow-black"
           data-key="1"
         >
           <span class="text-3xl sm:text-4xl font-light text-white leading-none tracking-tight">1</span>
@@ -2537,81 +2725,81 @@
         <!-- 2 ABC -->
         <button
           type="button"
-          class="pin-key w-[84px] h-[84px] sm:w-[92px] sm:h-[92px] rounded-full border-[1.5px] border-zinc-700/80 hover:border-red-500 bg-zinc-950/80 hover:bg-zinc-900 active:bg-red-600 active:border-red-500 active:text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-lg shadow-black/60 select-none touch-manipulation flex flex-col items-center justify-center group"
+          class="pin-key w-[84px] h-[84px] sm:w-[92px] sm:h-[92px] rounded-full border border-zinc-800 bg-zinc-950 select-none touch-manipulation flex flex-col items-center justify-center cursor-pointer shadow-md shadow-black"
           data-key="2"
         >
           <span class="text-3xl sm:text-4xl font-light text-white leading-none tracking-tight">2</span>
-          <span class="text-[10px] sm:text-[11px] tracking-[0.2em] text-zinc-400 group-hover:text-red-300 group-active:text-white/90 font-medium uppercase leading-none mt-1">ABC</span>
+          <span class="text-[10px] sm:text-[11px] tracking-[0.2em] text-zinc-400  font-medium uppercase leading-none mt-1">ABC</span>
         </button>
 
         <!-- 3 DEF -->
         <button
           type="button"
-          class="pin-key w-[84px] h-[84px] sm:w-[92px] sm:h-[92px] rounded-full border-[1.5px] border-zinc-700/80 hover:border-red-500 bg-zinc-950/80 hover:bg-zinc-900 active:bg-red-600 active:border-red-500 active:text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-lg shadow-black/60 select-none touch-manipulation flex flex-col items-center justify-center group"
+          class="pin-key w-[84px] h-[84px] sm:w-[92px] sm:h-[92px] rounded-full border border-zinc-800 bg-zinc-950 select-none touch-manipulation flex flex-col items-center justify-center cursor-pointer shadow-md shadow-black"
           data-key="3"
         >
           <span class="text-3xl sm:text-4xl font-light text-white leading-none tracking-tight">3</span>
-          <span class="text-[10px] sm:text-[11px] tracking-[0.2em] text-zinc-400 group-hover:text-red-300 group-active:text-white/90 font-medium uppercase leading-none mt-1">DEF</span>
+          <span class="text-[10px] sm:text-[11px] tracking-[0.2em] text-zinc-400  font-medium uppercase leading-none mt-1">DEF</span>
         </button>
 
         <!-- 4 GHI -->
         <button
           type="button"
-          class="pin-key w-[84px] h-[84px] sm:w-[92px] sm:h-[92px] rounded-full border-[1.5px] border-zinc-700/80 hover:border-red-500 bg-zinc-950/80 hover:bg-zinc-900 active:bg-red-600 active:border-red-500 active:text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-lg shadow-black/60 select-none touch-manipulation flex flex-col items-center justify-center group"
+          class="pin-key w-[84px] h-[84px] sm:w-[92px] sm:h-[92px] rounded-full border border-zinc-800 bg-zinc-950 select-none touch-manipulation flex flex-col items-center justify-center cursor-pointer shadow-md shadow-black"
           data-key="4"
         >
           <span class="text-3xl sm:text-4xl font-light text-white leading-none tracking-tight">4</span>
-          <span class="text-[10px] sm:text-[11px] tracking-[0.2em] text-zinc-400 group-hover:text-red-300 group-active:text-white/90 font-medium uppercase leading-none mt-1">GHI</span>
+          <span class="text-[10px] sm:text-[11px] tracking-[0.2em] text-zinc-400  font-medium uppercase leading-none mt-1">GHI</span>
         </button>
 
         <!-- 5 JKL -->
         <button
           type="button"
-          class="pin-key w-[84px] h-[84px] sm:w-[92px] sm:h-[92px] rounded-full border-[1.5px] border-zinc-700/80 hover:border-red-500 bg-zinc-950/80 hover:bg-zinc-900 active:bg-red-600 active:border-red-500 active:text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-lg shadow-black/60 select-none touch-manipulation flex flex-col items-center justify-center group"
+          class="pin-key w-[84px] h-[84px] sm:w-[92px] sm:h-[92px] rounded-full border border-zinc-800 bg-zinc-950 select-none touch-manipulation flex flex-col items-center justify-center cursor-pointer shadow-md shadow-black"
           data-key="5"
         >
           <span class="text-3xl sm:text-4xl font-light text-white leading-none tracking-tight">5</span>
-          <span class="text-[10px] sm:text-[11px] tracking-[0.2em] text-zinc-400 group-hover:text-red-300 group-active:text-white/90 font-medium uppercase leading-none mt-1">JKL</span>
+          <span class="text-[10px] sm:text-[11px] tracking-[0.2em] text-zinc-400  font-medium uppercase leading-none mt-1">JKL</span>
         </button>
 
         <!-- 6 MNO -->
         <button
           type="button"
-          class="pin-key w-[84px] h-[84px] sm:w-[92px] sm:h-[92px] rounded-full border-[1.5px] border-zinc-700/80 hover:border-red-500 bg-zinc-950/80 hover:bg-zinc-900 active:bg-red-600 active:border-red-500 active:text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-lg shadow-black/60 select-none touch-manipulation flex flex-col items-center justify-center group"
+          class="pin-key w-[84px] h-[84px] sm:w-[92px] sm:h-[92px] rounded-full border border-zinc-800 bg-zinc-950 select-none touch-manipulation flex flex-col items-center justify-center cursor-pointer shadow-md shadow-black"
           data-key="6"
         >
           <span class="text-3xl sm:text-4xl font-light text-white leading-none tracking-tight">6</span>
-          <span class="text-[10px] sm:text-[11px] tracking-[0.2em] text-zinc-400 group-hover:text-red-300 group-active:text-white/90 font-medium uppercase leading-none mt-1">MNO</span>
+          <span class="text-[10px] sm:text-[11px] tracking-[0.2em] text-zinc-400  font-medium uppercase leading-none mt-1">MNO</span>
         </button>
 
         <!-- 7 PQRS -->
         <button
           type="button"
-          class="pin-key w-[84px] h-[84px] sm:w-[92px] sm:h-[92px] rounded-full border-[1.5px] border-zinc-700/80 hover:border-red-500 bg-zinc-950/80 hover:bg-zinc-900 active:bg-red-600 active:border-red-500 active:text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-lg shadow-black/60 select-none touch-manipulation flex flex-col items-center justify-center group"
+          class="pin-key w-[84px] h-[84px] sm:w-[92px] sm:h-[92px] rounded-full border border-zinc-800 bg-zinc-950 select-none touch-manipulation flex flex-col items-center justify-center cursor-pointer shadow-md shadow-black"
           data-key="7"
         >
           <span class="text-3xl sm:text-4xl font-light text-white leading-none tracking-tight">7</span>
-          <span class="text-[10px] sm:text-[11px] tracking-[0.2em] text-zinc-400 group-hover:text-red-300 group-active:text-white/90 font-medium uppercase leading-none mt-1">PQRS</span>
+          <span class="text-[10px] sm:text-[11px] tracking-[0.2em] text-zinc-400  font-medium uppercase leading-none mt-1">PQRS</span>
         </button>
 
         <!-- 8 TUV -->
         <button
           type="button"
-          class="pin-key w-[84px] h-[84px] sm:w-[92px] sm:h-[92px] rounded-full border-[1.5px] border-zinc-700/80 hover:border-red-500 bg-zinc-950/80 hover:bg-zinc-900 active:bg-red-600 active:border-red-500 active:text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-lg shadow-black/60 select-none touch-manipulation flex flex-col items-center justify-center group"
+          class="pin-key w-[84px] h-[84px] sm:w-[92px] sm:h-[92px] rounded-full border border-zinc-800 bg-zinc-950 select-none touch-manipulation flex flex-col items-center justify-center cursor-pointer shadow-md shadow-black"
           data-key="8"
         >
           <span class="text-3xl sm:text-4xl font-light text-white leading-none tracking-tight">8</span>
-          <span class="text-[10px] sm:text-[11px] tracking-[0.2em] text-zinc-400 group-hover:text-red-300 group-active:text-white/90 font-medium uppercase leading-none mt-1">TUV</span>
+          <span class="text-[10px] sm:text-[11px] tracking-[0.2em] text-zinc-400  font-medium uppercase leading-none mt-1">TUV</span>
         </button>
 
         <!-- 9 WXYZ -->
         <button
           type="button"
-          class="pin-key w-[84px] h-[84px] sm:w-[92px] sm:h-[92px] rounded-full border-[1.5px] border-zinc-700/80 hover:border-red-500 bg-zinc-950/80 hover:bg-zinc-900 active:bg-red-600 active:border-red-500 active:text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-lg shadow-black/60 select-none touch-manipulation flex flex-col items-center justify-center group"
+          class="pin-key w-[84px] h-[84px] sm:w-[92px] sm:h-[92px] rounded-full border border-zinc-800 bg-zinc-950 select-none touch-manipulation flex flex-col items-center justify-center cursor-pointer shadow-md shadow-black"
           data-key="9"
         >
           <span class="text-3xl sm:text-4xl font-light text-white leading-none tracking-tight">9</span>
-          <span class="text-[10px] sm:text-[11px] tracking-[0.2em] text-zinc-400 group-hover:text-red-300 group-active:text-white/90 font-medium uppercase leading-none mt-1">WXYZ</span>
+          <span class="text-[10px] sm:text-[11px] tracking-[0.2em] text-zinc-400  font-medium uppercase leading-none mt-1">WXYZ</span>
         </button>
 
         <!-- Bottom Row: Back Arrow, 0, Checkmark -->
@@ -2619,7 +2807,7 @@
         <button
           type="button"
           id="pinBackspaceBtn"
-          class="w-[84px] h-[84px] sm:w-[92px] sm:h-[92px] flex items-center justify-center text-zinc-400 hover:text-red-400 active:text-red-500 active:scale-90 transition-all cursor-pointer select-none touch-manipulation"
+          class="w-[84px] h-[84px] sm:w-[92px] sm:h-[92px] flex items-center justify-center text-zinc-400 hover:text-zinc-200 active:scale-95 transition-all cursor-pointer select-none touch-manipulation"
           title="Backspace (Tap to delete, hold to clear)"
           aria-label="Backspace"
         >
@@ -2631,18 +2819,18 @@
         <!-- Center: 0 + -->
         <button
           type="button"
-          class="pin-key w-[84px] h-[84px] sm:w-[92px] sm:h-[92px] rounded-full border-[1.5px] border-zinc-700/80 hover:border-red-500 bg-zinc-950/80 hover:bg-zinc-900 active:bg-red-600 active:border-red-500 active:text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-lg shadow-black/60 select-none touch-manipulation flex flex-col items-center justify-center group"
+          class="pin-key w-[84px] h-[84px] sm:w-[92px] sm:h-[92px] rounded-full border border-zinc-800 bg-zinc-950 select-none touch-manipulation flex flex-col items-center justify-center cursor-pointer shadow-md shadow-black"
           data-key="0"
         >
           <span class="text-3xl sm:text-4xl font-light text-white leading-none tracking-tight">0</span>
-          <span class="text-sm sm:text-base text-zinc-400 group-hover:text-red-300 group-active:text-white/90 font-light leading-none mt-0.5">+</span>
+          <span class="text-sm sm:text-base text-zinc-400  font-light leading-none mt-0.5">+</span>
         </button>
 
         <!-- Right: Submit Checkmark -->
         <button
           type="button"
           id="pinSubmitBtn"
-          class="w-[84px] h-[84px] sm:w-[92px] sm:h-[92px] flex items-center justify-center text-zinc-400 hover:text-emerald-400 active:text-emerald-500 active:scale-90 transition-all cursor-pointer select-none touch-manipulation"
+          class="w-[84px] h-[84px] sm:w-[92px] sm:h-[92px] flex items-center justify-center text-zinc-400 hover:text-zinc-200 active:scale-95 transition-all cursor-pointer select-none touch-manipulation"
           title="Enter PIN"
           aria-label="Enter PIN"
         >
@@ -4763,6 +4951,17 @@
       let tempCreatedPin = '';
       let isPinOverlayActive = false;
       let lastHiddenTimestamp = 0;
+      let isPickingSystemFile = false;
+      function markSystemFilePicking() {
+        isPickingSystemFile = true;
+        setTimeout(() => { isPickingSystemFile = false; }, 25000);
+      }
+      setTimeout(() => {
+        ['photoExpenseInput', 'importCsvFileInput', 'menuMultiCsvInput'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.addEventListener('click', markSystemFilePicking);
+        });
+      }, 500);
 
       const lockAppBtn = document.getElementById('lockAppBtn');
       const lockAppIcon = document.getElementById('lockAppIcon');
@@ -6049,32 +6248,69 @@
         }
       }
 
+      // Device Storage Folder Modal Controls
+      const deviceFolderModal = document.getElementById('deviceFolderModal');
+      const deviceFolderCard = document.getElementById('deviceFolderCard');
+      const deviceFolderModalCloseBtn = document.getElementById('deviceFolderModalCloseBtn');
+      const deviceFolderCustomNameInput = document.getElementById('deviceFolderCustomNameInput');
+      const deviceFolderSaveBtn = document.getElementById('deviceFolderSaveBtn');
+      const deviceFolderTestDownloadBtn = document.getElementById('deviceFolderTestDownloadBtn');
+
+      function openDeviceFolderModal() {
+        if (!deviceFolderModal) return;
+        if (deviceFolderCustomNameInput) {
+          const cur = getBackupFolderName();
+          deviceFolderCustomNameInput.value = cur === 'Device Downloads' ? 'RupeeTracker-Backups' : cur;
+        }
+        deviceFolderModal.classList.remove('opacity-0', 'pointer-events-none');
+        if (deviceFolderCard) {
+          deviceFolderCard.classList.remove('scale-95');
+          deviceFolderCard.classList.add('scale-100');
+        }
+      }
+
+      function closeDeviceFolderModal() {
+        if (!deviceFolderModal) return;
+        if (deviceFolderCard) {
+          deviceFolderCard.classList.remove('scale-100');
+          deviceFolderCard.classList.add('scale-95');
+        }
+        deviceFolderModal.classList.add('opacity-0', 'pointer-events-none');
+      }
+
+      if (deviceFolderModalCloseBtn) {
+        deviceFolderModalCloseBtn.addEventListener('click', closeDeviceFolderModal);
+      }
+      if (deviceFolderModal) {
+        deviceFolderModal.addEventListener('click', (e) => {
+          if (e.target === deviceFolderModal) closeDeviceFolderModal();
+        });
+      }
+
+      if (deviceFolderSaveBtn) {
+        deviceFolderSaveBtn.addEventListener('click', () => {
+          const val = deviceFolderCustomNameInput ? deviceFolderCustomNameInput.value.trim() : '';
+          const finalVal = val || 'RupeeTracker-Backups';
+          localStorage.setItem('rupee_custom_backup_folder_name', finalVal);
+          updateMenuBackupFolderUI();
+          showToast(`✓ Destination set to "${finalVal}"`);
+          closeDeviceFolderModal();
+        });
+      }
+
+      if (deviceFolderTestDownloadBtn) {
+        deviceFolderTestDownloadBtn.addEventListener('click', () => {
+          const nowStr = new Date().toISOString();
+          const testCsv = `Expense,Amount,Tag,Date,Notes\nStorage Verification Test,0.00,Testing,${nowStr},"Local phone storage download verified"\n`;
+          const blob = new Blob([testCsv], { type: 'text/csv;charset=utf-8;' });
+          saveFileToDestination(blob, 'rupee_tracker_storage_test.csv');
+          showToast('✓ Test file downloaded to your phone Downloads folder!');
+        });
+      }
+
       if (menuChooseFolderBtn) {
-        menuChooseFolderBtn.addEventListener('click', async () => {
-          if ('showDirectoryPicker' in window) {
-            try {
-              const handle = await window.showDirectoryPicker();
-              if (handle) {
-                localFolderHandle = handle;
-                const folderName = handle.name || 'Selected Folder';
-                localStorage.setItem('rupee_custom_backup_folder_name', folderName);
-                updateMenuBackupFolderUI();
-                showToast(`✓ Destination set to "${folderName}"`);
-              }
-            } catch (err) {
-              if (err.name !== 'AbortError') {
-                console.warn('Directory picker error:', err);
-              }
-            }
-          } else {
-            const current = getBackupFolderName();
-            const chosen = prompt('Enter your preferred folder name on your device (e.g. RupeeBackups or Downloads/Expenses):', current === 'Device Downloads' ? 'RupeeTracker-Backups' : current);
-            if (chosen && chosen.trim()) {
-              localStorage.setItem('rupee_custom_backup_folder_name', chosen.trim());
-              updateMenuBackupFolderUI();
-              showToast(`✓ Destination set to "${chosen.trim()}"`);
-            }
-          }
+        menuChooseFolderBtn.addEventListener('click', () => {
+          openDeviceFolderModal();
         });
       }
 
@@ -6164,25 +6400,71 @@
         }
       }
 
-      // Google Sign-In Flow
-      if (gdriveSignInBtn) {
-        gdriveSignInBtn.addEventListener('click', () => {
-          const existing = getSavedGDriveConfig() || {};
-          let email = prompt('Google Account Authentication\nEnter your Google Email ID on this device:', existing.email || '');
-          if (!email || !email.trim()) return;
-          email = email.trim();
+      // Google Drive Auth Modal Controls
+      const gdriveAuthModal = document.getElementById('gdriveAuthModal');
+      const gdriveAuthCard = document.getElementById('gdriveAuthCard');
+      const gdriveAuthModalCloseBtn = document.getElementById('gdriveAuthModalCloseBtn');
+      const gdriveAuthEmailInput = document.getElementById('gdriveAuthEmailInput');
+      const gdriveAuthFolderNameInput = document.getElementById('gdriveAuthFolderNameInput');
+      const gdriveAuthSaveBtn = document.getElementById('gdriveAuthSaveBtn');
 
+      function openGDriveAuthModal() {
+        if (!gdriveAuthModal) return;
+        const cfg = getSavedGDriveConfig() || {};
+        if (gdriveAuthEmailInput) gdriveAuthEmailInput.value = cfg.email || '';
+        if (gdriveAuthFolderNameInput) gdriveAuthFolderNameInput.value = cfg.folderName || 'Rupee Expense Backups';
+        gdriveAuthModal.classList.remove('opacity-0', 'pointer-events-none');
+        if (gdriveAuthCard) {
+          gdriveAuthCard.classList.remove('scale-95');
+          gdriveAuthCard.classList.add('scale-100');
+        }
+      }
+
+      function closeGDriveAuthModal() {
+        if (!gdriveAuthModal) return;
+        if (gdriveAuthCard) {
+          gdriveAuthCard.classList.remove('scale-100');
+          gdriveAuthCard.classList.add('scale-95');
+        }
+        gdriveAuthModal.classList.add('opacity-0', 'pointer-events-none');
+      }
+
+      if (gdriveAuthModalCloseBtn) {
+        gdriveAuthModalCloseBtn.addEventListener('click', closeGDriveAuthModal);
+      }
+      if (gdriveAuthModal) {
+        gdriveAuthModal.addEventListener('click', (e) => {
+          if (e.target === gdriveAuthModal) closeGDriveAuthModal();
+        });
+      }
+
+      if (gdriveAuthSaveBtn) {
+        gdriveAuthSaveBtn.addEventListener('click', () => {
+          const email = gdriveAuthEmailInput ? gdriveAuthEmailInput.value.trim() : '';
+          const folderName = (gdriveAuthFolderNameInput ? gdriveAuthFolderNameInput.value.trim() : '') || 'Rupee Expense Backups';
+          if (!email || !email.includes('@')) {
+            showToast('⚠️ Please enter a valid Google email address');
+            return;
+          }
+          const existing = getSavedGDriveConfig() || {};
+          const folderSlug = folderName.toLowerCase().replace(/[^a-z0-9]+/g, '_');
           const cfg = {
             email,
-            folderName: existing.folderName || 'Rupee Expense Backups',
-            folderLink: existing.folderLink || 'https://drive.google.com/drive/folders/rupee_expense_backups',
+            folderName,
+            folderLink: existing.folderLink || `https://drive.google.com/drive/folders/rupee_${folderSlug}`,
             autoSync: true,
             lastSync: existing.lastSync || null
           };
           saveGDriveConfig(cfg);
           updateGDriveUI();
-          showToast(`✓ Authenticated as ${email}`);
-          setTimeout(openGDriveFolderModal, 250);
+          showToast(`✓ Google Account linked as ${email}`);
+          closeGDriveAuthModal();
+        });
+      }
+
+      if (gdriveSignInBtn) {
+        gdriveSignInBtn.addEventListener('click', () => {
+          openGDriveAuthModal();
         });
       }
 
@@ -7843,12 +8125,16 @@
           } else if (document.visibilityState === 'visible') {
             refreshUI();
             const pin = getSavedPin();
-            if (pin && lastHiddenTimestamp > 0 && (Date.now() - lastHiddenTimestamp > 60000)) {
+            if (pin && !isPickingSystemFile) {
               showPinLockOverlay('UNLOCK');
             } else {
               checkMonthlyBackupPrompt();
             }
+            isPickingSystemFile = false;
           }
+        });
+        window.addEventListener('pagehide', () => {
+          lastHiddenTimestamp = Date.now();
         });
       }
 
