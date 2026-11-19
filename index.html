@@ -359,6 +359,20 @@
               </svg>
             </button>
             <input id="photoExpenseInput" type="file" accept="image/*" class="hidden" />
+
+            <!-- Attach PDF File (Bank Statement Import) Button -->
+            <button
+              id="recordViaPdfBtn"
+              type="button"
+              class="w-12 h-12 shrink-0 rounded-2xl bg-black border-2 border-amber-900/80 hover:border-amber-500 hover:bg-amber-950/40 active:scale-95 active:bg-amber-600 text-amber-500 active:text-white transition-all flex items-center justify-center cursor-pointer shadow-lg shadow-black/80 group"
+              title="Attach Bank Statement PDF (1-Click Sync all transactions with dates & tags)"
+              aria-label="Attach Bank Statement PDF"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-amber-500 group-hover:text-amber-400 group-active:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </button>
+            <input id="pdfExpenseInput" type="file" accept="application/pdf" class="hidden" />
           </div>
         </form>
 
@@ -1801,6 +1815,104 @@
   </div>
 
   <!-- ==========================================
+       PDF BANK STATEMENT REVIEW & 1-CLICK SYNC MODAL
+       ========================================== -->
+  <div
+    id="pdfStatementReviewModal"
+    class="fixed inset-0 z-50 flex items-start justify-center p-2.5 pt-3 sm:p-4 sm:pt-6 bg-black/90 backdrop-none opacity-0 pointer-events-none transition-all duration-200 overflow-y-auto"
+    role="dialog"
+    aria-modal="true"
+  >
+    <div
+      id="pdfStatementReviewCard"
+      class="w-full max-w-lg sm:max-w-xl bg-zinc-950 border border-amber-500/40 rounded-3xl p-4 sm:p-5 shadow-2xl shadow-black flex flex-col min-h-[60vh] max-h-[92vh] text-left transform scale-95 transition-all duration-200"
+    >
+      <!-- Header -->
+      <div class="flex items-center justify-between pb-3 border-b border-zinc-800 shrink-0">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-amber-950/80 border border-amber-500/40 text-amber-400 flex items-center justify-center shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <div class="min-w-0">
+            <h3 class="text-sm sm:text-base font-black text-white flex items-center gap-2">
+              Bank Statement Sync
+              <span id="pdfReviewBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                0 detected
+              </span>
+            </h3>
+            <p id="pdfReviewSubtitle" class="text-xs text-zinc-400 truncate">Auto-mapped dates, remarks & tags</p>
+          </div>
+        </div>
+        <button
+          id="pdfReviewCloseBtn"
+          type="button"
+          class="w-8 h-8 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center text-sm font-bold transition-colors cursor-pointer shrink-0"
+        >
+          ✕
+        </button>
+      </div>
+
+      <!-- PDF Scanning / Status Banner -->
+      <div id="pdfScanningBanner" class="hidden my-3 p-3.5 bg-black/80 border border-amber-900/60 rounded-2xl flex flex-col items-center justify-center space-y-2 shrink-0">
+        <div class="w-full flex items-center justify-between text-xs font-bold text-zinc-300">
+          <span class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+            <span id="pdfScanStatusText">Parsing PDF bank statement...</span>
+          </span>
+          <span id="pdfScanPercent" class="text-amber-400 font-mono font-black">20%</span>
+        </div>
+        <div class="w-full bg-zinc-900 rounded-full h-1.5 overflow-hidden">
+          <div id="pdfScanProgressBar" class="bg-gradient-to-r from-amber-600 to-amber-400 h-1.5 rounded-full transition-all duration-300" style="width: 20%;"></div>
+        </div>
+      </div>
+
+      <!-- Quick Summary Row -->
+      <div class="flex items-center justify-between py-2 px-1 text-xs font-bold text-zinc-300 shrink-0">
+        <div class="flex items-center gap-2">
+          <button
+            id="pdfToggleSelectAllBtn"
+            type="button"
+            class="text-[11px] text-amber-400 hover:text-amber-300 underline cursor-pointer"
+          >
+            Select All
+          </button>
+          <span class="text-zinc-600">•</span>
+          <span id="pdfSelectedCountText" class="text-[11px] text-zinc-400">0 selected</span>
+        </div>
+        <div class="text-right">
+          <span class="text-[10px] uppercase tracking-wider text-zinc-500 mr-1">Total:</span>
+          <span id="pdfSelectedTotalText" class="text-sm font-black text-rose-400 tabular-nums">₹ 0</span>
+        </div>
+      </div>
+
+      <!-- Transaction Items Scrollable List -->
+      <div id="pdfTransactionsList" class="flex-1 overflow-y-auto space-y-2.5 my-2 pr-1 min-h-[160px] max-h-[55vh]">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- Bottom Action Row: 1-Click Sync All Button -->
+      <div class="pt-3 border-t border-zinc-800 flex items-center justify-between gap-3 shrink-0">
+        <button
+          id="pdfReviewCancelBtn"
+          type="button"
+          class="py-2.5 px-4 rounded-xl bg-zinc-900 hover:bg-zinc-800 active:scale-95 text-xs font-bold text-zinc-400 hover:text-white border border-zinc-800 transition-all cursor-pointer"
+        >
+          Cancel
+        </button>
+        <button
+          id="pdfSyncAllBtn"
+          type="button"
+          class="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 active:scale-95 text-xs font-black text-white shadow-lg shadow-amber-950/80 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+        >
+          <span>1-Click Sync All to Tracker ↵</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
        EXPORT CSV FILTER SELECTION MODAL
        ========================================== -->
   <div
@@ -2906,6 +3018,27 @@
       let savedTotalFromPhoto = 0;
       let isDeckViewMode = true;
       let currentUploadedPhotoDataUrl = null;
+
+      // Record Expense via PDF Bank Statement Elements
+      const recordViaPdfBtn = document.getElementById('recordViaPdfBtn');
+      const pdfExpenseInput = document.getElementById('pdfExpenseInput');
+      const pdfStatementReviewModal = document.getElementById('pdfStatementReviewModal');
+      const pdfStatementReviewCard = document.getElementById('pdfStatementReviewCard');
+      const pdfReviewCloseBtn = document.getElementById('pdfReviewCloseBtn');
+      const pdfReviewCancelBtn = document.getElementById('pdfReviewCancelBtn');
+      const pdfReviewBadge = document.getElementById('pdfReviewBadge');
+      const pdfReviewSubtitle = document.getElementById('pdfReviewSubtitle');
+      const pdfScanningBanner = document.getElementById('pdfScanningBanner');
+      const pdfScanStatusText = document.getElementById('pdfScanStatusText');
+      const pdfScanPercent = document.getElementById('pdfScanPercent');
+      const pdfScanProgressBar = document.getElementById('pdfScanProgressBar');
+      const pdfTransactionsList = document.getElementById('pdfTransactionsList');
+      const pdfToggleSelectAllBtn = document.getElementById('pdfToggleSelectAllBtn');
+      const pdfSelectedCountText = document.getElementById('pdfSelectedCountText');
+      const pdfSelectedTotalText = document.getElementById('pdfSelectedTotalText');
+      const pdfSyncAllBtn = document.getElementById('pdfSyncAllBtn');
+
+      let parsedPdfTransactions = [];
       let activePhotoLongPressCard = null;
       let photoLongPressTimer = null;
       let isPhotoLongPressTriggered = false;
@@ -7100,25 +7233,215 @@
       // ==========================================
       // RECORD EXPENSE VIA PHOTO - OCR & PARSER WORKFLOW
       // ==========================================
-      function cleanMerchantName(str) {
-        if (!str) return 'Payment';
-        let s = str
-          .replace(/(?:^|\b)(?:Paid\s+(?:on|to|for)\s+|Payment\s+to\s+|To:\s*|\bTo\s+|Debited\s+(?:from|for)\s*)/gi, '')
-          .replace(/[>\u00BB\u203A\u27A1\u2192]+.*$/g, '')
-          .replace(/(?:₹|INR|Rs\.?|¥|%|[?*#~FfTtZz])?\s*[\d,]+(?:\.\d{1,2})?\s*$/i, '')
-          .replace(/^[^A-Za-z]+/g, '')
-          .replace(/[.%¥₹?#*~^+=]+$/g, '')
-          .replace(/\s+/g, ' ')
-          .trim();
+      const ALL_MONTHS = {
+        jan: 0, january: 0,
+        feb: 1, february: 1,
+        mar: 2, march: 2,
+        apr: 3, april: 3,
+        may: 4,
+        jun: 5, june: 5,
+        jul: 6, july: 6,
+        aug: 7, august: 7,
+        sep: 8, sept: 8, september: 8,
+        oct: 9, october: 9,
+        nov: 10, november: 10,
+        dec: 11, december: 11
+      };
+
+      function cleanMerchantOrRemark(rawStr) {
+        if (!rawStr) return 'Payment';
+        let s = rawStr.trim();
+        // Remove common bank/UPI prefixes
+        s = s.replace(/^(?:UPI|UPI-IB|UPI-CR|UPI-DR|POS|ACH|NEFT|IMPS|RTGS|ATM|ECOM|BILLPAY|BBPS|NACH|CMS|INB)[\/\-_\s]+/i, '');
+        s = s.replace(/^(?:P2M|P2P|CR|DR|WDL|DEP|To:\s*|\bTo\s+|Paid\s+(?:to|on|for)\s+|Payment\s+to\s+|Debited\s+(?:from|for)\s*)[\/\-_\s]*/gi, '');
+        // Remove trailing or inline reference numbers e.g. /123456789012/ or /REF12345
+        s = s.replace(/[\/\-_]\d{6,}[\/\-_]?/g, ' ');
+        s = s.replace(/[\/\-_][A-Za-z0-9]{12,}[\/\-_]?/g, ' ');
+        // Remove VPA handles e.g. /swiggy@icici or @okhdfcbank
+        s = s.replace(/[\/\-_]?[a-zA-Z0-9.\-_]+@(icici|hdfcbank|okhdfcbank|okaxis|okicici|oksbi|ybl|paytm|apl|barodampay)[\/\-_]?/gi, ' ');
+        // Remove card numbers like 412345XXXXXX1234
+        s = s.replace(/\b\d{4,6}[X*]{4,8}\d{4}\b/gi, '');
+        // Clean symbols, arrows, and multi-spaces
+        s = s.replace(/[>\u00BB\u203A\u27A1\u2192]+.*$/g, '');
+        s = s.replace(/(?:₹|INR|Rs\.?|¥|%|[?*#~FfTtZz])?\s*[\d,]+(?:\.\d{1,2})?\s*$/i, '');
+        s = s.replace(/[\/\-_]+/g, ' ').replace(/\s+/g, ' ').trim();
 
         if (s.length > 2 && s === s.toUpperCase()) {
-          s = s.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+          s = s.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
         }
         if (/Corner House Ice Crea/i.test(s)) s = 'Corner House Ice Cream';
-        if (/Yousef Ismail/i.test(s)) s = 'Yousef Ismail Kodiyam';
         if (/Amazon Bus/i.test(s)) s = 'Paid on Amazon Bus';
         else if (/Amazon/i.test(s) && (s.length < 5 || /^[a-z]\s*Amazon/i.test(s) || s.toLowerCase() === 'amazon')) s = 'Paid on Amazon';
         return s || 'Payment';
+      }
+
+      function cleanMerchantName(str) {
+        return cleanMerchantOrRemark(str);
+      }
+
+      function inferCategoryFromRemark(str) {
+        const s = (str || '').toLowerCase();
+        if (s.match(/swiggy|zomato|starbucks|mcdonald|kfc|burger|pizza|biryani|cafe|coffee|restaurant|hotel|food|tea|chai|bites|bakery|diner|kitchen|juice|eats|canteen|snack|ice cream|ice crea/i)) return 'Food';
+        if (s.match(/uber|ola|rapido|metro|fuel|petrol|diesel|hpcl|bpcl|hp|indianoil|bharat|shell|auto|cab|bus|irctc|railway|train|flight|toll|fastag|transport|parking/i)) return 'Travel';
+        if (s.match(/amazon|flipkart|myntra|ajio|meesho|nykaa|zara|h&m|store|mart|bazaar|retail|shopping|mall|decathlon|cloth|dress|trends|lifestyle/i)) return 'Shopping';
+        if (s.match(/recharge|airtel|jio|vi\b|vodafone|bescom|tneb|tsspdcl|electric|water|gas|broadband|act fibernet|wifi|bill|dth|tata play|rent|maintenance|fee|tax|insurance|lic/i)) return 'Bills';
+        if (s.match(/grocery|groceries|zepto|blinkit|instamart|bigbasket|supermarket|vegetable|fruits|milk|dairy|kirana|dmart|provision/i)) return 'Groceries';
+        if (s.match(/pharmacy|apollo|medplus|pharmeasy|1mg|medical|hospital|clinic|doctor|health|lab|pharma|dent|care/i)) return 'Health';
+        if (s.match(/movie|cinema|pvr|inox|bookmyshow|netflix|prime|hotstar|spotify|disney|youtube|game|gaming|ticket|playstation|steam/i)) return 'Entertainment';
+        if (s.match(/school|college|university|coursera|udemy|fees|tuition|books|stationary/i)) return 'Education';
+        if (s.match(/zerodha|groww|upstox|mutual fund|sip|shares|crypto|coin|nippon|sbi mf/i)) return 'Investment';
+        return 'Misc';
+      }
+
+      function inferCategory(str) {
+        return inferCategoryFromRemark(str);
+      }
+
+      function parseExactDateAndTimestamp(text, baseTime) {
+        if (!text) return null;
+        const refDate = new Date(baseTime || Date.now());
+        const refYear = refDate.getFullYear();
+
+        // 1. DD/MM/YYYY or DD-MM-YYYY or DD.MM.YYYY (e.g. 17/11/2026, 18-11-2026, 17.11.2026)
+        let m = text.match(/\b(0?[1-9]|[12]\d|3[01])[\/\-\.](0?[1-9]|1[0-2])[\/\-\.](20\d\d)(?:[,•\s]+(?:at\s*)?(\d{1,2})[:\.](\d{2})(?:[:\.](\d{2}))?\s*([AaPp][Mm])?)?\b/);
+        if (m) {
+          const day = parseInt(m[1], 10);
+          const mon = parseInt(m[2], 10) - 1;
+          const year = parseInt(m[3], 10);
+          let hour = m[4] ? parseInt(m[4], 10) : 12;
+          const min = m[5] ? parseInt(m[5], 10) : 0;
+          const sec = m[6] ? parseInt(m[6], 10) : 0;
+          const ampm = m[7] ? m[7].toUpperCase() : null;
+          if (ampm === 'PM' && hour < 12) hour += 12;
+          if (ampm === 'AM' && hour === 12) hour = 0;
+          const d = new Date(year, mon, day, hour, min, sec);
+          if (!isNaN(d.getTime())) return d.toISOString();
+        }
+
+        // 2. YYYY-MM-DD or YYYY/MM/DD
+        m = text.match(/\b(20\d\d)[\/\-\.](0?[1-9]|1[0-2])[\/\-\.](0?[1-9]|[12]\d|3[01])(?:[,•\s]+(?:at\s*)?(\d{1,2})[:\.](\d{2})(?:[:\.](\d{2}))?\s*([AaPp][Mm])?)?\b/);
+        if (m) {
+          const year = parseInt(m[1], 10);
+          const mon = parseInt(m[2], 10) - 1;
+          const day = parseInt(m[3], 10);
+          let hour = m[4] ? parseInt(m[4], 10) : 12;
+          const min = m[5] ? parseInt(m[5], 10) : 0;
+          const sec = m[6] ? parseInt(m[6], 10) : 0;
+          const ampm = m[7] ? m[7].toUpperCase() : null;
+          if (ampm === 'PM' && hour < 12) hour += 12;
+          if (ampm === 'AM' && hour === 12) hour = 0;
+          const d = new Date(year, mon, day, hour, min, sec);
+          if (!isNaN(d.getTime())) return d.toISOString();
+        }
+
+        // 3. DD/MM/YY or DD-MM-YY (e.g. 17/11/26)
+        m = text.match(/\b(0?[1-9]|[12]\d|3[01])[\/\-\.](0?[1-9]|1[0-2])[\/\-\.](\d{2})\b/);
+        if (m) {
+          const day = parseInt(m[1], 10);
+          const mon = parseInt(m[2], 10) - 1;
+          const year = 2000 + parseInt(m[3], 10);
+          const d = new Date(year, mon, day, 12, 0, 0);
+          if (!isNaN(d.getTime())) return d.toISOString();
+        }
+
+        // 4. DD Month YYYY (e.g. 17 Nov 2026, 17 Nov, 2026, 18th November 2026, 17-Nov-2026)
+        m = text.match(/\b(0?[1-9]|[12]\d|3[01])(?:st|nd|rd|th)?[\s\-]+([A-Za-z]{3,9})[,\s\-]+(20\d\d)(?:[,•\s]+(?:at\s*)?(\d{1,2})[:\.](\d{2})(?:[:\.](\d{2}))?\s*([AaPp][Mm])?)?\b/i);
+        if (m && ALL_MONTHS[m[2].toLowerCase()] !== undefined) {
+          const day = parseInt(m[1], 10);
+          const mon = ALL_MONTHS[m[2].toLowerCase()];
+          const year = parseInt(m[3], 10);
+          let hour = m[4] ? parseInt(m[4], 10) : 12;
+          const min = m[5] ? parseInt(m[5], 10) : 0;
+          const sec = m[6] ? parseInt(m[6], 10) : 0;
+          const ampm = m[7] ? m[7].toUpperCase() : null;
+          if (ampm === 'PM' && hour < 12) hour += 12;
+          if (ampm === 'AM' && hour === 12) hour = 0;
+          const d = new Date(year, mon, day, hour, min, sec);
+          if (!isNaN(d.getTime())) return d.toISOString();
+        }
+
+        // 5. Month DD, YYYY (e.g. Nov 17, 2026, November 18th 2026)
+        m = text.match(/\b([A-Za-z]{3,9})\s+(0?[1-9]|[12]\d|3[01])(?:st|nd|rd|th)?,?\s+(20\d\d)(?:[,•\s]+(?:at\s*)?(\d{1,2})[:\.](\d{2})(?:[:\.](\d{2}))?\s*([AaPp][Mm])?)?\b/i);
+        if (m && ALL_MONTHS[m[1].toLowerCase()] !== undefined) {
+          const mon = ALL_MONTHS[m[1].toLowerCase()];
+          const day = parseInt(m[2], 10);
+          const year = parseInt(m[3], 10);
+          let hour = m[4] ? parseInt(m[4], 10) : 12;
+          const min = m[5] ? parseInt(m[5], 10) : 0;
+          const sec = m[6] ? parseInt(m[6], 10) : 0;
+          const ampm = m[7] ? m[7].toUpperCase() : null;
+          if (ampm === 'PM' && hour < 12) hour += 12;
+          if (ampm === 'AM' && hour === 12) hour = 0;
+          const d = new Date(year, mon, day, hour, min, sec);
+          if (!isNaN(d.getTime())) return d.toISOString();
+        }
+
+        // 6. DD Month without year (e.g. 17 Nov • 08:30 PM, Paid on 18 Nov)
+        m = text.match(/\b(0?[1-9]|[12]\d|3[01])(?:st|nd|rd|th)?[\s\-]+([A-Za-z]{3,9})(?:[,•\s]+(?:at\s*)?(\d{1,2})[:\.](\d{2})(?:[:\.](\d{2}))?\s*([AaPp][Mm])?)?\b/i);
+        if (m && ALL_MONTHS[m[2].toLowerCase()] !== undefined) {
+          const day = parseInt(m[1], 10);
+          const mon = ALL_MONTHS[m[2].toLowerCase()];
+          let hour = m[3] ? parseInt(m[3], 10) : 12;
+          const min = m[4] ? parseInt(m[4], 10) : 0;
+          const sec = m[5] ? parseInt(m[5], 10) : 0;
+          const ampm = m[6] ? m[6].toUpperCase() : null;
+          if (ampm === 'PM' && hour < 12) hour += 12;
+          if (ampm === 'AM' && hour === 12) hour = 0;
+          const d = new Date(refYear, mon, day, hour, min, sec);
+          if (!isNaN(d.getTime())) return d.toISOString();
+        }
+
+        // 7. Month DD without year (e.g. Nov 17 • 08:30 PM)
+        m = text.match(/\b([A-Za-z]{3,9})\s+(0?[1-9]|[12]\d|3[01])(?:st|nd|rd|th)?(?:[,•\s]+(?:at\s*)?(\d{1,2})[:\.](\d{2})(?:[:\.](\d{2}))?\s*([AaPp][Mm])?)?\b/i);
+        if (m && ALL_MONTHS[m[1].toLowerCase()] !== undefined) {
+          const mon = ALL_MONTHS[m[1].toLowerCase()];
+          const day = parseInt(m[2], 10);
+          let hour = m[3] ? parseInt(m[3], 10) : 12;
+          const min = m[4] ? parseInt(m[4], 10) : 0;
+          const sec = m[5] ? parseInt(m[5], 10) : 0;
+          const ampm = m[6] ? m[6].toUpperCase() : null;
+          if (ampm === 'PM' && hour < 12) hour += 12;
+          if (ampm === 'AM' && hour === 12) hour = 0;
+          const d = new Date(refYear, mon, day, hour, min, sec);
+          if (!isNaN(d.getTime())) return d.toISOString();
+        }
+
+        // 8. Relative dates: Yesterday / Today / X days ago
+        m = text.match(/\byesterday(?:[,\s]+(?:at\s*)?(\d{1,2})[:\.](\d{2})\s*([AaPp][Mm])?)?\b/i);
+        if (m) {
+          const yDate = new Date(refDate.getTime() - 86400 * 1000);
+          if (m[1]) {
+            let hour = parseInt(m[1], 10);
+            const min = parseInt(m[2], 10);
+            const ampm = m[3] ? m[3].toUpperCase() : null;
+            if (ampm === 'PM' && hour < 12) hour += 12;
+            if (ampm === 'AM' && hour === 12) hour = 0;
+            yDate.setHours(hour, min, 0, 0);
+          }
+          return yDate.toISOString();
+        }
+
+        m = text.match(/\btoday(?:[,\s]+(?:at\s*)?(\d{1,2})[:\.](\d{2})\s*([AaPp][Mm])?)?\b/i);
+        if (m) {
+          const tDate = new Date(refDate.getTime());
+          if (m[1]) {
+            let hour = parseInt(m[1], 10);
+            const min = parseInt(m[2], 10);
+            const ampm = m[3] ? m[3].toUpperCase() : null;
+            if (ampm === 'PM' && hour < 12) hour += 12;
+            if (ampm === 'AM' && hour === 12) hour = 0;
+            tDate.setHours(hour, min, 0, 0);
+          }
+          return tDate.toISOString();
+        }
+
+        m = text.match(/\b(\d+)\s*days?\s*ago\b/i);
+        if (m) {
+          const days = parseInt(m[1], 10);
+          return new Date(refDate.getTime() - days * 86400 * 1000).toISOString();
+        }
+
+        return null;
       }
 
       function parsePaymentScreenshotText(text, refTimestamp) {
@@ -7126,12 +7449,16 @@
         const rawLines = text.split('\n').map(l => l.trim()).filter(Boolean);
         const items = [];
         const baseTime = (refTimestamp && refTimestamp > 1577836800000) ? refTimestamp : Date.now();
-        const baseDate = new Date(baseTime);
 
-        const MONTHS = {
-          jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5,
-          jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11
-        };
+        // Scan entire document to find global transaction date if present
+        let globalDocDate = null;
+        for (const l of rawLines) {
+          const d = parseExactDateAndTimestamp(l, baseTime);
+          if (d) {
+            globalDocDate = d;
+            break;
+          }
+        }
 
         const isCredit = (str) => {
           return /\b(?:cashback|received|credited|refund|reward)\b/i.test(str) ||
@@ -7187,147 +7514,14 @@
           return null;
         };
 
-        const inferCategory = (str) => {
-          const s = (str || '').toLowerCase();
-          if (s.match(/swiggy|zomato|cafe|coffee|restaurant|hotel|food|tea|chai|bites|bakery|diner|kitchen|burger|pizza|biryani|juice|eats|canteen|snack|ice cream|ice crea/i)) return 'Food';
-          if (s.match(/uber|ola|rapido|metro|fuel|petrol|diesel|hp|indianoil|bharat|shell|auto|cab|bus|irctc|railway|train|flight|toll|fastag|transport/i)) return 'Travel';
-          if (s.match(/amazon|flipkart|myntra|ajio|meesho|nykaa|zara|h&m|store|mart|bazaar|retail|shopping|mall|decathlon|cloth|dress/i)) return 'Shopping';
-          if (s.match(/recharge|airtel|jio|vi|vodafone|bescom|tneb|electric|water|gas|broadband|wifi|bill|dth|tata play|rent|maintenance|fee|tax/i)) return 'Bills';
-          if (s.match(/grocery|groceries|zepto|blinkit|instamart|bigbasket|supermarket|vegetable|fruits|milk|dairy|store|kirana/i)) return 'Groceries';
-          if (s.match(/pharmacy|apollo|medplus|medical|hospital|clinic|doctor|health|lab|pharma|dent|care/i)) return 'Health';
-          if (s.match(/movie|cinema|pvr|inox|bookmyshow|netflix|prime|hotstar|spotify|game|gaming|ticket/i)) return 'Entertainment';
-          return 'Misc';
-        };
-
         const extractDateTimeFromContext = (lines) => {
-          for (const line of lines) {
-            if (!line) continue;
-
-            // 1. Explicit full date with time e.g. "18 Nov 2026, 08:57 AM"
-            let m = line.match(/\b(\d{1,2})\s+([A-Za-z]{3})[a-z]*\s+(\d{4})[,•\s]+(\d{1,2}):(\d{2})(?::\d{2})?\s*([AaPp][Mm])?\b/i);
-            if (m) {
-              const day = parseInt(m[1], 10);
-              const monStr = m[2].toLowerCase();
-              const year = parseInt(m[3], 10);
-              let hour = parseInt(m[4], 10);
-              const min = parseInt(m[5], 10);
-              const ampm = m[6] ? m[6].toUpperCase() : null;
-              if (ampm === 'PM' && hour < 12) hour += 12;
-              if (ampm === 'AM' && hour === 12) hour = 0;
-              if (MONTHS[monStr] !== undefined) {
-                const d = new Date(year, MONTHS[monStr], day, hour, min, 0);
-                if (!isNaN(d.getTime())) return d.toISOString();
-              }
-            }
-
-            // 1b. "Nov 18, 2026, 08:57 AM"
-            m = line.match(/\b([A-Za-z]{3})[a-z]*\s+(\d{1,2}),?\s+(\d{4})[,•\s]+(\d{1,2}):(\d{2})(?::\d{2})?\s*([AaPp][Mm])?\b/i);
-            if (m) {
-              const monStr = m[1].toLowerCase();
-              const day = parseInt(m[2], 10);
-              const year = parseInt(m[3], 10);
-              let hour = parseInt(m[4], 10);
-              const min = parseInt(m[5], 10);
-              const ampm = m[6] ? m[6].toUpperCase() : null;
-              if (ampm === 'PM' && hour < 12) hour += 12;
-              if (ampm === 'AM' && hour === 12) hour = 0;
-              if (MONTHS[monStr] !== undefined) {
-                const d = new Date(year, MONTHS[monStr], day, hour, min, 0);
-                if (!isNaN(d.getTime())) return d.toISOString();
-              }
-            }
-
-            // 2. Relative time: "X secs ago"
-            m = line.match(/\b(\d+)\s*(?:secs?|seconds?)\s*ago\b/i);
-            if (m) {
-              const secs = parseInt(m[1], 10);
-              return new Date(baseTime - secs * 1000).toISOString();
-            }
-
-            // 2b. Relative time: "X mins ago" / "X minutes ago"
-            m = line.match(/\b(\d+)\s*(?:mins?|minutes?)\s*ago\b/i);
-            if (m) {
-              const mins = parseInt(m[1], 10);
-              return new Date(baseTime - mins * 60 * 1000).toISOString();
-            }
-
-            // 2c. Relative time: "X hours ago" / "X hrs ago" / "X hr ago"
-            m = line.match(/\b(\d+)\s*(?:hours?|hrs?|hr)\s*ago\b/i);
-            if (m) {
-              const hours = parseInt(m[1], 10);
-              return new Date(baseTime - hours * 3600 * 1000).toISOString();
-            }
-
-            // 2d. Relative time: "X days ago" / "1 day ago"
-            m = line.match(/\b(\d+)\s*days?\s*ago\b/i);
-            if (m) {
-              const days = parseInt(m[1], 10);
-              return new Date(baseTime - days * 86400 * 1000).toISOString();
-            }
-
-            // 2e. "Yesterday" with optional time
-            m = line.match(/\byesterday(?:[,\s]+(?:at\s*)?(\d{1,2}):(\d{2})\s*([AaPp][Mm])?)?\b/i);
-            if (m) {
-              const yDate = new Date(baseTime - 86400 * 1000);
-              if (m[1]) {
-                let hour = parseInt(m[1], 10);
-                const min = parseInt(m[2], 10);
-                const ampm = m[3] ? m[3].toUpperCase() : null;
-                if (ampm === 'PM' && hour < 12) hour += 12;
-                if (ampm === 'AM' && hour === 12) hour = 0;
-                yDate.setHours(hour, min, 0, 0);
-              }
-              return yDate.toISOString();
-            }
-
-            // 2f. "Today" with time e.g. "Today, 04:12 PM"
-            m = line.match(/\btoday[,•\s]+(?:at\s*)?(\d{1,2}):(\d{2})\s*([AaPp][Mm])?\b/i);
-            if (m) {
-              const tDate = new Date(baseTime);
-              let hour = parseInt(m[1], 10);
-              const min = parseInt(m[2], 10);
-              const ampm = m[3] ? m[3].toUpperCase() : null;
-              if (ampm === 'PM' && hour < 12) hour += 12;
-              if (ampm === 'AM' && hour === 12) hour = 0;
-              tDate.setHours(hour, min, 0, 0);
-              return tDate.toISOString();
-            }
-
-            // 3. Date with time without year e.g. "Nov 17 • 08:07 PM" or "17 Nov, 08:07 PM"
-            m = line.match(/\b([A-Za-z]{3})[a-z]*\s+(\d{1,2})[,•\s]+(\d{1,2}):(\d{2})\s*([AaPp][Mm])?\b/i);
-            if (m && MONTHS[m[1].toLowerCase()] !== undefined) {
-              const monStr = m[1].toLowerCase();
-              const day = parseInt(m[2], 10);
-              let hour = parseInt(m[3], 10);
-              const min = parseInt(m[4], 10);
-              const ampm = m[5] ? m[5].toUpperCase() : null;
-              if (ampm === 'PM' && hour < 12) hour += 12;
-              if (ampm === 'AM' && hour === 12) hour = 0;
-              const d = new Date(baseDate.getFullYear(), MONTHS[monStr], day, hour, min, 0);
-              if (!isNaN(d.getTime())) return d.toISOString();
-            }
-
-            m = line.match(/\b(\d{1,2})\s+([A-Za-z]{3})[a-z]*[,•\s]+(\d{1,2}):(\d{2})\s*([AaPp][Mm])?\b/i);
-            if (m && MONTHS[m[2].toLowerCase()] !== undefined) {
-              const day = parseInt(m[1], 10);
-              const monStr = m[2].toLowerCase();
-              let hour = parseInt(m[3], 10);
-              const min = parseInt(m[4], 10);
-              const ampm = m[5] ? m[5].toUpperCase() : null;
-              if (ampm === 'PM' && hour < 12) hour += 12;
-              if (ampm === 'AM' && hour === 12) hour = 0;
-              const d = new Date(baseDate.getFullYear(), MONTHS[monStr], day, hour, min, 0);
-              if (!isNaN(d.getTime())) return d.toISOString();
-            }
-
-            // 4. Date only with year e.g. "18 Nov 2026"
-            m = line.match(/\b(\d{1,2})\s+([A-Za-z]{3})[a-z]*\s+(\d{4})\b/i);
-            if (m && MONTHS[m[2].toLowerCase()] !== undefined) {
-              const d = new Date(parseInt(m[3], 10), MONTHS[m[2].toLowerCase()], parseInt(m[1], 10), 12, 0, 0);
-              if (!isNaN(d.getTime())) return d.toISOString();
+          if (lines && lines.length > 0) {
+            for (const line of lines) {
+              const d = parseExactDateAndTimestamp(line, baseTime);
+              if (d) return d;
             }
           }
-
+          if (globalDocDate) return globalDocDate;
           return new Date(baseTime).toISOString();
         };
 
@@ -7354,7 +7548,7 @@
               }
 
               if (amount) {
-                const contextLines = rawLines.slice(Math.max(0, i - 2), Math.min(rawLines.length, i + 2));
+                const contextLines = rawLines.slice(Math.max(0, i - 6), Math.min(rawLines.length, i + 4));
                 const dateIso = extractDateTimeFromContext(contextLines);
 
                 items.push({
@@ -7392,7 +7586,7 @@
                 else if (/Amazon/i.test(l)) reason = 'Paid on Amazon';
               }
 
-              const contextLines = rawLines.slice(Math.max(0, i - 1), Math.min(rawLines.length, i + 4));
+              const contextLines = rawLines.slice(Math.max(0, i - 6), Math.min(rawLines.length, i + 5));
               const dateIso = extractDateTimeFromContext(contextLines);
 
               items.push({
@@ -7413,7 +7607,7 @@
             if (isCredit(l) || isFailed(l)) continue;
             const amt = extractAmountFromLine(l);
             if (amt) {
-              const contextLines = rawLines.slice(Math.max(0, i - 2), Math.min(rawLines.length, i + 3));
+              const contextLines = rawLines.slice(Math.max(0, i - 6), Math.min(rawLines.length, i + 5));
               const dateIso = extractDateTimeFromContext(contextLines);
 
               items.push({
@@ -8254,11 +8448,430 @@
           }));
 
           expenses.unshift(...newExpenses);
+          expenses.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
           saveExpenses();
           refreshUI();
 
           if (navigator.vibrate) navigator.vibrate([40, 30, 40]);
           closePhotoReviewModal();
+          showToast(`✓ Synced ${newExpenses.length} ${newExpenses.length === 1 ? 'expense' : 'expenses'} to your tracker!`);
+        });
+      }
+
+      // ==========================================
+      // RECORD EXPENSE VIA PDF BANK STATEMENT
+      // ==========================================
+      let pdfjsLibPromise = null;
+      function loadPdfJs() {
+        if (window.pdfjsLib) {
+          try {
+            if (!window.pdfjsLib.GlobalWorkerOptions.workerSrc) {
+              window.pdfjsLib.GlobalWorkerOptions.workerSrc = './vendor/pdf.worker.min.js';
+            }
+          } catch (e) {}
+          return Promise.resolve(window.pdfjsLib);
+        }
+        if (!pdfjsLibPromise) {
+          pdfjsLibPromise = new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = './vendor/pdf.min.js';
+            script.onload = () => {
+              if (window.pdfjsLib) {
+                try {
+                  window.pdfjsLib.GlobalWorkerOptions.workerSrc = './vendor/pdf.worker.min.js';
+                } catch (e) {}
+                resolve(window.pdfjsLib);
+              } else {
+                reject(new Error('PDF.js not available'));
+              }
+            };
+            script.onerror = () => reject(new Error('Failed to load ./vendor/pdf.min.js'));
+            document.head.appendChild(script);
+          });
+        }
+        return pdfjsLibPromise;
+      }
+
+      function openPdfStatementReviewModal() {
+        if (!pdfStatementReviewModal) return;
+        pdfStatementReviewModal.classList.remove('opacity-0', 'pointer-events-none');
+        if (pdfStatementReviewCard) {
+          pdfStatementReviewCard.classList.remove('scale-95');
+          pdfStatementReviewCard.classList.add('scale-100');
+        }
+        renderPdfStatementReviewUI();
+      }
+
+      function closePdfStatementReviewModal() {
+        if (!pdfStatementReviewModal) return;
+        if (pdfStatementReviewCard) {
+          pdfStatementReviewCard.classList.remove('scale-100');
+          pdfStatementReviewCard.classList.add('scale-95');
+        }
+        pdfStatementReviewModal.classList.add('opacity-0', 'pointer-events-none');
+        if (pdfExpenseInput) pdfExpenseInput.value = '';
+        parsedPdfTransactions = [];
+      }
+
+      function isBankStatementDebit(line) {
+        if (!line) return false;
+        if (/\b(?:Salary|Refund|Cashback|Interest Credit|Deposit by Cash|Deposit|Received from|Credit Interest|Int\.Pd)\b/i.test(line)) {
+          return false;
+        }
+        if (/^\s*\+\s*\d+/.test(line)) {
+          return false;
+        }
+        if (/\b(?:DR|Debit|Wdl|Withdrawal)\b/i.test(line)) {
+          return true;
+        }
+        if (/\b(?:CR|Credit)\b/i.test(line)) {
+          const endsWithBalanceCr = /\b\d[\d,]*\.\d{2}\s*(?:CR|Cr)\s*$/i.test(line);
+          if (!endsWithBalanceCr) {
+            return false;
+          }
+        }
+        return true;
+      }
+
+      async function parsePdfBankStatement(file, onProgress) {
+        const pdfjs = await loadPdfJs();
+        const arrayBuffer = await file.arrayBuffer();
+        const loadingTask = pdfjs.getDocument({ data: arrayBuffer });
+        const pdfDoc = await loadingTask.promise;
+        const totalPages = pdfDoc.numPages;
+
+        const reconstructedLines = [];
+
+        for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+          if (onProgress) {
+            const pct = Math.round((pageNum / totalPages) * 75);
+            onProgress(pct, `Reading statement page ${pageNum} of ${totalPages}...`);
+          }
+          const page = await pdfDoc.getPage(pageNum);
+          const textContent = await page.getTextContent();
+          const items = textContent.items || [];
+
+          // Group items by vertical Y coordinate with threshold ~3.5px
+          const yRows = [];
+          for (const it of items) {
+            if (!it.str || !it.str.trim()) continue;
+            const y = it.transform[5];
+            const x = it.transform[4];
+            let row = yRows.find(r => Math.abs(r.y - y) <= 3.5);
+            if (!row) {
+              row = { y, items: [] };
+              yRows.push(row);
+            }
+            row.items.push({ x, str: it.str.trim() });
+          }
+
+          // Sort rows top-to-bottom (higher Y first)
+          yRows.sort((a, b) => b.y - a.y);
+
+          // For each row, sort items left-to-right
+          for (const row of yRows) {
+            row.items.sort((a, b) => a.x - b.x);
+            const lineStr = row.items.map(i => i.str).join(' ').replace(/\s+/g, ' ').trim();
+            if (lineStr) reconstructedLines.push(lineStr);
+          }
+        }
+
+        if (onProgress) {
+          onProgress(85, 'Analyzing bank debits & categorizing...');
+        }
+
+        const detectedExpenses = [];
+        const baseTime = (file && file.lastModified && file.lastModified > 1577836800000) ? file.lastModified : Date.now();
+
+        for (let i = 0; i < reconstructedLines.length; i++) {
+          const line = reconstructedLines[i];
+          if (!line || line.length < 5) continue;
+
+          // Check if line contains a date
+          const dateIso = parseExactDateAndTimestamp(line, baseTime);
+          if (!dateIso) continue;
+
+          // Check if debit or credit
+          if (!isBankStatementDebit(line)) continue;
+
+          // Extract decimal amounts
+          const numberMatches = [...line.matchAll(/\b(\d[\d,]*\.\d{2})\b/g)].map(m => parseFloat(m[1].replace(/,/g, '')));
+          let debitAmt = null;
+          if (numberMatches.length >= 2) {
+            // [Debit, Balance] or [Ref, Debit, Balance]
+            debitAmt = numberMatches[numberMatches.length - 2];
+          } else if (numberMatches.length === 1) {
+            debitAmt = numberMatches[0];
+          }
+
+          if (!debitAmt || isNaN(debitAmt) || debitAmt <= 0) continue;
+
+          // Clean narration
+          let narration = line;
+          narration = narration.replace(/\b(0?[1-9]|[12]\d|3[01])[\/\-\.](0?[1-9]|1[0-2])[\/\-\.](20\d\d)\b/, '');
+          narration = narration.replace(/\b(20\d\d)[\/\-\.](0?[1-9]|1[0-2])[\/\-\.](0?[1-9]|[12]\d|3[01])\b/, '');
+          narration = narration.replace(/\b(0?[1-9]|[12]\d|3[01])[\/\-\.](\d{2})\b/, '');
+          narration = narration.replace(/\b(0?[1-9]|[12]\d|3[01])(?:st|nd|rd|th)?[\s\-]+([A-Za-z]{3,9})[,\s\-]+(20\d\d)\b/i, '');
+          narration = narration.replace(/\b\d[\d,]*\.\d{2}\b/g, '');
+          narration = narration.replace(/\b(?:DR|CR|Dr|Cr)\b/g, '');
+
+          const cleanRemark = cleanMerchantOrRemark(narration);
+          const tag = inferCategoryFromRemark(cleanRemark);
+
+          detectedExpenses.push({
+            id: 'pdf_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7),
+            amount: Math.round(debitAmt * 100) / 100,
+            reason: cleanRemark || 'Bank Expense',
+            tag: tag || 'Misc',
+            date: dateIso,
+            selected: true
+          });
+        }
+
+        return detectedExpenses;
+      }
+
+      async function processPdfStatementFile(file) {
+        if (!file) return;
+        openPdfStatementReviewModal();
+        if (pdfScanningBanner) pdfScanningBanner.classList.remove('hidden');
+        if (pdfScanStatusText) pdfScanStatusText.textContent = 'Loading statement PDF...';
+        if (pdfScanPercent) pdfScanPercent.textContent = '10%';
+        if (pdfScanProgressBar) pdfScanProgressBar.style.width = '10%';
+
+        try {
+          const results = await parsePdfBankStatement(file, (pct, status) => {
+            if (pdfScanPercent) pdfScanPercent.textContent = `${pct}%`;
+            if (pdfScanProgressBar) pdfScanProgressBar.style.width = `${pct}%`;
+            if (pdfScanStatusText) pdfScanStatusText.textContent = status;
+          });
+
+          if (pdfScanPercent) pdfScanPercent.textContent = '100%';
+          if (pdfScanProgressBar) pdfScanProgressBar.style.width = '100%';
+
+          parsedPdfTransactions = results || [];
+          if (pdfReviewSubtitle) {
+            pdfReviewSubtitle.textContent = results.length > 0
+              ? `Auto-mapped dates, remarks & tags from ${file.name}`
+              : `Scanned ${file.name}`;
+          }
+        } catch (err) {
+          console.error('PDF parsing error:', err);
+          parsedPdfTransactions = [];
+          if (pdfReviewSubtitle) {
+            pdfReviewSubtitle.textContent = 'Could not parse PDF. Ensure it is an unencrypted statement.';
+          }
+        } finally {
+          if (pdfScanningBanner) pdfScanningBanner.classList.add('hidden');
+          renderPdfStatementReviewUI();
+        }
+      }
+
+      function renderPdfStatementReviewUI() {
+        if (!pdfTransactionsList) return;
+
+        const totalItems = parsedPdfTransactions.length;
+        const selectedItems = parsedPdfTransactions.filter(i => i.selected);
+        const selectedCount = selectedItems.length;
+        const selectedTotal = selectedItems.reduce((acc, cur) => acc + (Number(cur.amount) || 0), 0);
+
+        if (pdfReviewBadge) {
+          pdfReviewBadge.textContent = `${totalItems} detected`;
+        }
+        if (pdfSelectedCountText) {
+          pdfSelectedCountText.textContent = `${selectedCount} of ${totalItems} selected`;
+        }
+        if (pdfSelectedTotalText) {
+          pdfSelectedTotalText.textContent = formatINR(selectedTotal);
+        }
+        if (pdfToggleSelectAllBtn) {
+          pdfToggleSelectAllBtn.textContent = selectedCount === totalItems && totalItems > 0 ? 'Deselect All' : 'Select All';
+        }
+
+        if (totalItems === 0) {
+          pdfTransactionsList.innerHTML = `
+            <div class="py-10 px-4 text-center space-y-3 bg-black/40 rounded-2xl border border-dashed border-zinc-800">
+              <div class="w-12 h-12 rounded-2xl bg-zinc-900 border border-zinc-800 mx-auto flex items-center justify-center text-zinc-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <p class="font-bold text-white text-sm">No debit expenses detected in PDF</p>
+              <p class="text-xs text-zinc-500 max-w-xs mx-auto">Please ensure the PDF is an unencrypted bank statement with debit transactions.</p>
+            </div>
+          `;
+          if (pdfSyncAllBtn) {
+            pdfSyncAllBtn.disabled = true;
+            pdfSyncAllBtn.classList.add('opacity-50', 'cursor-not-allowed');
+          }
+          return;
+        }
+
+        if (pdfSyncAllBtn) {
+          pdfSyncAllBtn.disabled = selectedCount === 0;
+          if (selectedCount === 0) {
+            pdfSyncAllBtn.classList.add('opacity-50', 'cursor-not-allowed');
+          } else {
+            pdfSyncAllBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+          }
+        }
+
+        const CATEGORIES = ['Food', 'Shopping', 'Travel', 'Bills', 'Groceries', 'Health', 'Entertainment', 'Education', 'Investment', 'Misc'];
+
+        pdfTransactionsList.innerHTML = parsedPdfTransactions.map(item => {
+          const d = new Date(item.date || Date.now());
+          const dateStr = !isNaN(d.getTime()) ? d.toLocaleDateString([], { day: 'numeric', month: 'short', year: 'numeric' }) : 'Unknown date';
+          const isSel = !!item.selected;
+
+          return `
+            <div class="p-3 rounded-2xl bg-zinc-900/80 border ${isSel ? 'border-zinc-800' : 'border-zinc-900 opacity-60'} transition-all space-y-2" data-pdf-item-id="${item.id}">
+              <div class="flex items-center justify-between gap-2">
+                <label class="flex items-center gap-2 cursor-pointer select-none min-w-0">
+                  <input
+                    type="checkbox"
+                    class="w-4 h-4 rounded text-amber-500 bg-zinc-800 border-zinc-700 focus:ring-0 focus:ring-offset-0 cursor-pointer pdf-item-checkbox"
+                    data-id="${item.id}"
+                    ${isSel ? 'checked' : ''}
+                  />
+                  <span class="text-[11px] font-bold text-amber-400 font-mono tracking-tight shrink-0">
+                    📅 ${dateStr}
+                  </span>
+                </label>
+                <div class="flex items-center gap-2 shrink-0">
+                  <span class="text-sm font-black text-rose-400 tabular-nums">
+                    - ${formatINR(item.amount)}
+                  </span>
+                  <button
+                    type="button"
+                    class="w-6 h-6 rounded-lg bg-zinc-800 hover:bg-rose-950/60 text-zinc-500 hover:text-rose-400 flex items-center justify-center text-xs transition-colors cursor-pointer pdf-item-del-btn"
+                    data-id="${item.id}"
+                    title="Remove transaction"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-12 gap-2 pt-1 border-t border-zinc-800/60">
+                <div class="sm:col-span-8">
+                  <input
+                    type="text"
+                    class="w-full h-8 px-2.5 bg-black/60 border border-zinc-800 focus:border-amber-500 rounded-xl text-xs font-bold text-white focus:outline-none transition-colors pdf-item-reason"
+                    data-id="${item.id}"
+                    value="${escapeHtml(item.reason || '')}"
+                    placeholder="Remark / Description"
+                  />
+                </div>
+                <div class="sm:col-span-4">
+                  <select
+                    class="w-full h-8 px-2 bg-black/60 border border-zinc-800 focus:border-amber-500 rounded-xl text-xs font-bold text-amber-400 focus:outline-none transition-colors cursor-pointer pdf-item-tag"
+                    data-id="${item.id}"
+                  >
+                    ${CATEGORIES.map(c => `
+                      <option value="${c}" ${c.toLowerCase() === (item.tag || '').toLowerCase() ? 'selected' : ''}>
+                        ${c}
+                      </option>
+                    `).join('')}
+                  </select>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // PDF Review Event Listeners
+      if (recordViaPdfBtn && pdfExpenseInput) {
+        recordViaPdfBtn.addEventListener('click', () => {
+          pdfExpenseInput.click();
+        });
+
+        pdfExpenseInput.addEventListener('change', e => {
+          if (e.target.files && e.target.files[0]) {
+            processPdfStatementFile(e.target.files[0]);
+          }
+        });
+      }
+
+      if (pdfReviewCloseBtn) pdfReviewCloseBtn.addEventListener('click', closePdfStatementReviewModal);
+      if (pdfReviewCancelBtn) pdfReviewCancelBtn.addEventListener('click', closePdfStatementReviewModal);
+      if (pdfStatementReviewModal) {
+        pdfStatementReviewModal.addEventListener('click', e => {
+          if (e.target === pdfStatementReviewModal) closePdfStatementReviewModal();
+        });
+      }
+
+      if (pdfToggleSelectAllBtn) {
+        pdfToggleSelectAllBtn.addEventListener('click', () => {
+          const allSelected = parsedPdfTransactions.every(i => i.selected);
+          parsedPdfTransactions.forEach(i => i.selected = !allSelected);
+          renderPdfStatementReviewUI();
+        });
+      }
+
+      if (pdfTransactionsList) {
+        pdfTransactionsList.addEventListener('change', e => {
+          const chk = e.target.closest('.pdf-item-checkbox');
+          if (chk) {
+            const id = chk.getAttribute('data-id');
+            const target = parsedPdfTransactions.find(i => i.id === id);
+            if (target) {
+              target.selected = chk.checked;
+              renderPdfStatementReviewUI();
+            }
+            return;
+          }
+          const sel = e.target.closest('.pdf-item-tag');
+          if (sel) {
+            const id = sel.getAttribute('data-id');
+            const target = parsedPdfTransactions.find(i => i.id === id);
+            if (target) target.tag = sel.value;
+            return;
+          }
+        });
+
+        pdfTransactionsList.addEventListener('input', e => {
+          const txt = e.target.closest('.pdf-item-reason');
+          if (txt) {
+            const id = txt.getAttribute('data-id');
+            const target = parsedPdfTransactions.find(i => i.id === id);
+            if (target) target.reason = txt.value;
+          }
+        });
+
+        pdfTransactionsList.addEventListener('click', e => {
+          const del = e.target.closest('.pdf-item-del-btn');
+          if (del) {
+            const id = del.getAttribute('data-id');
+            parsedPdfTransactions = parsedPdfTransactions.filter(i => i.id !== id);
+            renderPdfStatementReviewUI();
+            if (navigator.vibrate) navigator.vibrate(20);
+          }
+        });
+      }
+
+      if (pdfSyncAllBtn) {
+        pdfSyncAllBtn.addEventListener('click', () => {
+          const toSync = parsedPdfTransactions.filter(i => i.selected && Number(i.amount) > 0);
+          if (toSync.length === 0) {
+            alert('Please select at least one transaction to sync.');
+            return;
+          }
+
+          const newExpenses = toSync.map(item => ({
+            id: Date.now().toString(36) + Math.random().toString(36).substring(2, 6),
+            amount: Math.round(Number(item.amount) * 100) / 100,
+            reason: (item.reason || 'Bank Expense').trim(),
+            tag: (item.tag || 'Misc').trim(),
+            remark: 'Imported via Bank Statement PDF',
+            createdAt: item.date || new Date().toISOString()
+          }));
+
+          expenses.unshift(...newExpenses);
+          expenses.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+          saveExpenses();
+          refreshUI();
+          closePdfStatementReviewModal();
+          if (navigator.vibrate) navigator.vibrate([40, 30, 40]);
           showToast(`✓ Synced ${newExpenses.length} ${newExpenses.length === 1 ? 'expense' : 'expenses'} to your tracker!`);
         });
       }
