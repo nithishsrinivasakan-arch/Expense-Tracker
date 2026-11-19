@@ -6090,16 +6090,17 @@
         if (lines.length <= 1) return { expenses: [], budgets: [] };
 
         const headerValues = parseCsvLine(lines[0]).map(h => h.toLowerCase());
-        let dateCol = 0, timeCol = 1, amtCol = 2, reasonCol = 3, tagCol = 4, remarkCol = 5, typeCol = -1;
+        let dateCol = 0, timeCol = 1, amtCol = 2, reasonCol = 3, tagCol = 4, remarkCol = 5, typeCol = -1, statusCol = -1;
 
         headerValues.forEach((h, idx) => {
-          if (h.includes('type')) typeCol = idx;
-          else if (h.includes('date')) dateCol = idx;
-          else if (h.includes('time')) timeCol = idx;
-          else if (h.includes('amount')) amtCol = idx;
-          else if (h.includes('reason') || h.includes('merchant') || h.includes('item') || h.includes('title')) reasonCol = idx;
-          else if (h.includes('tag') || h.includes('category')) tagCol = idx;
-          else if (h.includes('remark') || h.includes('note')) remarkCol = idx;
+          if (h.includes('status') || h.includes('state')) statusCol = idx;
+          else if (h.includes('type')) typeCol = idx;
+          else if (h.includes('date') || h.includes('day')) dateCol = idx;
+          else if (h.includes('time') && !h.includes('amount')) timeCol = idx;
+          else if (h.includes('amount') || h.includes('inr') || h.includes('cost') || h.includes('val')) amtCol = idx;
+          else if (h.includes('reason') || h.includes('merchant') || h.includes('item') || h.includes('title') || h.includes('desc') || h.includes('particular')) reasonCol = idx;
+          else if (h.includes('tag') || h.includes('category') || h.includes('label')) tagCol = idx;
+          else if (h.includes('remark') || h.includes('note') || h.includes('memo')) remarkCol = idx;
         });
 
         const parsedExpenses = [];
@@ -6116,6 +6117,7 @@
           const tag = (cols[tagCol] || 'Misc').trim() || 'Misc';
           const remark = cols[remarkCol] ? cols[remarkCol].trim() : '';
           const rawType = (typeCol >= 0 && cols[typeCol]) ? cols[typeCol].trim().toLowerCase() : '';
+          const rawStatus = (statusCol >= 0 && cols[statusCol]) ? cols[statusCol].trim().toLowerCase() : '';
 
           let dateIso = new Date().toISOString();
           let targetDateStr = '';
@@ -6166,8 +6168,31 @@
             targetDateStr = dateIso.slice(0, 10);
           }
 
-          if (rawType.includes('budget') || rawType.includes('planned')) {
-            const isCompleted = remark.toLowerCase().includes('completed') || remark.toLowerCase().includes('paid');
+          const isBudget = (
+            rawType.includes('budget') ||
+            rawType.includes('planned') ||
+            rawType.includes('credit') ||
+            rawType.includes('income') ||
+            rawType.includes('allocation') ||
+            tag.toLowerCase().includes('budget') ||
+            tag.toLowerCase().includes('planned') ||
+            reason.toLowerCase().includes('budget') ||
+            reason.toLowerCase().includes('planned') ||
+            reason.toLowerCase().includes('starting credit') ||
+            reason.toLowerCase().includes('monthly credit') ||
+            remark.toLowerCase().includes('budget') ||
+            remark.toLowerCase().includes('planned')
+          );
+
+          if (isBudget) {
+            const isCompleted = (
+              remark.toLowerCase().includes('completed') ||
+              remark.toLowerCase().includes('paid') ||
+              rawStatus.includes('completed') ||
+              rawStatus.includes('paid') ||
+              rawStatus.includes('done') ||
+              rawStatus.includes('active')
+            );
             parsedBudgets.push({
               id: 'bgt_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
               amount: Math.round(rawAmt * 100) / 100,
@@ -6188,6 +6213,55 @@
               createdAt: dateIso
             });
           }
+        }
+
+        // Automatic Budget & Starting Credit Safeguard:
+        // If the uploaded CSV had only expenses and no explicit budget items,
+        // automatically reconstruct the recorded monthly budget plan and starting credit
+        if (parsedBudgets.length === 0 && parsedExpenses.length > 0) {
+          const monthGroups = {};
+          parsedExpenses.forEach(exp => {
+            const mKey = exp.createdAt ? exp.createdAt.slice(0, 7) : getMonthKey(new Date());
+            if (!monthGroups[mKey]) monthGroups[mKey] = [];
+            monthGroups[mKey].push(exp);
+          });
+
+          Object.keys(monthGroups).forEach(mKey => {
+            const monthExps = monthGroups[mKey];
+            const monthTotal = monthExps.reduce((acc, e) => acc + (Number(e.amount) || 0), 0);
+
+            // 1. Monthly Budget Starting Credit
+            parsedBudgets.push({
+              id: 'bgt_credit_' + mKey.replace('-', '') + '_' + Math.random().toString(36).slice(2, 6),
+              amount: Math.round(monthTotal * 100) / 100,
+              reason: 'Monthly Budget Starting Credit',
+              tag: 'Income',
+              date: `${mKey}-01`,
+              monthKey: mKey,
+              completed: true,
+              createdAt: `${mKey}-01T00:00:00.000Z`
+            });
+
+            // 2. Tag-wise planned budget allocations
+            const tagTotals = {};
+            monthExps.forEach(e => {
+              const t = e.tag || 'Bills';
+              tagTotals[t] = (tagTotals[t] || 0) + (Number(e.amount) || 0);
+            });
+
+            Object.keys(tagTotals).forEach(t => {
+              parsedBudgets.push({
+                id: 'bgt_' + mKey.replace('-', '') + '_' + t.toLowerCase().replace(/[^a-z0-9]/g, '') + '_' + Math.random().toString(36).slice(2, 6),
+                amount: Math.round(tagTotals[t] * 100) / 100,
+                reason: `${t} Planned Budget`,
+                tag: t,
+                date: `${mKey}-01`,
+                monthKey: mKey,
+                completed: true,
+                createdAt: `${mKey}-01T12:00:00.000Z`
+              });
+            });
+          });
         }
 
         return { expenses: parsedExpenses, budgets: parsedBudgets };
@@ -6737,27 +6811,113 @@
         }
 
         const csvRows = [
-          ['"Date"', '"Time"', '"Amount (INR)"', '"Reason"', '"Tag"', '"Remark"', '"Type"']
+          ['"Date"', '"Time"', '"Amount (INR)"', '"Reason"', '"Tag"', '"Remark"', '"Type"', '"Status"']
         ];
 
+        // Identify all unique months represented in this export
+        const monthsSet = new Set();
+        if (monthKey) {
+          monthsSet.add(monthKey);
+        } else {
+          filteredExpenses.forEach(e => {
+            const k = getMonthKey(e.createdAt);
+            if (k) monthsSet.add(k);
+          });
+          filteredBudgets.forEach(b => {
+            const k = b.monthKey || (b.date && b.date.slice(0, 7));
+            if (k) monthsSet.add(k);
+          });
+        }
+
+        // For each month, guarantee both Budget Credit & Planned Budget entries
+        monthsSet.forEach(mKey => {
+          const monthBudgets = filteredBudgets.filter(b => (b.monthKey || (b.date && b.date.slice(0, 7))) === mKey);
+          const monthExps = filteredExpenses.filter(e => getMonthKey(e.createdAt) === mKey);
+          const expTotal = monthExps.reduce((acc, e) => acc + (Number(e.amount) || 0), 0);
+          const bgtTotal = monthBudgets.reduce((acc, b) => acc + (Number(b.amount) || 0), 0);
+
+          // 1. Check if an explicit starting budget credit already exists
+          const hasCredit = monthBudgets.some(b => {
+            const r = (b.reason || '').toLowerCase();
+            return r.includes('credit') || r.includes('starting') || r.includes('salary') || r.includes('income');
+          });
+
+          if (!hasCredit) {
+            const creditAmt = bgtTotal > 0 ? bgtTotal : expTotal;
+            if (creditAmt > 0) {
+              csvRows.push([
+                `"${mKey}-01"`,
+                '"09:00 AM"',
+                `"${Math.round(creditAmt * 100) / 100}"`,
+                '"Monthly Budget Starting Credit"',
+                '"Income"',
+                '"Starting Budget Credit"',
+                '"Budget Credit"',
+                '"Active"'
+              ]);
+            }
+          }
+
+          // 2. Export individual budget items (or synthesize categorized budget from expenses if empty)
+          if (monthBudgets.length === 0 && monthExps.length > 0) {
+            const tagTotals = {};
+            monthExps.forEach(e => {
+              const t = e.tag || 'Bills';
+              tagTotals[t] = (tagTotals[t] || 0) + (Number(e.amount) || 0);
+            });
+            Object.keys(tagTotals).forEach(t => {
+              csvRows.push([
+                `"${mKey}-01"`,
+                '"12:00 PM"',
+                `"${Math.round(tagTotals[t] * 100) / 100}"`,
+                `"${t} Planned Budget"`,
+                `"${t}"`,
+                '"Completed"',
+                '"Planned Budget"',
+                '"Completed"'
+              ]);
+            });
+          } else {
+            monthBudgets.forEach(item => {
+              const d = item.createdAt ? new Date(item.createdAt) : new Date(item.date || Date.now());
+              const dateStr = item.date || (!isNaN(d.getTime()) ? d.toISOString().slice(0, 10) : `${mKey}-01`);
+              const timeStr = '12:00 PM';
+              const safeReason = (item.reason || 'Budget Item').replace(/"/g, '""');
+              const safeTag = (item.tag || 'Bills').replace(/"/g, '""');
+              const safeRemark = (item.completed ? 'Completed' : 'Pending').replace(/"/g, '""');
+              const statusStr = item.completed ? 'Completed' : 'Pending';
+              csvRows.push([
+                `"${dateStr}"`,
+                `"${timeStr}"`,
+                `"${item.amount}"`,
+                `"${safeReason}"`,
+                `"${safeTag}"`,
+                `"${safeRemark}"`,
+                '"Planned Budget"',
+                `"${statusStr}"`
+              ]);
+            });
+          }
+        });
+
+        // 3. Export all expenses
         filteredExpenses.forEach(item => {
           const d = new Date(item.createdAt);
-          const dateStr = !isNaN(d.getTime()) ? d.toLocaleDateString('en-IN') : '';
+          const dateStr = !isNaN(d.getTime()) ? d.toISOString().slice(0, 10) : '';
           const timeStr = !isNaN(d.getTime()) ? d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true }) : '';
           const safeReason = (item.reason || 'Expense').replace(/"/g, '""');
           const safeTag = (item.tag || 'Misc').replace(/"/g, '""');
           const safeRemark = (item.remark || '').replace(/"/g, '""');
-          csvRows.push([`"${dateStr}"`, `"${timeStr}"`, `"${item.amount}"`, `"${safeReason}"`, `"${safeTag}"`, `"${safeRemark}"`, '"Expense"']);
-        });
-
-        filteredBudgets.forEach(item => {
-          const d = item.createdAt ? new Date(item.createdAt) : new Date(item.date || Date.now());
-          const dateStr = item.date || (!isNaN(d.getTime()) ? d.toLocaleDateString('en-IN') : '');
-          const timeStr = '12:00 PM';
-          const safeReason = (item.reason || 'Budget Item').replace(/"/g, '""');
-          const safeTag = (item.tag || 'Bills').replace(/"/g, '""');
-          const safeRemark = (item.completed ? 'Completed' : 'Pending').replace(/"/g, '""');
-          csvRows.push([`"${dateStr}"`, `"${timeStr}"`, `"${item.amount}"`, `"${safeReason}"`, `"${safeTag}"`, `"${safeRemark}"`, '"Planned Budget"']);
+          csvRows.push([
+            `"${dateStr}"`,
+            `"${timeStr}"`,
+            `"${item.amount}"`,
+            `"${safeReason}"`,
+            `"${safeTag}"`,
+            `"${safeRemark}"`,
+            '"Expense"',
+            '"Completed"'
+          ]);
         });
 
         return csvRows.map(row => row.join(',')).join('\r\n');
@@ -6826,7 +6986,7 @@
 
           const totalItems = allParsedExpenses.length + allParsedBudgets.length;
           const fileCountMsg = files.length > 1 ? `across ${files.length} files` : `from ${files[0].name}`;
-          const confirmMsg = `Found ${allParsedExpenses.length} expenses and ${allParsedBudgets.length} planned budgets (${totalItems} total) ${fileCountMsg}.\n\nDo you want to restore and merge them into your tracker? Existing records will not be duplicated.`;
+          const confirmMsg = `Found ${allParsedExpenses.length} expenses and ${allParsedBudgets.length} budget items (${totalItems} total) ${fileCountMsg}.\n\nDo you want to restore and merge them into your tracker? Existing records will not be duplicated.`;
 
           if (confirm(confirmMsg)) {
             const existingExpKeys = new Set(expenses.map(exp => `${exp.amount}_${(exp.reason || '').trim().toLowerCase()}_${(exp.createdAt || '').slice(0, 16)}`));
@@ -6857,12 +7017,24 @@
             saveExpenses();
             saveBudgets();
             refreshUI();
+
+            // Set current budget month so user instantly sees the restored budgets
+            if (allParsedBudgets.length > 0) {
+              const currentKey = getMonthKey(new Date());
+              const hasCurrent = allParsedBudgets.some(b => b.monthKey === currentKey);
+              if (hasCurrent) {
+                currentBudgetMonthKey = currentKey;
+              } else {
+                currentBudgetMonthKey = allParsedBudgets[allParsedBudgets.length - 1].monthKey || currentKey;
+              }
+            }
             renderBudget();
+            renderBudgetModalList();
             closeAppMenuModal();
             closeExportCsvModal();
 
             if (navigator.vibrate) navigator.vibrate([60, 40, 60]);
-            showToast(`✓ Restored ${restoredExpCount} expenses & ${restoredBgtCount} budgets permanently!`);
+            showToast(`✓ Restored ${restoredExpCount} expenses & ${restoredBgtCount} budgets! Budget updated.`);
           }
         } catch (err) {
           console.error('CSV Restore Error:', err);
