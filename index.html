@@ -2226,30 +2226,21 @@
         </button>
       </div>
 
-      <!-- Current Phone Storage Path -->
+      <!-- Current Phone Storage Destination -->
       <div class="p-3 rounded-2xl bg-zinc-900/80 border border-zinc-800/80 space-y-1">
-        <p class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Device Storage Path</p>
-        <p class="text-xs font-bold text-emerald-400 font-mono">/Internal Storage/Download/</p>
-        <p class="text-[10px] text-zinc-500">Android web browsers save exported backup files directly to your phone's Downloads directory.</p>
+        <p class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Current Destination</p>
+        <p id="deviceFolderDisplayPath" class="text-xs font-bold text-emerald-400 font-mono truncate">Device Downloads</p>
       </div>
 
       <!-- Custom Folder Label -->
       <div class="space-y-1.5">
-        <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Preferred Subfolder Label</label>
+        <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Preferred Folder Name</label>
         <input
           type="text"
           id="deviceFolderCustomNameInput"
           placeholder="e.g. RupeeTracker-Backups"
           class="w-full bg-zinc-900 border border-zinc-800 focus:border-blue-500 rounded-xl px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none transition-colors"
         />
-      </div>
-
-      <!-- Informative Note: Browser PWA vs Native APK -->
-      <div class="p-2.5 rounded-xl bg-blue-950/40 border border-blue-800/50 text-[10px] text-blue-300 leading-relaxed">
-        <p class="font-bold mb-0.5">ℹ️ PWA vs. Native Android APK:</p>
-        <p class="text-blue-200/90">
-          In this Brave/Chrome browser PWA, Android security routes all CSV downloads directly into your phone's <strong>Downloads</strong> directory. Once bundled as a native Android APK, the native Android Storage Access Framework (SAF) opens directly to let you pick or create any custom phone folder.
-        </p>
       </div>
 
       <!-- Action Buttons -->
@@ -2329,14 +2320,6 @@
         />
       </div>
 
-      <!-- Informative Note: Optional & Native APK -->
-      <div class="p-2.5 rounded-xl bg-amber-950/40 border border-amber-800/50 text-[10px] text-amber-300 leading-relaxed">
-        <p class="font-bold mb-0.5">☁️ Recommended / Optional Feature:</p>
-        <p class="text-amber-200/90">
-          In this browser PWA, your data is 100% safely kept on your phone's offline storage. The native Android 1-tap Google Account bottom-sheet and direct Drive folder creation will activate when the app is bundled into the native Android APK using Google Play Services.
-        </p>
-      </div>
-
       <!-- Action Buttons -->
       <div class="space-y-2 pt-1">
         <button
@@ -2346,15 +2329,13 @@
         >
           Connect Account & Set Destination
         </button>
-        <a
+        <button
           id="gdriveOpenWebBtn"
-          href="https://drive.google.com"
-          target="_blank"
-          rel="noopener"
+          type="button"
           class="w-full py-2 px-3 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-300 hover:text-white font-bold text-xs active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5"
         >
-          <span>Open Google Drive App / Web ↗</span>
-        </a>
+          <span>Open Google Drive App ↗</span>
+        </button>
       </div>
     </div>
   </div>
@@ -6231,18 +6212,47 @@
         }
       }
 
+      // Native Bridge Helpers
+      function getNativeBridge() {
+        if (typeof window !== 'undefined' && window.Capacitor) {
+          if (window.Capacitor.Plugins && window.Capacitor.Plugins.RupeeNativeBridge) {
+            return window.Capacitor.Plugins.RupeeNativeBridge;
+          }
+          if (window.Capacitor.registerPlugin) {
+            try {
+              return window.Capacitor.registerPlugin('RupeeNativeBridge');
+            } catch (e) {
+              return window.Capacitor.Plugins ? window.Capacitor.Plugins.RupeeNativeBridge : null;
+            }
+          }
+        }
+        return null;
+      }
+
+      function isNativeApp() {
+        return Boolean(typeof window !== 'undefined' && window.Capacitor && (
+          (window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) ||
+          window.Capacitor.platform === 'android' ||
+          window.Capacitor.getPlatform?.() === 'android'
+        ));
+      }
+
       // Device Storage Folder Modal Controls
       const deviceFolderModal = document.getElementById('deviceFolderModal');
       const deviceFolderCard = document.getElementById('deviceFolderCard');
       const deviceFolderModalCloseBtn = document.getElementById('deviceFolderModalCloseBtn');
       const deviceFolderCustomNameInput = document.getElementById('deviceFolderCustomNameInput');
+      const deviceFolderDisplayPath = document.getElementById('deviceFolderDisplayPath');
       const deviceFolderSaveBtn = document.getElementById('deviceFolderSaveBtn');
       const deviceFolderTestDownloadBtn = document.getElementById('deviceFolderTestDownloadBtn');
 
       function openDeviceFolderModal() {
         if (!deviceFolderModal) return;
+        const cur = getBackupFolderName();
+        if (deviceFolderDisplayPath) {
+          deviceFolderDisplayPath.textContent = cur;
+        }
         if (deviceFolderCustomNameInput) {
-          const cur = getBackupFolderName();
           deviceFolderCustomNameInput.value = cur === 'Device Downloads' ? 'RupeeTracker-Backups' : cur;
         }
         deviceFolderModal.classList.remove('opacity-0', 'pointer-events-none');
@@ -6287,17 +6297,72 @@
           const testCsv = `Expense,Amount,Tag,Date,Notes\nStorage Verification Test,0.00,Testing,${nowStr},"Local phone storage download verified"\n`;
           const blob = new Blob([testCsv], { type: 'text/csv;charset=utf-8;' });
           saveFileToDestination(blob, 'rupee_tracker_storage_test.csv');
-          showToast('✓ Test file downloaded to your phone Downloads folder!');
+          showToast('✓ Test file downloaded to your phone folder!');
         });
+      }
+
+      async function handleChooseFolder() {
+        const bridge = getNativeBridge();
+        if (isNativeApp() && bridge && bridge.pickFolder) {
+          try {
+            const res = await bridge.pickFolder();
+            if (res && res.folderName) {
+              const name = res.folderName;
+              localStorage.setItem('rupee_custom_backup_folder_name', name);
+              if (res.uri) {
+                localStorage.setItem('rupee_custom_backup_folder_uri', res.uri);
+              }
+              updateMenuBackupFolderUI();
+              showToast(`✓ Android Folder Selected: ${name}`);
+              return;
+            }
+          } catch (err) {
+            console.warn('Native folder picker cancelled or failed:', err);
+            if (err && (String(err).includes('cancel') || String(err?.message).includes('cancel'))) {
+              return;
+            }
+          }
+        }
+        if (window.showDirectoryPicker) {
+          try {
+            const handle = await window.showDirectoryPicker({ mode: 'readwrite' });
+            if (handle) {
+              localFolderHandle = handle;
+              localStorage.setItem('rupee_custom_backup_folder_name', handle.name);
+              updateMenuBackupFolderUI();
+              showToast(`✓ Destination set to "${handle.name}"`);
+              return;
+            }
+          } catch (e) {
+            if (e.name === 'AbortError') return;
+          }
+        }
+        openDeviceFolderModal();
       }
 
       if (menuChooseFolderBtn) {
-        menuChooseFolderBtn.addEventListener('click', () => {
-          openDeviceFolderModal();
-        });
+        menuChooseFolderBtn.addEventListener('click', handleChooseFolder);
       }
 
       async function saveFileToDestination(blob, filename) {
+        const bridge = getNativeBridge();
+        const savedUri = localStorage.getItem('rupee_custom_backup_folder_uri');
+        if (isNativeApp() && savedUri && bridge && bridge.saveCsvToFolder) {
+          try {
+            const textContent = await blob.text();
+            const res = await bridge.saveCsvToFolder({
+              uri: savedUri,
+              fileName: filename,
+              content: textContent
+            });
+            if (res && res.success) {
+              return true;
+            }
+          } catch (err) {
+            console.warn('Native saveCsvToFolder failed, falling back:', err);
+          }
+        }
+
         if (localFolderHandle) {
           try {
             const fileHandle = await localFolderHandle.getFileHandle(filename, { create: true });
@@ -6445,9 +6510,68 @@
         });
       }
 
+      async function handleGDriveSignIn() {
+        const bridge = getNativeBridge();
+        if (isNativeApp() && bridge && bridge.pickGoogleAccount) {
+          try {
+            const res = await bridge.pickGoogleAccount();
+            if (res && res.email) {
+              const existing = getSavedGDriveConfig() || {};
+              const folderName = existing.folderName || 'Rupee Expense Backups';
+              const folderSlug = folderName.toLowerCase().replace(/[^a-z0-9]+/g, '_');
+              const cfg = {
+                email: res.email,
+                folderName: folderName,
+                folderLink: existing.folderLink || `https://drive.google.com/drive/folders/rupee_${folderSlug}`,
+                autoSync: true,
+                lastSync: existing.lastSync || null
+              };
+              saveGDriveConfig(cfg);
+              updateGDriveUI();
+              showToast(`✓ Google Account connected: ${res.email}`);
+
+              // Open Drive Folder modal so user can confirm link or create folder
+              setTimeout(() => {
+                openGDriveFolderModal();
+              }, 250);
+              return;
+            }
+          } catch (err) {
+            console.warn('Native Google account picker result:', err);
+            if (err && (String(err).includes('cancel') || String(err?.message).includes('cancel') || String(err).includes('No account selected'))) {
+              return;
+            }
+          }
+        }
+        openGDriveAuthModal();
+      }
+
       if (gdriveSignInBtn) {
-        gdriveSignInBtn.addEventListener('click', () => {
-          openGDriveAuthModal();
+        gdriveSignInBtn.addEventListener('click', handleGDriveSignIn);
+      }
+
+      const gdriveOpenWebBtn = document.getElementById('gdriveOpenWebBtn');
+      if (gdriveOpenWebBtn) {
+        gdriveOpenWebBtn.addEventListener('click', () => {
+          const cfg = getSavedGDriveConfig();
+          const targetUrl = (cfg && cfg.folderLink) || 'https://drive.google.com';
+          const bridge = getNativeBridge();
+          if (isNativeApp() && bridge && bridge.openDriveApp) {
+            bridge.openDriveApp({ url: targetUrl });
+          } else {
+            window.open(targetUrl, '_blank', 'noopener');
+          }
+        });
+      }
+
+      if (gdriveFolderLinkDisplay) {
+        gdriveFolderLinkDisplay.addEventListener('click', (e) => {
+          const bridge = getNativeBridge();
+          if (isNativeApp() && bridge && bridge.openDriveApp) {
+            e.preventDefault();
+            const href = gdriveFolderLinkDisplay.getAttribute('href') || 'https://drive.google.com';
+            bridge.openDriveApp({ url: href });
+          }
         });
       }
 
