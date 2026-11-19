@@ -15,38 +15,12 @@
   <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png" />
   <link rel="apple-touch-icon" sizes="512x512" href="./icon-512.png" />
 
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            slate: {
-              950: '#060913',
-              900: '#0b0f19',
-              850: '#111728',
-              800: '#1a2238',
-              700: '#2c3755',
-            },
-            rose: {
-              450: '#fb4d6b',
-              550: '#e11d48',
-            }
-          },
-          fontFamily: {
-            sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Inter', 'sans-serif'],
-          }
-        }
-      }
-    };
-  </script>
+  <!-- Pre-compiled static Tailwind CSS (built locally via `npm run css` - no runtime compiler, no network) -->
+  <link rel="stylesheet" href="./app.css" />
 
-  <!-- Chart.js CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  <!-- Tesseract.js OCR CDN for Payment Screenshots -->
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <!-- Chart.js bundled locally, deferred so it never blocks first paint -->
+  <script src="./vendor/chart.umd.min.js" defer></script>
+  <!-- Tesseract.js OCR is lazy-loaded only when the camera button is used (see loadTesseract()) -->
 
   <style>
     * {
@@ -3973,8 +3947,12 @@
       }
 
       function renderAnalytics() {
-        renderMonthlyChart();
-        renderCategoryChart();
+        if (typeof Chart !== 'undefined') {
+          // Instant charts: no entry animation on every tab switch
+          Chart.defaults.animation = false;
+          renderMonthlyChart();
+          renderCategoryChart();
+        }
         renderCategoryBreakdown();
       }
 
@@ -4038,7 +4016,8 @@
           setHistoryPeriodUI(targetPeriod);
           renderHistory();
         } else if (tab === 'analytics') {
-          setTimeout(renderAnalytics, 50);
+          // Paint the tab first, then draw charts on the next frame
+          requestAnimationFrame(() => requestAnimationFrame(renderAnalytics));
         } else if (tab === 'budget') {
           renderBudget();
         }
@@ -6929,6 +6908,24 @@
       }
 
       // ==========================================
+      // LAZY LOADER: Tesseract OCR (only fetched when the camera button is used)
+      // ==========================================
+      let tesseractLoadPromise = null;
+      function loadTesseract() {
+        if (window.Tesseract) return Promise.resolve(window.Tesseract);
+        if (tesseractLoadPromise) return tesseractLoadPromise;
+        tesseractLoadPromise = new Promise((resolve) => {
+          const s = document.createElement('script');
+          s.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';
+          s.async = true;
+          s.onload = () => resolve(window.Tesseract || null);
+          s.onerror = () => { tesseractLoadPromise = null; resolve(null); };
+          document.head.appendChild(s);
+        });
+        return tesseractLoadPromise;
+      }
+
+      // ==========================================
       // RECORD EXPENSE VIA PHOTO - OCR & PARSER WORKFLOW
       // ==========================================
       function cleanMerchantName(str) {
@@ -7839,8 +7836,9 @@
               ctx.putImageData(imgData, 0, 0);
             } catch {}
 
-            if (typeof Tesseract !== 'undefined') {
-              const result = await Tesseract.recognize(canvas, 'eng', {
+            const TesseractLib = await loadTesseract();
+            if (TesseractLib) {
+              const result = await TesseractLib.recognize(canvas, 'eng', {
                 logger: m => {
                   if (m.status === 'recognizing text') {
                     const pct = 35 + Math.round((m.progress || 0) * 60);
