@@ -6,8 +6,9 @@
   "scripts": {
     "start": "npx serve .",
     "desktop": "npx electron main.js",
-    "build": "node copy-assets.js && npx cap copy",
-    "android:sync": "node copy-assets.js && npx cap sync",
+    "css": "tailwindcss -c tailwind.config.js -i tailwind.input.css -o app.css --minify",
+    "build": "npm run css && node copy-assets.js && npx cap copy",
+    "android:sync": "npm run css && node copy-assets.js && npx cap sync",
     "android:open": "npx cap open android"
   },
   "keywords": [
@@ -22,6 +23,10 @@
     "@capacitor/android": "^8.6.2",
     "@capacitor/cli": "^8.6.2",
     "@capacitor/core": "^8.6.2",
+    "chart.js": "^4.4.1",
     "tesseract.js": "^7.0.0"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.17"
   }
 }
