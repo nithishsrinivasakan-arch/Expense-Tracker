@@ -2301,7 +2301,10 @@
             ₹
           </div>
           <div>
-            <h3 class="text-sm font-black text-white">Rupee Tracker</h3>
+            <div class="flex items-center gap-1.5">
+              <h3 class="text-sm font-black text-white">Rupee Tracker</h3>
+              <span class="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-md bg-zinc-900 border border-zinc-800 text-amber-400">v1.5.0</span>
+            </div>
             <p class="text-[10px] text-zinc-400 font-medium">100% Offline • Zero-Cloud Vault</p>
           </div>
         </div>
@@ -2543,10 +2546,30 @@
 
       
 
-      <!-- Zero-Cloud Offline Security Guarantee Footer -->
-      <div class="pt-1 text-center text-[10px] text-zinc-500 flex items-center justify-center gap-1.5">
-        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-        <span>100% Local Storage • Zero Cloud • Complete Privacy</span>
+      <!-- App Version & Offline Security Guarantee Footer -->
+      <div class="pt-2.5 border-t border-zinc-900 flex flex-col items-center justify-center gap-2 text-center">
+        <div class="flex items-center justify-between w-full px-1">
+          <div class="flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="text-[11px] font-extrabold text-white">App Version</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span id="appMenuVersionBadge" class="text-xs font-black font-mono px-2 py-0.5 rounded-lg bg-zinc-900 border border-zinc-700/80 text-amber-400 select-all">v1.5.0</span>
+            <button
+              id="appMenuCheckUpdateBtn"
+              type="button"
+              class="text-[10px] font-bold text-zinc-400 hover:text-white px-2 py-0.5 rounded-lg bg-zinc-800/80 hover:bg-zinc-800 active:scale-95 transition-all cursor-pointer flex items-center gap-1"
+              title="Check for updates"
+            >
+              <span>Check Updates</span>
+              <span>🔄</span>
+            </button>
+          </div>
+        </div>
+        <div class="text-[10px] text-zinc-500 flex items-center justify-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+          <span>100% Local Storage • Zero Cloud • Complete Privacy</span>
+        </div>
       </div>
 
     </div>
@@ -5296,6 +5319,9 @@
       const menuPinSettingsBtn = document.getElementById('menuPinSettingsBtn');
       const menuLockNowBtn = document.getElementById('menuLockNowBtn');
       const menuDownloadMonthNowBtn = document.getElementById('menuDownloadMonthNowBtn');
+      const APP_VERSION = 'v1.5.0';
+      const appMenuVersionBadge = document.getElementById('appMenuVersionBadge');
+      const appMenuCheckUpdateBtn = document.getElementById('appMenuCheckUpdateBtn');
 
       const monthlyBackupModal = document.getElementById('monthlyBackupModal');
       const monthlyBackupCard = document.getElementById('monthlyBackupCard');
@@ -7364,6 +7390,39 @@
             localStorage.setItem('rupee_last_monthly_backup_prompt', curKey);
           } catch {}
           showToast(`✓ ${formatMonthLabel(curKey)} backup downloaded!`);
+        });
+      }
+
+      if (appMenuCheckUpdateBtn) {
+        appMenuCheckUpdateBtn.addEventListener('click', async () => {
+          showToast(`Checking for updates... (Current: ${APP_VERSION})`);
+          if (navigator.vibrate) navigator.vibrate(25);
+          if ('serviceWorker' in navigator) {
+            try {
+              const reg = await navigator.serviceWorker.getRegistration();
+              if (reg) {
+                await reg.update();
+                if (reg.waiting) {
+                  showToast('New update found! Reloading app...');
+                  reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+                  setTimeout(() => window.location.reload(), 600);
+                  return;
+                }
+              }
+            } catch (e) {
+              console.warn('SW update check failed:', e);
+            }
+          }
+          setTimeout(() => {
+            showToast(`✓ You are on the latest version: ${APP_VERSION}`);
+          }, 800);
+        });
+      }
+
+      if (appMenuVersionBadge) {
+        appMenuVersionBadge.addEventListener('click', () => {
+          if (navigator.vibrate) navigator.vibrate(25);
+          showToast(`Expense Tracker ${APP_VERSION} (Build 57)`);
         });
       }
 
