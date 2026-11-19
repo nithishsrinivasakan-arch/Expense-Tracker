@@ -1653,6 +1653,25 @@
         </button>
       </div>
 
+      <!-- Photo Duplicate Detection & Quick Remove Banner (List Mode) -->
+      <div id="photoDuplicateBanner" class="hidden my-2 p-2.5 rounded-2xl bg-amber-950/70 border border-amber-500/50 flex items-center justify-between gap-2 shrink-0">
+        <div class="flex items-center gap-2 text-xs min-w-0">
+          <span class="text-base shrink-0">⚠️</span>
+          <div class="min-w-0">
+            <p id="photoDuplicateBannerTitle" class="font-extrabold text-amber-300 text-xs truncate">Duplicates Detected</p>
+            <p class="text-[10px] text-zinc-400 truncate">Matches records already in your ledger or photo.</p>
+          </div>
+        </div>
+        <button
+          id="photoRemoveDuplicatesBtn"
+          type="button"
+          class="shrink-0 px-2.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 active:scale-95 text-white font-black text-[11px] shadow-sm transition-all cursor-pointer flex items-center gap-1"
+          title="Remove all duplicate transactions from list"
+        >
+          <span>🗑️ Remove Duplicates</span>
+        </button>
+      </div>
+
       <!-- Extracted Items Staged Container (Shown when in List View) -->
       <div id="photoStagedListContainer" class="hidden flex-1 overflow-y-auto space-y-2.5 pr-1 my-2 no-scrollbar max-h-[50vh]">
         <!-- Dynamically rendered extracted items in list mode -->
@@ -1868,6 +1887,25 @@
         </div>
       </div>
 
+      <!-- Duplicate Detection & Quick Remove Banner -->
+      <div id="pdfDuplicateBanner" class="hidden my-2 p-2.5 rounded-2xl bg-amber-950/70 border border-amber-500/50 flex items-center justify-between gap-2 shrink-0">
+        <div class="flex items-center gap-2 text-xs min-w-0">
+          <span class="text-base shrink-0">⚠️</span>
+          <div class="min-w-0">
+            <p id="pdfDuplicateBannerTitle" class="font-extrabold text-amber-300 text-xs truncate">Duplicates Detected</p>
+            <p class="text-[10px] text-zinc-400 truncate">Matches existing ledger or file records. Unchecked by default.</p>
+          </div>
+        </div>
+        <button
+          id="pdfRemoveDuplicatesBtn"
+          type="button"
+          class="shrink-0 px-2.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 active:scale-95 text-white font-black text-[11px] shadow-sm transition-all cursor-pointer flex items-center gap-1"
+          title="Remove all duplicate transactions from list"
+        >
+          <span>🗑️ Remove Duplicates</span>
+        </button>
+      </div>
+
       <!-- Quick Summary Row -->
       <div class="flex items-center justify-between py-2 px-1 text-xs font-bold text-zinc-300 shrink-0">
         <div class="flex items-center gap-2">
@@ -1907,6 +1945,86 @@
           class="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 active:scale-95 text-xs font-black text-white shadow-lg shadow-amber-950/80 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
         >
           <span>1-Click Sync All to Tracker ↵</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       DUPLICATE EXPENSES SCANNER & CLEANER MODAL
+       ========================================== -->
+  <div
+    id="duplicateExpensesModal"
+    class="fixed inset-0 z-50 flex items-start justify-center p-3 sm:p-4 pt-6 bg-black/90 backdrop-none opacity-0 pointer-events-none transition-all duration-200 overflow-y-auto"
+    role="dialog"
+    aria-modal="true"
+  >
+    <div
+      id="duplicateExpensesCard"
+      class="w-full max-w-lg bg-zinc-950 border border-rose-900/60 rounded-3xl p-4 sm:p-5 shadow-2xl shadow-black flex flex-col min-h-[50vh] max-h-[90vh] text-left transform scale-95 transition-all duration-200"
+    >
+      <!-- Header -->
+      <div class="flex items-center justify-between pb-3 border-b border-zinc-800 shrink-0">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-rose-950/80 border border-rose-500/40 text-rose-400 flex items-center justify-center shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-rose-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          </div>
+          <div class="min-w-0">
+            <h3 class="text-sm sm:text-base font-black text-white flex items-center gap-2">
+              Duplicate Expenses
+              <span id="duplicateModalBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-600/30 text-rose-300 border border-rose-500/40">
+                0 found
+              </span>
+            </h3>
+            <p id="duplicateModalSubtitle" class="text-xs text-zinc-400 truncate">Select duplicate records to remove from ledger</p>
+          </div>
+        </div>
+        <button
+          id="duplicateModalCloseBtn"
+          type="button"
+          class="w-8 h-8 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center text-sm font-bold transition-colors cursor-pointer shrink-0"
+        >
+          ✕
+        </button>
+      </div>
+
+      <!-- Action Row: Toggle Select All / Count -->
+      <div class="flex items-center justify-between py-2 px-1 text-xs font-bold text-zinc-300 shrink-0">
+        <div class="flex items-center gap-2">
+          <button
+            id="duplicateToggleSelectAllBtn"
+            type="button"
+            class="text-[11px] text-rose-400 hover:text-rose-300 underline cursor-pointer"
+          >
+            Select All
+          </button>
+          <span class="text-zinc-600">•</span>
+          <span id="duplicateSelectedCountText" class="text-[11px] text-zinc-400">0 selected for deletion</span>
+        </div>
+      </div>
+
+      <!-- Scrollable Duplicates List -->
+      <div id="duplicateExpensesList" class="flex-1 overflow-y-auto space-y-2.5 my-2 pr-1 min-h-[140px] max-h-[55vh]">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- Bottom Action Row -->
+      <div class="pt-3 border-t border-zinc-800 flex items-center justify-between gap-3 shrink-0">
+        <button
+          id="duplicateModalCancelBtn"
+          type="button"
+          class="py-2.5 px-4 rounded-xl bg-zinc-900 hover:bg-zinc-800 active:scale-95 text-xs font-bold text-zinc-400 hover:text-white border border-zinc-800 transition-all cursor-pointer"
+        >
+          Cancel
+        </button>
+        <button
+          id="duplicateDeleteSelectedBtn"
+          type="button"
+          class="flex-1 py-2.5 px-4 rounded-xl bg-rose-600 hover:bg-rose-500 active:scale-95 text-xs font-black text-white shadow-lg shadow-rose-950/80 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+        >
+          <span>🗑️ Remove Selected Duplicates</span>
         </button>
       </div>
     </div>
@@ -2132,6 +2250,29 @@
             <span>Export All 📥</span>
           </button>
         </div>
+      </div>
+
+      <!-- SECTION 1.5: DUPLICATE EXPENSES DETECTOR & CLEANER -->
+      <div class="p-3 bg-zinc-900/80 rounded-2xl border border-zinc-800/80 space-y-2">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <div class="w-6 h-6 rounded-lg bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-400">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </div>
+            <p class="text-xs font-black text-white">Duplicate Expenses Cleaner</p>
+          </div>
+          <span id="menuDuplicateBadge" class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-400 border border-zinc-700">Scan</span>
+        </div>
+        <p class="text-[10px] text-zinc-400 leading-tight">Detects and purges duplicate entries with matching date, amount and merchant.</p>
+        <button
+          id="menuScanDuplicatesBtn"
+          type="button"
+          class="w-full py-2 px-3 rounded-xl bg-rose-600/20 hover:bg-rose-600/30 active:scale-95 text-rose-300 border border-rose-500/40 text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5"
+        >
+          <span>Scan Ledger for Duplicates 🔍</span>
+        </button>
       </div>
 
       <!-- SECTION 2: MONTHLY SCHEDULED AUTO-BACKUP & DEVICE STORAGE -->
@@ -3011,6 +3152,9 @@
       const photoSaveAllQuickBtn = document.getElementById('photoSaveAllQuickBtn');
       const photoStackedDeckContainer = document.getElementById('photoStackedDeckContainer');
       const photoReviewFooter = document.getElementById('photoReviewFooter');
+      const photoDuplicateBanner = document.getElementById('photoDuplicateBanner');
+      const photoDuplicateBannerTitle = document.getElementById('photoDuplicateBannerTitle');
+      const photoRemoveDuplicatesBtn = document.getElementById('photoRemoveDuplicatesBtn');
 
       let stagedPhotoExpenses = [];
       let currentStackedCardIndex = 0;
@@ -3032,6 +3176,9 @@
       const pdfScanStatusText = document.getElementById('pdfScanStatusText');
       const pdfScanPercent = document.getElementById('pdfScanPercent');
       const pdfScanProgressBar = document.getElementById('pdfScanProgressBar');
+      const pdfDuplicateBanner = document.getElementById('pdfDuplicateBanner');
+      const pdfDuplicateBannerTitle = document.getElementById('pdfDuplicateBannerTitle');
+      const pdfRemoveDuplicatesBtn = document.getElementById('pdfRemoveDuplicatesBtn');
       const pdfTransactionsList = document.getElementById('pdfTransactionsList');
       const pdfToggleSelectAllBtn = document.getElementById('pdfToggleSelectAllBtn');
       const pdfSelectedCountText = document.getElementById('pdfSelectedCountText');
@@ -3039,6 +3186,21 @@
       const pdfSyncAllBtn = document.getElementById('pdfSyncAllBtn');
 
       let parsedPdfTransactions = [];
+
+      // Ledger Duplicate Expenses Elements
+      const menuDuplicateBadge = document.getElementById('menuDuplicateBadge');
+      const menuScanDuplicatesBtn = document.getElementById('menuScanDuplicatesBtn');
+      const duplicateExpensesModal = document.getElementById('duplicateExpensesModal');
+      const duplicateExpensesCard = document.getElementById('duplicateExpensesCard');
+      const duplicateModalCloseBtn = document.getElementById('duplicateModalCloseBtn');
+      const duplicateModalCancelBtn = document.getElementById('duplicateModalCancelBtn');
+      const duplicateModalBadge = document.getElementById('duplicateModalBadge');
+      const duplicateModalSubtitle = document.getElementById('duplicateModalSubtitle');
+      const duplicateToggleSelectAllBtn = document.getElementById('duplicateToggleSelectAllBtn');
+      const duplicateSelectedCountText = document.getElementById('duplicateSelectedCountText');
+      const duplicateExpensesList = document.getElementById('duplicateExpensesList');
+      const duplicateDeleteSelectedBtn = document.getElementById('duplicateDeleteSelectedBtn');
+      let stagedDuplicateGroups = [];
       let activePhotoLongPressCard = null;
       let photoLongPressTimer = null;
       let isPhotoLongPressTriggered = false;
@@ -4024,6 +4186,17 @@
         }
         if (typeof renderBudgetModalList === 'function' && budgetDetailModal && !budgetDetailModal.classList.contains('opacity-0')) {
           renderBudgetModalList();
+        }
+        if (menuDuplicateBadge && typeof scanLedgerForDuplicates === 'function') {
+          try {
+            const dups = scanLedgerForDuplicates();
+            menuDuplicateBadge.textContent = dups.length > 0 ? `${dups.length} found` : '0 found';
+            if (dups.length > 0) {
+              menuDuplicateBadge.className = 'text-[9px] font-bold px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40';
+            } else {
+              menuDuplicateBadge.className = 'text-[9px] font-bold px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-400 border border-zinc-700';
+            }
+          } catch (e) {}
         }
       }
 
@@ -7444,6 +7617,85 @@
         return null;
       }
 
+      function findDuplicateMatch(candidate, existingList, currentBatchList) {
+        if (!candidate || !candidate.amount) return null;
+        const candAmt = Math.round(Number(candidate.amount) * 100) / 100;
+        if (isNaN(candAmt) || candAmt <= 0) return null;
+
+        const candDate = candidate.date || candidate.createdAt;
+        let candDay = '';
+        if (candDate) {
+          const d = new Date(candDate);
+          if (!isNaN(d.getTime())) candDay = d.toISOString().slice(0, 10);
+        }
+
+        const candReason = (candidate.reason || candidate.merchant || '').trim().toLowerCase();
+
+        const reasonsMatch = (r1, r2) => {
+          if (!r1 || !r2) return true;
+          if (r1 === r2) return true;
+          if (r1.includes(r2) || r2.includes(r1)) return true;
+          const words1 = r1.split(/\s+/).filter(w => w.length > 2);
+          const words2 = r2.split(/\s+/).filter(w => w.length > 2);
+          return words1.some(w => words2.includes(w));
+        };
+
+        // 1. Check against current batch (another item in this file/photo)
+        if (currentBatchList && currentBatchList.length > 0) {
+          for (const bItem of currentBatchList) {
+            if (bItem === candidate || bItem.id === candidate.id) continue;
+            const bAmt = Math.round(Number(bItem.amount) * 100) / 100;
+            if (bAmt !== candAmt) continue;
+
+            let bDay = '';
+            const bDate = bItem.date || bItem.createdAt;
+            if (bDate) {
+              const bd = new Date(bDate);
+              if (!isNaN(bd.getTime())) bDay = bd.toISOString().slice(0, 10);
+            }
+
+            if (candDay && bDay && candDay === bDay) {
+              const bReason = (bItem.reason || bItem.merchant || '').trim().toLowerCase();
+              if (reasonsMatch(candReason, bReason)) {
+                return {
+                  source: 'batch',
+                  matchedItem: bItem,
+                  message: `Duplicate in this upload: ₹${candAmt} (${bItem.reason || 'Payment'}) on ${candDay}`
+                };
+              }
+            }
+          }
+        }
+
+        // 2. Check against existing expenses in ledger
+        if (existingList && existingList.length > 0) {
+          for (const exp of existingList) {
+            const expAmt = Math.round(Number(exp.amount) * 100) / 100;
+            if (expAmt !== candAmt) continue;
+
+            let expDay = '';
+            if (exp.createdAt) {
+              const ed = new Date(exp.createdAt);
+              if (!isNaN(ed.getTime())) expDay = ed.toISOString().slice(0, 10);
+            }
+
+            if (candDay && expDay && candDay === expDay) {
+              const expReason = (exp.reason || '').trim().toLowerCase();
+              if (reasonsMatch(candReason, expReason)) {
+                const formattedDate = formatExpenseDate(exp.createdAt);
+                return {
+                  source: 'ledger',
+                  matchedItem: exp,
+                  message: `Already in ledger: ₹${candAmt} (${exp.reason || 'Expense'}) on ${formattedDate}`
+                };
+              }
+            }
+          }
+        }
+
+        return null;
+      }
+
       function parsePaymentScreenshotText(text, refTimestamp) {
         if (!text) return [];
         const rawLines = text.split('\n').map(l => l.trim()).filter(Boolean);
@@ -7852,6 +8104,26 @@
               </span>
             </div>
 
+            <!-- Duplicate Warning Pill if matched -->
+            ${currentItem.isDuplicate ? `
+              <div class="my-1 p-2 rounded-xl bg-amber-950/80 border border-amber-500/60 flex items-center justify-between gap-1.5 text-xs shrink-0 shadow-md">
+                <div class="flex items-center gap-1.5 min-w-0 text-amber-300">
+                  <span class="text-sm shrink-0">⚠️</span>
+                  <span class="text-[10px] font-bold leading-tight truncate" title="${escapeHtml(currentItem.duplicateMessage || 'Duplicate detected')}">
+                    ${escapeHtml(currentItem.duplicateMessage || 'Possible Duplicate')}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  id="deckDiscardDuplicateBtn"
+                  class="shrink-0 px-2 py-0.5 bg-rose-600 hover:bg-rose-500 active:scale-95 text-white rounded-lg text-[10px] font-black cursor-pointer shadow transition-all"
+                  title="Remove this duplicate immediately"
+                >
+                  Remove ✕
+                </button>
+              </div>
+            ` : ''}
+
             <!-- Hero Amount Field -->
             <div class="my-1.5 p-2.5 bg-black/80 rounded-2xl border border-zinc-800 flex items-center justify-between gap-2 shadow-inner">
               <span class="text-2xl sm:text-3xl font-black text-rose-500 select-none pl-1">₹</span>
@@ -7963,6 +8235,16 @@
           });
         }
 
+        const discardDupBtn = document.getElementById('deckDiscardDuplicateBtn');
+        if (discardDupBtn) {
+          discardDupBtn.addEventListener('click', () => {
+            stagedPhotoExpenses.splice(currentStackedCardIndex, 1);
+            if (navigator.vibrate) navigator.vibrate(25);
+            showToast('Duplicate removed from queue');
+            renderPhotoStackedCards();
+          });
+        }
+
         // Tag Pill 1-Tap Selection
         if (tagPillsContainer) {
           tagPillsContainer.addEventListener('click', e => {
@@ -8054,6 +8336,18 @@
         if (photoReviewBadge) photoReviewBadge.textContent = `${stagedPhotoExpenses.length} detected`;
         if (photoSyncBtnLabel) photoSyncBtnLabel.textContent = `Sync to Expenses (${stagedPhotoExpenses.length})`;
 
+        const dupCount = stagedPhotoExpenses.filter(i => i.isDuplicate).length;
+        if (photoDuplicateBanner) {
+          if (dupCount > 0) {
+            photoDuplicateBanner.classList.remove('hidden');
+            if (photoDuplicateBannerTitle) {
+              photoDuplicateBannerTitle.textContent = `${dupCount} Duplicate${dupCount === 1 ? '' : 's'} Found`;
+            }
+          } else {
+            photoDuplicateBanner.classList.add('hidden');
+          }
+        }
+
         if (stagedPhotoExpenses.length === 0) {
           photoStagedListContainer.innerHTML = `
             <div class="h-32 flex flex-col items-center justify-center text-xs text-slate-500 text-center space-y-1.5 p-4 bg-slate-950/40 rounded-2xl border border-dashed border-slate-800">
@@ -8073,33 +8367,41 @@
           return `
             <div
               data-photo-item-id="${escapeHtml(item.id)}"
-              class="photo-staged-card p-3.5 sm:p-4 rounded-2xl bg-slate-950/70 border border-slate-800 hover:border-slate-700 active:bg-slate-800/60 transition-all flex items-center justify-between gap-3 select-none cursor-pointer shadow-sm"
-              title="Tap or long-press to edit"
+              class="photo-staged-card p-3.5 sm:p-4 rounded-2xl ${item.isDuplicate ? 'bg-amber-950/20 border-2 border-amber-500/60' : 'bg-slate-950/70 border border-slate-800 hover:border-slate-700'} active:bg-slate-800/60 transition-all flex flex-col gap-2 select-none cursor-pointer shadow-sm"
+              title="Tap to edit"
             >
-              <div class="min-w-0 flex-1">
-                <p class="photo-item-reason text-sm sm:text-base font-extrabold text-white leading-snug break-words">
-                  ${escapeHtml(item.reason || 'Payment')}
-                </p>
-                <div class="flex items-center gap-2 mt-1.5 flex-wrap">
-                  <span class="text-[11px] sm:text-xs font-bold px-2.5 py-1 rounded-lg border shrink-0 ${tagClass}">
-                    ${escapeHtml(item.tag || 'Misc')}
+              <div class="flex items-center justify-between gap-3 w-full">
+                <div class="min-w-0 flex-1">
+                  <p class="photo-item-reason text-sm sm:text-base font-extrabold text-white leading-snug break-words">
+                    ${escapeHtml(item.reason || 'Payment')}
+                  </p>
+                  <div class="flex items-center gap-2 mt-1.5 flex-wrap">
+                    <span class="text-[11px] sm:text-xs font-bold px-2.5 py-1 rounded-lg border shrink-0 ${tagClass}">
+                      ${escapeHtml(item.tag || 'Misc')}
+                    </span>
+                    <span class="text-xs text-slate-300 tabular-nums font-medium">
+                      ${dateStr}${timeStr ? ' • ' + timeStr : ''}
+                    </span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2.5 shrink-0">
+                  <span class="text-base sm:text-lg font-black text-rose-400 tabular-nums">
+                    ${item.amount ? '- ' + formatINR(item.amount) : '₹ 0'}
                   </span>
-                  <span class="text-xs text-slate-300 tabular-nums font-medium">
-                    ${dateStr}${timeStr ? ' • ' + timeStr : ''}
-                  </span>
+                  <div class="photo-arrow-btn w-8 h-8 rounded-full bg-slate-900 group-hover:bg-red-950/60 border border-slate-800 group-hover:border-red-500/50 flex items-center justify-center text-slate-400 group-hover:text-red-400 transition-all shrink-0 shadow-sm" title="View details, edit or delete">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
                 </div>
               </div>
-              <div class="flex items-center gap-2.5 shrink-0">
-                <span class="text-base sm:text-lg font-black text-rose-400 tabular-nums">
-                  ${item.amount ? '- ' + formatINR(item.amount) : '₹ 0'}
-                </span>
-                <!-- Small Arrow in right side corner -->
-                <div class="photo-arrow-btn w-8 h-8 rounded-full bg-slate-900 group-hover:bg-red-950/60 border border-slate-800 group-hover:border-red-500/50 flex items-center justify-center text-slate-400 group-hover:text-red-400 transition-all shrink-0 shadow-sm" title="View details, edit or delete">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-                  </svg>
+
+              ${item.isDuplicate ? `
+                <div class="flex items-center justify-between gap-2 px-2.5 py-1 rounded-xl bg-amber-950/80 border border-amber-500/50 text-[10px] text-amber-300 font-bold">
+                  <span class="truncate">⚠️ ${escapeHtml(item.duplicateMessage || 'Possible Duplicate')}</span>
+                  <button type="button" class="text-rose-400 hover:text-white underline cursor-pointer shrink-0" data-delete-staged-id="${escapeHtml(item.id)}">Remove</button>
                 </div>
-              </div>
+              ` : ''}
             </div>
           `;
         }).join('');
@@ -8227,7 +8529,20 @@
 
             if (extracted && extracted.length > 0) {
               stagedPhotoExpenses = extracted;
-              photoReviewSubtitle.textContent = `Found ${extracted.length} transaction${extracted.length === 1 ? '' : 's'} from screenshot`;
+              stagedPhotoExpenses.forEach(item => {
+                const dup = findDuplicateMatch(item, expenses, stagedPhotoExpenses);
+                if (dup) {
+                  item.isDuplicate = true;
+                  item.duplicateMessage = dup.message;
+                } else {
+                  item.isDuplicate = false;
+                  item.duplicateMessage = null;
+                }
+              });
+              const dupCount = stagedPhotoExpenses.filter(i => i.isDuplicate).length;
+              photoReviewSubtitle.textContent = dupCount > 0
+                ? `Found ${extracted.length} transaction${extracted.length === 1 ? '' : 's'} (${dupCount} duplicate${dupCount === 1 ? '' : 's'} flagged)`
+                : `Found ${extracted.length} transaction${extracted.length === 1 ? '' : 's'} from screenshot`;
             } else {
               stagedPhotoExpenses = [{
                 id: 'photo_' + Date.now(),
@@ -8291,6 +8606,17 @@
         photoListViewBtn.addEventListener('click', () => {
           isDeckViewMode = false;
           renderPhotoReviewUI();
+        });
+      }
+
+      if (photoRemoveDuplicatesBtn) {
+        photoRemoveDuplicatesBtn.addEventListener('click', () => {
+          const before = stagedPhotoExpenses.length;
+          stagedPhotoExpenses = stagedPhotoExpenses.filter(i => !i.isDuplicate);
+          const removed = before - stagedPhotoExpenses.length;
+          renderPhotoReviewUI();
+          if (navigator.vibrate) navigator.vibrate([30, 20, 30]);
+          showToast(`Removed ${removed} duplicate${removed === 1 ? '' : 's'}`);
         });
       }
 
@@ -8650,9 +8976,22 @@
           if (pdfScanProgressBar) pdfScanProgressBar.style.width = '100%';
 
           parsedPdfTransactions = results || [];
+          parsedPdfTransactions.forEach(item => {
+            const dup = findDuplicateMatch(item, expenses, parsedPdfTransactions);
+            if (dup) {
+              item.isDuplicate = true;
+              item.duplicateMessage = dup.message;
+              item.selected = false;
+            } else {
+              item.isDuplicate = false;
+              item.duplicateMessage = null;
+              item.selected = true;
+            }
+          });
+          const dupCount = parsedPdfTransactions.filter(i => i.isDuplicate).length;
           if (pdfReviewSubtitle) {
             pdfReviewSubtitle.textContent = results.length > 0
-              ? `Auto-mapped dates, remarks & tags from ${file.name}`
+              ? (dupCount > 0 ? `Auto-mapped from ${file.name} (${dupCount} duplicate${dupCount === 1 ? '' : 's'} flagged)` : `Auto-mapped dates, remarks & tags from ${file.name}`)
               : `Scanned ${file.name}`;
           }
         } catch (err) {
@@ -8686,6 +9025,18 @@
         }
         if (pdfToggleSelectAllBtn) {
           pdfToggleSelectAllBtn.textContent = selectedCount === totalItems && totalItems > 0 ? 'Deselect All' : 'Select All';
+        }
+
+        const dupCount = parsedPdfTransactions.filter(i => i.isDuplicate).length;
+        if (pdfDuplicateBanner) {
+          if (dupCount > 0) {
+            pdfDuplicateBanner.classList.remove('hidden');
+            if (pdfDuplicateBannerTitle) {
+              pdfDuplicateBannerTitle.textContent = `${dupCount} Duplicate${dupCount === 1 ? '' : 's'} Found`;
+            }
+          } else {
+            pdfDuplicateBanner.classList.add('hidden');
+          }
         }
 
         if (totalItems === 0) {
@@ -8724,7 +9075,7 @@
           const isSel = !!item.selected;
 
           return `
-            <div class="p-3 rounded-2xl bg-zinc-900/80 border ${isSel ? 'border-zinc-800' : 'border-zinc-900 opacity-60'} transition-all space-y-2" data-pdf-item-id="${item.id}">
+            <div class="p-3 rounded-2xl ${item.isDuplicate ? 'bg-amber-950/20 border-2 border-amber-500/60' : (isSel ? 'bg-zinc-900/80 border border-zinc-800' : 'bg-zinc-900/80 border border-zinc-900 opacity-60')} transition-all space-y-2" data-pdf-item-id="${item.id}">
               <div class="flex items-center justify-between gap-2">
                 <label class="flex items-center gap-2 cursor-pointer select-none min-w-0">
                   <input
@@ -8751,6 +9102,13 @@
                   </button>
                 </div>
               </div>
+
+              ${item.isDuplicate ? `
+                <div class="flex items-center justify-between gap-2 px-2.5 py-1 rounded-xl bg-amber-950/90 border border-amber-500/50 text-[10px] text-amber-300 font-bold">
+                  <span class="truncate">⚠️ ${escapeHtml(item.duplicateMessage || 'Duplicate detected')}</span>
+                  <button type="button" class="text-rose-400 hover:text-white underline cursor-pointer shrink-0 pdf-item-del-btn" data-id="${item.id}">Remove</button>
+                </div>
+              ` : ''}
               <div class="grid grid-cols-1 sm:grid-cols-12 gap-2 pt-1 border-t border-zinc-800/60">
                 <div class="sm:col-span-8">
                   <input
@@ -8805,6 +9163,17 @@
           const allSelected = parsedPdfTransactions.every(i => i.selected);
           parsedPdfTransactions.forEach(i => i.selected = !allSelected);
           renderPdfStatementReviewUI();
+        });
+      }
+
+      if (pdfRemoveDuplicatesBtn) {
+        pdfRemoveDuplicatesBtn.addEventListener('click', () => {
+          const before = parsedPdfTransactions.length;
+          parsedPdfTransactions = parsedPdfTransactions.filter(i => !i.isDuplicate);
+          const removed = before - parsedPdfTransactions.length;
+          renderPdfStatementReviewUI();
+          if (navigator.vibrate) navigator.vibrate([30, 20, 30]);
+          showToast(`Removed ${removed} duplicate${removed === 1 ? '' : 's'}`);
         });
       }
 
@@ -8873,6 +9242,200 @@
           closePdfStatementReviewModal();
           if (navigator.vibrate) navigator.vibrate([40, 30, 40]);
           showToast(`✓ Synced ${newExpenses.length} ${newExpenses.length === 1 ? 'expense' : 'expenses'} to your tracker!`);
+        });
+      }
+
+      // ==========================================
+      // LEDGER DUPLICATE EXPENSES SCANNER & CLEANER
+      // ==========================================
+      function openDuplicateExpensesModal() {
+        if (!duplicateExpensesModal) return;
+        duplicateExpensesModal.classList.remove('opacity-0', 'pointer-events-none');
+        if (duplicateExpensesCard) {
+          duplicateExpensesCard.classList.remove('scale-95');
+          duplicateExpensesCard.classList.add('scale-100');
+        }
+      }
+
+      function closeDuplicateExpensesModal() {
+        if (!duplicateExpensesModal) return;
+        if (duplicateExpensesCard) {
+          duplicateExpensesCard.classList.remove('scale-100');
+          duplicateExpensesCard.classList.add('scale-95');
+        }
+        duplicateExpensesModal.classList.add('opacity-0', 'pointer-events-none');
+        stagedDuplicateGroups = [];
+      }
+
+      function scanLedgerForDuplicates() {
+        const groups = new Map();
+        for (const exp of expenses) {
+          const amt = Math.round(Number(exp.amount) * 100) / 100;
+          if (isNaN(amt) || amt <= 0) continue;
+          let day = '';
+          if (exp.createdAt) {
+            const d = new Date(exp.createdAt);
+            if (!isNaN(d.getTime())) day = d.toISOString().slice(0, 10);
+          }
+          const normReason = (exp.reason || '').trim().toLowerCase();
+          const key = `${amt}_${day}_${normReason}`;
+          if (!groups.has(key)) groups.set(key, []);
+          groups.get(key).push(exp);
+        }
+
+        const duplicateItems = [];
+        for (const items of groups.values()) {
+          if (items.length > 1) {
+            // Keep the earliest recorded item, mark subsequent identical ones for removal
+            const sortedByDate = [...items].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+            const keeper = sortedByDate[0];
+            for (let i = 1; i < sortedByDate.length; i++) {
+              duplicateItems.push({
+                duplicateItem: sortedByDate[i],
+                originalItem: keeper,
+                selected: true
+              });
+            }
+          }
+        }
+
+        return duplicateItems;
+      }
+
+      function renderDuplicateExpensesUI() {
+        if (!duplicateExpensesList) return;
+        const total = stagedDuplicateGroups.length;
+        const selectedCount = stagedDuplicateGroups.filter(i => i.selected).length;
+
+        if (duplicateModalBadge) {
+          duplicateModalBadge.textContent = `${total} duplicate${total === 1 ? '' : 's'}`;
+        }
+        if (duplicateSelectedCountText) {
+          duplicateSelectedCountText.textContent = `${selectedCount} of ${total} selected for removal`;
+        }
+        if (duplicateToggleSelectAllBtn) {
+          duplicateToggleSelectAllBtn.textContent = (selectedCount === total && total > 0) ? 'Deselect All' : 'Select All';
+        }
+
+        if (duplicateDeleteSelectedBtn) {
+          duplicateDeleteSelectedBtn.disabled = selectedCount === 0;
+          if (selectedCount === 0) {
+            duplicateDeleteSelectedBtn.classList.add('opacity-50', 'cursor-not-allowed');
+          } else {
+            duplicateDeleteSelectedBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+          }
+        }
+
+        if (total === 0) {
+          duplicateExpensesList.innerHTML = `
+            <div class="py-12 px-4 text-center space-y-3 bg-black/40 rounded-2xl border border-dashed border-zinc-800">
+              <div class="w-12 h-12 rounded-full bg-emerald-500/20 border border-emerald-500/40 mx-auto flex items-center justify-center text-emerald-400 font-black text-xl">
+                ✓
+              </div>
+              <p class="font-bold text-white text-sm">No duplicate expenses found!</p>
+              <p class="text-xs text-zinc-500 max-w-xs mx-auto">Your ledger is completely clean and all recorded expenses are unique.</p>
+            </div>
+          `;
+          return;
+        }
+
+        duplicateExpensesList.innerHTML = stagedDuplicateGroups.map(entry => {
+          const item = entry.duplicateItem;
+          const orig = entry.originalItem;
+          const d = new Date(item.createdAt || Date.now());
+          const dateStr = !isNaN(d.getTime()) ? d.toLocaleDateString([], { day: 'numeric', month: 'short', year: 'numeric' }) : 'Unknown date';
+          const timeStr = !isNaN(d.getTime()) ? d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+          const isSel = !!entry.selected;
+
+          return `
+            <div class="p-3.5 rounded-2xl bg-zinc-900/90 border ${isSel ? 'border-rose-500/50' : 'border-zinc-800 opacity-60'} transition-all space-y-2">
+              <div class="flex items-center justify-between gap-2">
+                <label class="flex items-center gap-2 cursor-pointer select-none min-w-0">
+                  <input
+                    type="checkbox"
+                    class="w-4 h-4 rounded text-rose-500 bg-zinc-800 border-zinc-700 focus:ring-0 focus:ring-offset-0 cursor-pointer duplicate-checkbox"
+                    data-id="${item.id}"
+                    ${isSel ? 'checked' : ''}
+                  />
+                  <span class="text-sm font-extrabold text-white truncate">
+                    ${escapeHtml(item.reason || 'Expense')}
+                  </span>
+                </label>
+                <span class="text-sm font-black text-rose-400 tabular-nums shrink-0">
+                  - ${formatINR(item.amount)}
+                </span>
+              </div>
+              <div class="flex items-center justify-between text-xs text-zinc-400 flex-wrap gap-1 px-1">
+                <span>📅 ${dateStr}${timeStr ? ' at ' + timeStr : ''}</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-zinc-800 text-zinc-300 border border-zinc-700">${escapeHtml(item.tag || 'Misc')}</span>
+              </div>
+              <div class="p-2 rounded-xl bg-black/60 border border-zinc-800/80 text-[11px] text-zinc-400 leading-tight">
+                <span class="text-rose-400 font-bold">Duplicate copy of:</span> ${escapeHtml(orig.reason || 'Expense')} recorded on ${formatExpenseDate(orig.createdAt)}. The original will be kept.
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      if (menuScanDuplicatesBtn) {
+        menuScanDuplicatesBtn.addEventListener('click', () => {
+          closeAppMenuModal();
+          stagedDuplicateGroups = scanLedgerForDuplicates();
+          if (stagedDuplicateGroups.length === 0) {
+            showToast('✓ No duplicate expenses found in ledger!');
+            if (menuDuplicateBadge) menuDuplicateBadge.textContent = '0 found';
+          } else {
+            if (menuDuplicateBadge) menuDuplicateBadge.textContent = `${stagedDuplicateGroups.length} found`;
+            openDuplicateExpensesModal();
+            renderDuplicateExpensesUI();
+          }
+        });
+      }
+
+      if (duplicateModalCloseBtn) duplicateModalCloseBtn.addEventListener('click', closeDuplicateExpensesModal);
+      if (duplicateModalCancelBtn) duplicateModalCancelBtn.addEventListener('click', closeDuplicateExpensesModal);
+      if (duplicateExpensesModal) {
+        duplicateExpensesModal.addEventListener('click', e => {
+          if (e.target === duplicateExpensesModal) closeDuplicateExpensesModal();
+        });
+      }
+
+      if (duplicateToggleSelectAllBtn) {
+        duplicateToggleSelectAllBtn.addEventListener('click', () => {
+          const allSel = stagedDuplicateGroups.every(i => i.selected);
+          stagedDuplicateGroups.forEach(i => i.selected = !allSel);
+          renderDuplicateExpensesUI();
+        });
+      }
+
+      if (duplicateExpensesList) {
+        duplicateExpensesList.addEventListener('change', e => {
+          const chk = e.target.closest('.duplicate-checkbox');
+          if (chk) {
+            const id = chk.getAttribute('data-id');
+            const target = stagedDuplicateGroups.find(i => i.duplicateItem.id === id);
+            if (target) {
+              target.selected = chk.checked;
+              renderDuplicateExpensesUI();
+            }
+          }
+        });
+      }
+
+      if (duplicateDeleteSelectedBtn) {
+        duplicateDeleteSelectedBtn.addEventListener('click', () => {
+          const toDelete = stagedDuplicateGroups.filter(i => i.selected).map(i => i.duplicateItem.id);
+          if (toDelete.length === 0) {
+            alert('Please select at least one duplicate to remove.');
+            return;
+          }
+          const toDeleteSet = new Set(toDelete);
+          expenses = expenses.filter(e => !toDeleteSet.has(e.id));
+          saveExpenses();
+          refreshUI();
+          closeDuplicateExpensesModal();
+          if (navigator.vibrate) navigator.vibrate([40, 30, 40]);
+          showToast(`✓ Removed ${toDelete.length} duplicate expense${toDelete.length === 1 ? '' : 's'}!`);
         });
       }
 
