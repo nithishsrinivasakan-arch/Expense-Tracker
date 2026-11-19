@@ -1834,6 +1834,103 @@
   </div>
 
   <!-- ==========================================
+       PDF STATEMENT PASSWORD PROMPT MODAL
+       ========================================== -->
+  <div
+    id="pdfPasswordModal"
+    class="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/85 backdrop-none opacity-0 pointer-events-none transition-all duration-200"
+    role="dialog"
+    aria-modal="true"
+  >
+    <div
+      id="pdfPasswordCard"
+      class="w-full max-w-sm bg-zinc-950 border border-amber-500/50 rounded-3xl p-5 sm:p-6 shadow-2xl shadow-black flex flex-col text-left transform scale-90 transition-all duration-200 space-y-4"
+    >
+      <!-- Header -->
+      <div class="flex items-center justify-between pb-3 border-b border-zinc-800 shrink-0">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-2xl bg-amber-950/80 border border-amber-500/40 text-amber-400 flex items-center justify-center text-base shrink-0">
+            🔒
+          </div>
+          <div>
+            <h3 class="text-sm sm:text-base font-black text-white">Encrypted Statement</h3>
+            <p id="pdfPasswordFilename" class="text-xs text-zinc-400 truncate max-w-[200px]">Password required to open</p>
+          </div>
+        </div>
+        <button
+          id="pdfPasswordCloseX"
+          type="button"
+          class="w-8 h-8 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center text-xs font-bold transition-colors cursor-pointer"
+        >
+          ✕
+        </button>
+      </div>
+
+      <!-- Password Input Form -->
+      <form id="pdfPasswordForm" class="space-y-3">
+        <div class="space-y-1.5">
+          <label for="pdfPasswordInput" class="text-[10px] font-black uppercase tracking-wider text-zinc-400 block px-0.5">
+            PDF Password
+          </label>
+          <div class="relative flex items-center">
+            <input
+              type="password"
+              id="pdfPasswordInput"
+              required
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="off"
+              spellcheck="false"
+              placeholder="Enter PDF password"
+              class="w-full h-11 pl-3.5 pr-10 bg-zinc-900 border border-zinc-800 focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 rounded-xl text-sm font-bold text-white placeholder-zinc-500 focus:outline-none transition-all"
+            />
+            <button
+              type="button"
+              id="pdfPasswordToggleVisibilityBtn"
+              class="absolute right-2.5 w-7 h-7 rounded-lg text-zinc-400 hover:text-white flex items-center justify-center text-xs transition-colors cursor-pointer"
+              title="Show / Hide Password"
+            >
+              👁️
+            </button>
+          </div>
+          <!-- Error alert text -->
+          <p id="pdfPasswordError" class="hidden text-xs font-bold text-rose-400 pt-0.5">
+            ⚠️ Incorrect password. Please try again.
+          </p>
+        </div>
+
+        <!-- Bank statement hint box -->
+        <div class="p-2.5 rounded-xl bg-amber-950/30 border border-amber-900/50 space-y-1">
+          <p class="text-[10px] font-black uppercase text-amber-400">Common Bank Password Formats:</p>
+          <p class="text-[11px] text-zinc-300 leading-tight">
+            • <strong>DOB:</strong> <span class="text-amber-300 font-mono">DDMMYYYY</span> (e.g. 15081995)<br/>
+            • <strong>PAN:</strong> 10-digit PAN in UPPERCASE or lowercase<br/>
+            • <strong>SBI / HDFC / ICICI:</strong> Name (first 4 letters) + DOB, or DOB + last 4 digits of phone
+          </p>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="pt-2 flex items-center justify-between gap-2.5 shrink-0">
+          <button
+            type="button"
+            id="pdfPasswordCancelBtn"
+            class="py-2.5 px-4 rounded-xl bg-zinc-900 hover:bg-zinc-800 active:scale-95 text-xs font-bold text-zinc-400 hover:text-white border border-zinc-800 transition-all cursor-pointer"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            id="pdfPasswordSubmitBtn"
+            class="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 active:scale-95 text-xs font-black text-white shadow-lg shadow-amber-950/80 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+          >
+            <span>Unlock & Sync ↵</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================
        PDF BANK STATEMENT REVIEW & 1-CLICK SYNC MODAL
        ========================================== -->
   <div
@@ -3184,6 +3281,19 @@
       const pdfSelectedCountText = document.getElementById('pdfSelectedCountText');
       const pdfSelectedTotalText = document.getElementById('pdfSelectedTotalText');
       const pdfSyncAllBtn = document.getElementById('pdfSyncAllBtn');
+
+      // PDF Password Modal Elements
+      const pdfPasswordModal = document.getElementById('pdfPasswordModal');
+      const pdfPasswordCard = document.getElementById('pdfPasswordCard');
+      const pdfPasswordCloseX = document.getElementById('pdfPasswordCloseX');
+      const pdfPasswordCancelBtn = document.getElementById('pdfPasswordCancelBtn');
+      const pdfPasswordFilename = document.getElementById('pdfPasswordFilename');
+      const pdfPasswordForm = document.getElementById('pdfPasswordForm');
+      const pdfPasswordInput = document.getElementById('pdfPasswordInput');
+      const pdfPasswordToggleVisibilityBtn = document.getElementById('pdfPasswordToggleVisibilityBtn');
+      const pdfPasswordError = document.getElementById('pdfPasswordError');
+      const pdfPasswordSubmitBtn = document.getElementById('pdfPasswordSubmitBtn');
+      let pendingPdfPasswordCallback = null;
 
       let parsedPdfTransactions = [];
 
@@ -8859,10 +8969,84 @@
         return true;
       }
 
+      function promptForPdfPassword(filename, isRetry = false) {
+        return new Promise((resolve, reject) => {
+          if (!pdfPasswordModal) {
+            reject(new Error('Password modal not found'));
+            return;
+          }
+          if (pdfPasswordFilename) {
+            pdfPasswordFilename.textContent = filename || 'Protected Bank Statement';
+          }
+          if (pdfPasswordInput) {
+            pdfPasswordInput.value = '';
+            pdfPasswordInput.type = 'password';
+          }
+          if (pdfPasswordToggleVisibilityBtn) {
+            pdfPasswordToggleVisibilityBtn.textContent = '👁️';
+          }
+          if (pdfPasswordError) {
+            if (isRetry) {
+              pdfPasswordError.classList.remove('hidden');
+            } else {
+              pdfPasswordError.classList.add('hidden');
+            }
+          }
+          pendingPdfPasswordCallback = { resolve, reject };
+
+          pdfPasswordModal.classList.remove('opacity-0', 'pointer-events-none');
+          if (pdfPasswordCard) {
+            pdfPasswordCard.classList.remove('scale-90');
+            pdfPasswordCard.classList.add('scale-100');
+          }
+          setTimeout(() => {
+            if (pdfPasswordInput) pdfPasswordInput.focus();
+          }, 150);
+        });
+      }
+
+      function closePdfPasswordModal(cancelled = false) {
+        if (!pdfPasswordModal) return;
+        if (pdfPasswordCard) {
+          pdfPasswordCard.classList.remove('scale-100');
+          pdfPasswordCard.classList.add('scale-90');
+        }
+        pdfPasswordModal.classList.add('opacity-0', 'pointer-events-none');
+        if (pdfPasswordInput) pdfPasswordInput.value = '';
+        if (pdfPasswordError) pdfPasswordError.classList.add('hidden');
+
+        if (cancelled && pendingPdfPasswordCallback && typeof pendingPdfPasswordCallback.reject === 'function') {
+          const cb = pendingPdfPasswordCallback;
+          pendingPdfPasswordCallback = null;
+          cb.reject(new Error('Password cancelled by user'));
+        } else {
+          pendingPdfPasswordCallback = null;
+        }
+      }
+
       async function parsePdfBankStatement(file, onProgress) {
         const pdfjs = await loadPdfJs();
         const arrayBuffer = await file.arrayBuffer();
         const loadingTask = pdfjs.getDocument({ data: arrayBuffer });
+
+        // Hook password prompt for encrypted / password-protected bank statements
+        loadingTask.onPassword = (updatePassword, reason) => {
+          const isRetry = (reason === pdfjs.PasswordResponses?.INCORRECT_PASSWORD || reason === 2);
+          if (onProgress) {
+            onProgress(15, isRetry ? 'Incorrect password. Retrying...' : 'Protected PDF. Waiting for password...');
+          }
+          promptForPdfPassword(file.name, isRetry)
+            .then(password => {
+              closePdfPasswordModal(false);
+              if (onProgress) onProgress(25, 'Decrypting PDF statement...');
+              updatePassword(password);
+            })
+            .catch(err => {
+              closePdfPasswordModal(false);
+              updatePassword(new Error('Password cancelled by user'));
+            });
+        };
+
         const pdfDoc = await loadingTask.promise;
         const totalPages = pdfDoc.numPages;
 
@@ -8965,6 +9149,7 @@
         if (pdfScanPercent) pdfScanPercent.textContent = '10%';
         if (pdfScanProgressBar) pdfScanProgressBar.style.width = '10%';
 
+        let isPasswordCancelled = false;
         try {
           const results = await parsePdfBankStatement(file, (pct, status) => {
             if (pdfScanPercent) pdfScanPercent.textContent = `${pct}%`;
@@ -8997,12 +9182,25 @@
         } catch (err) {
           console.error('PDF parsing error:', err);
           parsedPdfTransactions = [];
-          if (pdfReviewSubtitle) {
-            pdfReviewSubtitle.textContent = 'Could not parse PDF. Ensure it is an unencrypted statement.';
+          if (err && err.message && err.message.includes('Password cancelled')) {
+            isPasswordCancelled = true;
+            closePdfStatementReviewModal();
+            showToast('Decryption cancelled: Password required to open statement.');
+            return;
+          } else if (err && (err.name === 'PasswordException' || (err.message && err.message.toLowerCase().includes('password')))) {
+            if (pdfReviewSubtitle) {
+              pdfReviewSubtitle.textContent = 'Encrypted statement: Password incorrect or locked.';
+            }
+          } else {
+            if (pdfReviewSubtitle) {
+              pdfReviewSubtitle.textContent = 'Could not parse PDF. Ensure it is a valid bank statement.';
+            }
           }
         } finally {
-          if (pdfScanningBanner) pdfScanningBanner.classList.add('hidden');
-          renderPdfStatementReviewUI();
+          if (!isPasswordCancelled) {
+            if (pdfScanningBanner) pdfScanningBanner.classList.add('hidden');
+            renderPdfStatementReviewUI();
+          }
         }
       }
 
@@ -9242,6 +9440,47 @@
           closePdfStatementReviewModal();
           if (navigator.vibrate) navigator.vibrate([40, 30, 40]);
           showToast(`✓ Synced ${newExpenses.length} ${newExpenses.length === 1 ? 'expense' : 'expenses'} to your tracker!`);
+        });
+      }
+
+      // PDF Password Modal Listeners
+      if (pdfPasswordForm) {
+        pdfPasswordForm.addEventListener('submit', e => {
+          e.preventDefault();
+          const pw = (pdfPasswordInput ? pdfPasswordInput.value : '').trim();
+          if (!pw) return;
+          if (pendingPdfPasswordCallback && typeof pendingPdfPasswordCallback.resolve === 'function') {
+            const cb = pendingPdfPasswordCallback;
+            pendingPdfPasswordCallback = null;
+            cb.resolve(pw);
+          }
+        });
+      }
+
+      if (pdfPasswordCloseX) {
+        pdfPasswordCloseX.addEventListener('click', () => closePdfPasswordModal(true));
+      }
+
+      if (pdfPasswordCancelBtn) {
+        pdfPasswordCancelBtn.addEventListener('click', () => closePdfPasswordModal(true));
+      }
+
+      if (pdfPasswordModal) {
+        pdfPasswordModal.addEventListener('click', e => {
+          if (e.target === pdfPasswordModal) closePdfPasswordModal(true);
+        });
+      }
+
+      if (pdfPasswordToggleVisibilityBtn) {
+        pdfPasswordToggleVisibilityBtn.addEventListener('click', () => {
+          if (!pdfPasswordInput) return;
+          if (pdfPasswordInput.type === 'password') {
+            pdfPasswordInput.type = 'text';
+            pdfPasswordToggleVisibilityBtn.textContent = '🙈';
+          } else {
+            pdfPasswordInput.type = 'password';
+            pdfPasswordToggleVisibilityBtn.textContent = '👁️';
+          }
         });
       }
 
