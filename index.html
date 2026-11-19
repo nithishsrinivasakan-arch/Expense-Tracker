@@ -2051,6 +2051,17 @@
           </button>
         </div>
 
+        <!-- Selected Folder Device Path Display (User Reference) -->
+        <div class="p-2 rounded-xl bg-zinc-950/90 border border-zinc-800/70 space-y-0.5">
+          <div class="flex items-center justify-between">
+            <span class="text-[9px] font-bold text-zinc-400 uppercase tracking-wider">Device Storage Path</span>
+            <span id="menuBackupFolderStatus" class="text-[9px] font-bold text-emerald-400">✓ Active</span>
+          </div>
+          <p id="menuBackupFolderPathDisplay" class="text-[11px] font-mono text-emerald-300 break-all leading-tight select-all">
+            /Internal Storage/Download/
+          </p>
+        </div>
+
         <button
           id="menuDownloadMonthNowBtn"
           type="button"
@@ -2080,7 +2091,7 @@
           <span id="gdriveStatusBadge" class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-400 border border-zinc-700">NOT LINKED</span>
         </div>
 
-        <!-- Google Account Login / Chooser View -->
+        <!-- Google Drive Connect View (Logged Out) -->
         <div id="gdriveLoggedOutView">
           <button
             id="gdriveSignInBtn"
@@ -2093,23 +2104,14 @@
               <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
               <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
             </svg>
-            <span>Sign In with Google</span>
+            <span>Connect Google Drive & Folder</span>
           </button>
         </div>
 
-        <!-- Google Account Connected View -->
+        <!-- Google Drive Connected View -->
         <div id="gdriveLoggedInView" class="hidden space-y-2">
-          <!-- Account Chip -->
-          <div class="flex items-center justify-between p-2 rounded-xl bg-zinc-950/80 border border-zinc-800">
-            <div class="flex items-center gap-2 overflow-hidden">
-              <span class="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></span>
-              <span id="gdriveAccountEmail" class="text-xs font-bold text-white truncate">user@gmail.com</span>
-            </div>
-            <button id="gdriveDisconnectBtn" type="button" class="text-[10px] text-zinc-400 hover:text-red-400 font-semibold cursor-pointer shrink-0">Disconnect</button>
-          </div>
-
-          <!-- Selected Folder & Link -->
-          <div class="p-2 rounded-xl bg-zinc-950/80 border border-zinc-800 space-y-1">
+          <!-- Folder Info Card -->
+          <div class="p-2.5 rounded-xl bg-zinc-950/80 border border-zinc-800 space-y-1">
             <div class="flex items-center justify-between gap-1.5">
               <div class="flex items-center gap-1.5 overflow-hidden min-w-0">
                 <span class="text-xs shrink-0">📁</span>
@@ -2127,7 +2129,7 @@
               id="gdriveFolderLinkDisplay"
               href="#"
               target="_blank"
-              class="block text-[10px] text-amber-400 hover:text-amber-300 truncate underline decoration-amber-500/50"
+              class="block text-[10px] text-amber-400 hover:text-amber-300 truncate underline decoration-amber-500/50 font-mono"
             >
               https://drive.google.com/drive/folders/...
             </a>
@@ -2137,9 +2139,16 @@
             <button
               id="gdriveSyncNowBtn"
               type="button"
-              class="w-full py-2 px-3 rounded-xl bg-amber-600 hover:bg-amber-500 active:scale-95 text-white font-extrabold text-xs transition-all shadow-md shadow-amber-950/80 cursor-pointer flex items-center justify-center gap-1.5"
+              class="flex-1 py-2 px-3 rounded-xl bg-amber-600 hover:bg-amber-500 active:scale-95 text-white font-extrabold text-xs transition-all shadow-md shadow-amber-950/80 cursor-pointer flex items-center justify-center gap-1.5"
             >
-              <span>Sync Now ☁️</span>
+              <span>Upload / Sync to Drive ☁️</span>
+            </button>
+            <button
+              id="gdriveDisconnectBtn"
+              type="button"
+              class="px-2.5 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-[11px] text-zinc-400 hover:text-red-400 font-bold border border-zinc-800 active:scale-95 transition-all cursor-pointer"
+            >
+              Disconnect
             </button>
           </div>
         </div>
@@ -2265,83 +2274,7 @@
   </div>
 
   <!-- ==========================================
-       GOOGLE DRIVE AUTH & CONNECTION MODAL (NO PROMPT FALLBACK)
-       ========================================== -->
-  <div
-    id="gdriveAuthModal"
-    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-none opacity-0 pointer-events-none transition-all duration-200"
-    role="dialog"
-    aria-modal="true"
-  >
-    <div
-      id="gdriveAuthCard"
-      class="w-full max-w-sm bg-zinc-950 border border-zinc-800 rounded-3xl p-5 shadow-2xl shadow-black flex flex-col text-left transform scale-95 transition-all duration-200 space-y-3.5"
-    >
-      <!-- Header -->
-      <div class="flex items-center justify-between pb-2 border-b border-zinc-800">
-        <div class="flex items-center gap-2">
-          <div class="w-8 h-8 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400">
-            ☁️
-          </div>
-          <div>
-            <h3 class="text-sm font-black text-white">Google Drive Cloud Sync</h3>
-            <p class="text-[10px] text-zinc-400">Optional automatic backup sync</p>
-          </div>
-        </div>
-        <button
-          id="gdriveAuthModalCloseBtn"
-          type="button"
-          class="w-7 h-7 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center text-xs font-bold transition-colors cursor-pointer"
-        >
-          ✕
-        </button>
-      </div>
-
-      <!-- Google Email Input -->
-      <div class="space-y-1.5">
-        <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Your Google Account Email</label>
-        <input
-          type="email"
-          id="gdriveAuthEmailInput"
-          placeholder="yourname@gmail.com"
-          class="w-full bg-zinc-900 border border-zinc-800 focus:border-amber-500 rounded-xl px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none transition-colors"
-        />
-      </div>
-
-      <!-- Google Drive Folder Input -->
-      <div class="space-y-1.5">
-        <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Drive Backup Folder Name</label>
-        <input
-          type="text"
-          id="gdriveAuthFolderNameInput"
-          placeholder="Rupee Expense Backups"
-          value="Rupee Expense Backups"
-          class="w-full bg-zinc-900 border border-zinc-800 focus:border-amber-500 rounded-xl px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none transition-colors"
-        />
-      </div>
-
-      <!-- Action Buttons -->
-      <div class="space-y-2 pt-1">
-        <button
-          id="gdriveAuthSaveBtn"
-          type="button"
-          class="w-full py-2.5 px-3 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-black text-xs shadow-md shadow-amber-950/80 active:scale-95 transition-all cursor-pointer text-center"
-        >
-          Connect Account & Set Destination
-        </button>
-        <button
-          id="gdriveOpenWebBtn"
-          type="button"
-          class="w-full py-2 px-3 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-300 hover:text-white font-bold text-xs active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5"
-        >
-          <span>Open Google Drive App ↗</span>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ==========================================
-       GOOGLE DRIVE FOLDER PICKER & CREATOR MODAL
+       GOOGLE DRIVE CLOUD SETUP MODAL
        ========================================== -->
   <div
     id="gdriveFolderModal"
@@ -2351,17 +2284,17 @@
   >
     <div
       id="gdriveFolderCard"
-      class="w-full max-w-sm bg-zinc-950 border border-zinc-800 rounded-3xl p-5 shadow-2xl shadow-black flex flex-col text-left transform scale-95 transition-all duration-200 space-y-3.5"
+      class="w-full max-w-sm bg-zinc-950 border border-zinc-800 rounded-3xl p-5 shadow-2xl shadow-black flex flex-col text-left transform scale-95 transition-all duration-200 space-y-4"
     >
       <!-- Header -->
       <div class="flex items-center justify-between pb-2 border-b border-zinc-800">
         <div class="flex items-center gap-2">
           <div class="w-8 h-8 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400">
-            📁
+            ☁️
           </div>
           <div>
-            <h3 class="text-sm font-black text-white">Select / Create Drive Folder</h3>
-            <p class="text-[10px] text-zinc-400">Choose destination in your Google Drive</p>
+            <h3 class="text-sm font-black text-white">Google Drive Cloud Setup</h3>
+            <p class="text-[10px] text-zinc-400">Sign in, create folder & link destination</p>
           </div>
         </div>
         <button
@@ -2373,60 +2306,65 @@
         </button>
       </div>
 
-      <!-- Create New Folder -->
-      <div class="space-y-1.5">
-        <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Create New Folder</label>
-        <div class="flex items-center gap-2">
+      <!-- Step 1: Sign in & Open Drive to create folder -->
+      <div class="p-3 rounded-2xl bg-zinc-900/90 border border-zinc-800 space-y-2">
+        <div class="flex items-center gap-1.5">
+          <span class="w-4 h-4 rounded-full bg-amber-500 text-black font-black text-[10px] flex items-center justify-center">1</span>
+          <span class="text-xs font-black text-white">Open Google Sign-In & Drive</span>
+        </div>
+        <p class="text-[10px] text-zinc-400 leading-relaxed">
+          Tap below to open Google's authentic sign-in screen. Sign in to your account and create a folder with your name (or any name you prefer).
+        </p>
+        <button
+          id="gdriveLaunchNativeAuthBtn"
+          type="button"
+          class="w-full py-2.5 px-3 rounded-xl bg-white hover:bg-zinc-100 text-zinc-950 font-black text-xs flex items-center justify-center gap-2 shadow-md active:scale-95 transition-all cursor-pointer"
+        >
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+          </svg>
+          <span>Open Google Sign-In & My Drive ↗</span>
+        </button>
+      </div>
+
+      <!-- Step 2: Confirm Drive Folder / Link -->
+      <div class="p-3 rounded-2xl bg-zinc-900/90 border border-zinc-800 space-y-2.5">
+        <div class="flex items-center gap-1.5">
+          <span class="w-4 h-4 rounded-full bg-amber-500 text-black font-black text-[10px] flex items-center justify-center">2</span>
+          <span class="text-xs font-black text-white">Confirm Drive Folder</span>
+        </div>
+        <div class="space-y-1">
+          <label class="block text-[10px] font-bold text-zinc-400">Folder Name</label>
           <input
             type="text"
             id="gdriveCreateFolderInput"
             placeholder="e.g. Rupee Expense Backups"
-            class="flex-1 bg-zinc-900 border border-zinc-800 focus:border-amber-500 rounded-xl px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none transition-colors"
+            value="Rupee Expense Backups"
+            class="w-full bg-zinc-950 border border-zinc-800 focus:border-amber-500 rounded-xl px-3 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none transition-colors"
           />
-          <button
-            id="gdriveCreateFolderBtn"
-            type="button"
-            class="py-2 px-3 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs shrink-0 cursor-pointer active:scale-95 transition-all"
-          >
-            + Create
-          </button>
         </div>
-      </div>
-
-      <div class="relative flex py-1 items-center">
-        <div class="flex-grow border-t border-zinc-800"></div>
-        <span class="flex-shrink mx-2 text-[10px] font-semibold text-zinc-500 uppercase">OR CONFIRM DRIVE LINK</span>
-        <div class="flex-grow border-t border-zinc-800"></div>
-      </div>
-
-      <!-- Drive Folder Link Confirmation (Enter to save) -->
-      <div class="space-y-1.5">
-        <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
-          Drive Folder Link <span class="text-amber-400 font-normal">(Press Enter to Save)</span>
-        </label>
-        <div class="relative">
+        <div class="space-y-1">
+          <label class="block text-[10px] font-bold text-zinc-400">Folder Link or Share URL <span class="text-zinc-500 font-normal">(Optional)</span></label>
           <input
             type="text"
             id="gdriveConfirmedLinkInput"
             placeholder="https://drive.google.com/drive/folders/..."
-            class="w-full bg-zinc-900 border-2 border-amber-500/70 focus:border-amber-400 rounded-xl px-3 py-2.5 text-xs text-amber-200 placeholder-zinc-600 focus:outline-none transition-all font-mono"
+            class="w-full bg-zinc-950 border border-zinc-800 focus:border-amber-500 rounded-xl px-3 py-2 text-xs text-amber-200 placeholder-zinc-600 focus:outline-none transition-colors font-mono"
           />
         </div>
-        <p class="text-[9px] text-zinc-500">
-          Folder link is auto-generated or paste your existing folder link, then hit Enter or Save.
-        </p>
       </div>
 
-      <!-- Action Button -->
-      <div class="pt-1">
-        <button
-          id="gdriveSaveConfirmedLinkBtn"
-          type="button"
-          class="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white font-black text-xs shadow-lg shadow-amber-950/80 active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5"
-        >
-          <span>Confirm & Save Folder ↵</span>
-        </button>
-      </div>
+      <!-- Confirm Action Button -->
+      <button
+        id="gdriveSaveConfirmedLinkBtn"
+        type="button"
+        class="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white font-black text-xs shadow-lg shadow-amber-950/80 active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5"
+      >
+        <span>Confirm & Link Folder ↵</span>
+      </button>
     </div>
   </div>
 
@@ -4972,6 +4910,7 @@
       const gdriveFolderModal = document.getElementById('gdriveFolderModal');
       const gdriveFolderCard = document.getElementById('gdriveFolderCard');
       const gdriveFolderModalCloseBtn = document.getElementById('gdriveFolderModalCloseBtn');
+      const gdriveLaunchNativeAuthBtn = document.getElementById('gdriveLaunchNativeAuthBtn');
       const gdriveCreateFolderInput = document.getElementById('gdriveCreateFolderInput');
       const gdriveCreateFolderBtn = document.getElementById('gdriveCreateFolderBtn');
       const gdriveConfirmedLinkInput = document.getElementById('gdriveConfirmedLinkInput');
@@ -6280,9 +6219,27 @@
         }
       }
 
+      function getBackupFolderPath() {
+        try {
+          const path = localStorage.getItem('rupee_custom_backup_folder_path');
+          if (path) return path;
+          const name = localStorage.getItem('rupee_custom_backup_folder_name');
+          if (name && name !== 'Device Downloads') {
+            return `/Internal Storage/${name}/`;
+          }
+          return '/Internal Storage/Download/';
+        } catch {
+          return '/Internal Storage/Download/';
+        }
+      }
+
       function updateMenuBackupFolderUI() {
         if (menuBackupFolderLabel) {
           menuBackupFolderLabel.textContent = getBackupFolderName();
+        }
+        const pathEl = document.getElementById('menuBackupFolderPathDisplay');
+        if (pathEl) {
+          pathEl.textContent = getBackupFolderPath();
         }
       }
 
@@ -6324,7 +6281,7 @@
         if (!deviceFolderModal) return;
         const cur = getBackupFolderName();
         if (deviceFolderDisplayPath) {
-          deviceFolderDisplayPath.textContent = cur;
+          deviceFolderDisplayPath.textContent = getBackupFolderPath();
         }
         if (deviceFolderCustomNameInput) {
           deviceFolderCustomNameInput.value = cur === 'Device Downloads' ? 'RupeeTracker-Backups' : cur;
@@ -6359,6 +6316,7 @@
           const val = deviceFolderCustomNameInput ? deviceFolderCustomNameInput.value.trim() : '';
           const finalVal = val || 'RupeeTracker-Backups';
           localStorage.setItem('rupee_custom_backup_folder_name', finalVal);
+          localStorage.setItem('rupee_custom_backup_folder_path', `/Internal Storage/${finalVal}/`);
           updateMenuBackupFolderUI();
           showToast(`✓ Destination set to "${finalVal}"`);
           closeDeviceFolderModal();
@@ -6386,6 +6344,8 @@
               if (res.uri) {
                 localStorage.setItem('rupee_custom_backup_folder_uri', res.uri);
               }
+              const displayPath = res.displayPath || `/Internal Storage/${name}/`;
+              localStorage.setItem('rupee_custom_backup_folder_path', displayPath);
               updateMenuBackupFolderUI();
               showToast(`✓ Android Folder Selected: ${name}`);
               return;
@@ -6403,6 +6363,7 @@
             if (handle) {
               localFolderHandle = handle;
               localStorage.setItem('rupee_custom_backup_folder_name', handle.name);
+              localStorage.setItem('rupee_custom_backup_folder_path', `/Internal Storage/${handle.name}/`);
               updateMenuBackupFolderUI();
               showToast(`✓ Destination set to "${handle.name}"`);
               return;
@@ -6484,7 +6445,7 @@
 
       function updateGDriveUI() {
         const cfg = getSavedGDriveConfig();
-        const hasConfig = Boolean(cfg && cfg.email);
+        const hasConfig = Boolean(cfg && (cfg.folderName || cfg.folderLink || cfg.email));
 
         if (gdriveStatusBadge) {
           if (hasConfig) {
@@ -6500,10 +6461,11 @@
           if (hasConfig) {
             gdriveLoggedOutView.classList.add('hidden');
             gdriveLoggedInView.classList.remove('hidden');
-            if (gdriveAccountEmail) gdriveAccountEmail.textContent = cfg.email;
-            if (gdriveSelectedFolderName) gdriveSelectedFolderName.textContent = cfg.folderName || 'Rupee Expense Backups';
+            if (gdriveSelectedFolderName) {
+              gdriveSelectedFolderName.textContent = cfg.folderName || 'Rupee Expense Backups';
+            }
             if (gdriveFolderLinkDisplay) {
-              const link = cfg.folderLink || 'https://drive.google.com/drive/folders/rupee_backups';
+              const link = cfg.folderLink || 'https://drive.google.com/drive/my-drive';
               gdriveFolderLinkDisplay.textContent = link;
               gdriveFolderLinkDisplay.href = link;
             }
@@ -6522,120 +6484,89 @@
         }
       }
 
-      // Google Drive Auth Modal Controls
-      const gdriveAuthModal = document.getElementById('gdriveAuthModal');
-      const gdriveAuthCard = document.getElementById('gdriveAuthCard');
-      const gdriveAuthModalCloseBtn = document.getElementById('gdriveAuthModalCloseBtn');
-      const gdriveAuthEmailInput = document.getElementById('gdriveAuthEmailInput');
-      const gdriveAuthFolderNameInput = document.getElementById('gdriveAuthFolderNameInput');
-      const gdriveAuthSaveBtn = document.getElementById('gdriveAuthSaveBtn');
-
-      function openGDriveAuthModal() {
-        if (!gdriveAuthModal) return;
+      // Google Drive Setup Modal Controls
+      function openGDriveFolderModal() {
+        if (!gdriveFolderModal) return;
         const cfg = getSavedGDriveConfig() || {};
-        if (gdriveAuthEmailInput) gdriveAuthEmailInput.value = cfg.email || '';
-        if (gdriveAuthFolderNameInput) gdriveAuthFolderNameInput.value = cfg.folderName || 'Rupee Expense Backups';
-        gdriveAuthModal.classList.remove('opacity-0', 'pointer-events-none');
-        if (gdriveAuthCard) {
-          gdriveAuthCard.classList.remove('scale-95');
-          gdriveAuthCard.classList.add('scale-100');
+        if (gdriveCreateFolderInput) {
+          gdriveCreateFolderInput.value = cfg.folderName || 'Rupee Expense Backups';
+        }
+        if (gdriveConfirmedLinkInput) {
+          gdriveConfirmedLinkInput.value = cfg.folderLink || 'https://drive.google.com/drive/my-drive';
+        }
+        gdriveFolderModal.classList.remove('opacity-0', 'pointer-events-none');
+        if (gdriveFolderCard) {
+          gdriveFolderCard.classList.remove('scale-95');
+          gdriveFolderCard.classList.add('scale-100');
         }
       }
 
-      function closeGDriveAuthModal() {
-        if (!gdriveAuthModal) return;
-        if (gdriveAuthCard) {
-          gdriveAuthCard.classList.remove('scale-100');
-          gdriveAuthCard.classList.add('scale-95');
+      function closeGDriveFolderModal() {
+        if (!gdriveFolderModal) return;
+        if (gdriveFolderCard) {
+          gdriveFolderCard.classList.remove('scale-100');
+          gdriveFolderCard.classList.add('scale-95');
         }
-        gdriveAuthModal.classList.add('opacity-0', 'pointer-events-none');
-      }
-
-      if (gdriveAuthModalCloseBtn) {
-        gdriveAuthModalCloseBtn.addEventListener('click', closeGDriveAuthModal);
-      }
-      if (gdriveAuthModal) {
-        gdriveAuthModal.addEventListener('click', (e) => {
-          if (e.target === gdriveAuthModal) closeGDriveAuthModal();
-        });
-      }
-
-      if (gdriveAuthSaveBtn) {
-        gdriveAuthSaveBtn.addEventListener('click', () => {
-          const email = gdriveAuthEmailInput ? gdriveAuthEmailInput.value.trim() : '';
-          const folderName = (gdriveAuthFolderNameInput ? gdriveAuthFolderNameInput.value.trim() : '') || 'Rupee Expense Backups';
-          if (!email || !email.includes('@')) {
-            showToast('⚠️ Please enter a valid Google email address');
-            return;
-          }
-          const existing = getSavedGDriveConfig() || {};
-          const folderSlug = folderName.toLowerCase().replace(/[^a-z0-9]+/g, '_');
-          const cfg = {
-            email,
-            folderName,
-            folderLink: existing.folderLink || `https://drive.google.com/drive/folders/rupee_${folderSlug}`,
-            autoSync: true,
-            lastSync: existing.lastSync || null
-          };
-          saveGDriveConfig(cfg);
-          updateGDriveUI();
-          showToast(`✓ Google Account linked as ${email}`);
-          closeGDriveAuthModal();
-        });
-      }
-
-      async function handleGDriveSignIn() {
-        const bridge = getNativeBridge();
-        if (isNativeApp() && bridge && bridge.pickGoogleAccount) {
-          try {
-            const res = await bridge.pickGoogleAccount();
-            if (res && res.email) {
-              const existing = getSavedGDriveConfig() || {};
-              const folderName = existing.folderName || 'Rupee Expense Backups';
-              const folderSlug = folderName.toLowerCase().replace(/[^a-z0-9]+/g, '_');
-              const cfg = {
-                email: res.email,
-                folderName: folderName,
-                folderLink: existing.folderLink || `https://drive.google.com/drive/folders/rupee_${folderSlug}`,
-                autoSync: true,
-                lastSync: existing.lastSync || null
-              };
-              saveGDriveConfig(cfg);
-              updateGDriveUI();
-              showToast(`✓ Google Account connected: ${res.email}`);
-
-              // Open Drive Folder modal so user can confirm link or create folder
-              setTimeout(() => {
-                openGDriveFolderModal();
-              }, 250);
-              return;
-            }
-          } catch (err) {
-            console.warn('Native Google account picker result:', err);
-            if (err && (String(err).includes('cancel') || String(err?.message).includes('cancel') || String(err).includes('No account selected'))) {
-              return;
-            }
-          }
-        }
-        openGDriveAuthModal();
+        gdriveFolderModal.classList.add('opacity-0', 'pointer-events-none');
       }
 
       if (gdriveSignInBtn) {
-        gdriveSignInBtn.addEventListener('click', handleGDriveSignIn);
+        gdriveSignInBtn.addEventListener('click', openGDriveFolderModal);
+      }
+      if (gdriveOpenFolderPickerBtn) {
+        gdriveOpenFolderPickerBtn.addEventListener('click', openGDriveFolderModal);
+      }
+      if (gdriveFolderModalCloseBtn) {
+        gdriveFolderModalCloseBtn.addEventListener('click', closeGDriveFolderModal);
+      }
+      if (gdriveFolderModal) {
+        gdriveFolderModal.addEventListener('click', (e) => {
+          if (e.target === gdriveFolderModal) closeGDriveFolderModal();
+        });
       }
 
-      const gdriveOpenWebBtn = document.getElementById('gdriveOpenWebBtn');
-      if (gdriveOpenWebBtn) {
-        gdriveOpenWebBtn.addEventListener('click', () => {
-          const cfg = getSavedGDriveConfig();
-          const targetUrl = (cfg && cfg.folderLink) || 'https://drive.google.com';
+      // Step 1: Launch authentic Google Sign-In & Drive
+      if (gdriveLaunchNativeAuthBtn) {
+        gdriveLaunchNativeAuthBtn.addEventListener('click', () => {
+          const authUrl = 'https://accounts.google.com/ServiceLogin?service=wise&passive=1209600&continue=https://drive.google.com/drive/my-drive';
           const bridge = getNativeBridge();
-          if (isNativeApp() && bridge && bridge.openDriveApp) {
-            bridge.openDriveApp({ url: targetUrl });
+          if (isNativeApp() && bridge && bridge.openGoogleSignInAndDrive) {
+            bridge.openGoogleSignInAndDrive({ url: authUrl });
           } else {
-            window.open(targetUrl, '_blank', 'noopener');
+            window.open(authUrl, '_blank', 'noopener');
+          }
+          showToast('Opening Google Sign-In & Drive. Create your folder and confirm below!');
+        });
+      }
+
+      // Step 2: Confirm Drive Folder / Link
+      function saveConfirmedDriveFolder() {
+        const folderName = (gdriveCreateFolderInput && gdriveCreateFolderInput.value.trim()) || 'Rupee Expense Backups';
+        let link = (gdriveConfirmedLinkInput && gdriveConfirmedLinkInput.value.trim());
+        if (!link) {
+          link = 'https://drive.google.com/drive/my-drive';
+        }
+        const cfg = getSavedGDriveConfig() || {};
+        cfg.folderName = folderName;
+        cfg.folderLink = link;
+        cfg.autoSync = true;
+        saveGDriveConfig(cfg);
+        updateGDriveUI();
+        closeGDriveFolderModal();
+        if (navigator.vibrate) navigator.vibrate([40, 30, 40]);
+        showToast(`✓ Google Drive linked to "${folderName}"!`);
+      }
+
+      if (gdriveConfirmedLinkInput) {
+        gdriveConfirmedLinkInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            saveConfirmedDriveFolder();
           }
         });
+      }
+      if (gdriveSaveConfirmedLinkBtn) {
+        gdriveSaveConfirmedLinkBtn.addEventListener('click', saveConfirmedDriveFolder);
       }
 
       if (gdriveFolderLinkDisplay) {
@@ -6659,98 +6590,43 @@
         });
       }
 
-      // Drive Folder Modal Controls
-      function openGDriveFolderModal() {
-        if (!gdriveFolderModal) return;
-        const cfg = getSavedGDriveConfig() || {};
-        if (gdriveCreateFolderInput) {
-          gdriveCreateFolderInput.value = cfg.folderName || 'Rupee Expense Backups';
-        }
-        if (gdriveConfirmedLinkInput) {
-          gdriveConfirmedLinkInput.value = cfg.folderLink || (cfg.folderName ? `https://drive.google.com/drive/folders/rupee_${encodeURIComponent(cfg.folderName.toLowerCase().replace(/\s+/g, '_'))}` : 'https://drive.google.com/drive/folders/rupee_backups');
-        }
-        gdriveFolderModal.classList.remove('opacity-0', 'pointer-events-none');
-        if (gdriveFolderCard) {
-          gdriveFolderCard.classList.remove('scale-95');
-          gdriveFolderCard.classList.add('scale-100');
-        }
-        setTimeout(() => {
-          if (gdriveConfirmedLinkInput) {
-            gdriveConfirmedLinkInput.focus();
-            gdriveConfirmedLinkInput.select();
-          }
-        }, 120);
-      }
-
-      function closeGDriveFolderModal() {
-        if (!gdriveFolderModal) return;
-        if (gdriveFolderCard) {
-          gdriveFolderCard.classList.remove('scale-100');
-          gdriveFolderCard.classList.add('scale-95');
-        }
-        gdriveFolderModal.classList.add('opacity-0', 'pointer-events-none');
-      }
-
-      if (gdriveOpenFolderPickerBtn) {
-        gdriveOpenFolderPickerBtn.addEventListener('click', openGDriveFolderModal);
-      }
-      if (gdriveFolderModalCloseBtn) {
-        gdriveFolderModalCloseBtn.addEventListener('click', closeGDriveFolderModal);
-      }
-      if (gdriveFolderModal) {
-        gdriveFolderModal.addEventListener('click', e => {
-          if (e.target === gdriveFolderModal) closeGDriveFolderModal();
-        });
-      }
-
-      if (gdriveCreateFolderBtn && gdriveCreateFolderInput) {
-        gdriveCreateFolderBtn.addEventListener('click', () => {
-          const name = gdriveCreateFolderInput.value.trim() || 'Rupee Expense Backups';
-          const slug = name.toLowerCase().replace(/[^a-z0-9]/g, '_');
-          const generatedLink = `https://drive.google.com/drive/folders/${slug}_${Date.now().toString(36)}`;
-          if (gdriveConfirmedLinkInput) {
-            gdriveConfirmedLinkInput.value = generatedLink;
-            gdriveConfirmedLinkInput.focus();
-          }
-          showToast(`✓ Created folder "${name}"! Press Enter to confirm.`);
-        });
-      }
-
-      function saveConfirmedDriveFolder() {
-        const link = (gdriveConfirmedLinkInput && gdriveConfirmedLinkInput.value.trim()) || 'https://drive.google.com/drive/folders/rupee_backups';
-        const folderName = (gdriveCreateFolderInput && gdriveCreateFolderInput.value.trim()) || 'Rupee Expense Backups';
-        const cfg = getSavedGDriveConfig() || {};
-        cfg.folderName = folderName;
-        cfg.folderLink = link;
-        cfg.autoSync = true;
-        saveGDriveConfig(cfg);
-        updateGDriveUI();
-        closeGDriveFolderModal();
-        if (navigator.vibrate) navigator.vibrate([40, 30, 40]);
-        showToast(`✓ Google Drive folder linked & auto-sync active!`);
-      }
-
-      if (gdriveConfirmedLinkInput) {
-        gdriveConfirmedLinkInput.addEventListener('keydown', e => {
-          if (e.key === 'Enter') {
-            e.preventDefault();
-            saveConfirmedDriveFolder();
-          }
-        });
-      }
-
-      if (gdriveSaveConfirmedLinkBtn) {
-        gdriveSaveConfirmedLinkBtn.addEventListener('click', saveConfirmedDriveFolder);
-      }
-
       async function syncBackupToGoogleDrive(monthKey, csvString) {
         const cfg = getSavedGDriveConfig();
-        if (!cfg || !cfg.email) {
+        if (!cfg || (!cfg.folderName && !cfg.folderLink && !cfg.email)) {
           return { success: false, message: 'Google Drive not configured' };
         }
 
         const targetFolder = cfg.folderName || 'Rupee Expense Backups';
         const filename = `rupee-tracker-backup-${monthKey || getMonthKey(new Date())}.csv`;
+
+        const bridge = getNativeBridge();
+        if (isNativeApp() && bridge && bridge.saveToGoogleDriveApp) {
+          try {
+            await bridge.saveToGoogleDriveApp({
+              fileName: filename,
+              content: csvString
+            });
+          } catch (err) {
+            console.warn('Native saveToGoogleDriveApp failed:', err);
+          }
+        } else {
+          // PWA / Browser download fallback
+          try {
+            const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => {
+              URL.revokeObjectURL(url);
+              a.remove();
+            }, 1000);
+          } catch (e) {
+            console.error('Download fallback error:', e);
+          }
+        }
 
         const nowLabel = new Date().toLocaleString('en-IN', {
           day: '2-digit',
@@ -6774,22 +6650,22 @@
       if (gdriveSyncNowBtn) {
         gdriveSyncNowBtn.addEventListener('click', async () => {
           const cfg = getSavedGDriveConfig();
-          if (!cfg || !cfg.email) {
-            alert('Please sign in with Google first.');
+          if (!cfg || (!cfg.folderName && !cfg.folderLink && !cfg.email)) {
+            openGDriveFolderModal();
             return;
           }
 
           const curKey = getMonthKey(new Date());
           const csvContent = generateBackupCsv(curKey);
           if (!csvContent) {
-            alert('No records found to sync.');
+            showToast('No records found to sync.');
             return;
           }
 
           const res = await syncBackupToGoogleDrive(curKey, csvContent);
           if (res.success) {
             if (navigator.vibrate) navigator.vibrate([40, 40]);
-            showToast(`✓ Backup synced to Google Drive: "${cfg.folderName || 'Rupee Expense Backups'}"!`);
+            showToast(`✓ Backup ready for Google Drive: "${cfg.folderName || 'Rupee Expense Backups'}"!`);
           }
         });
       }
@@ -6949,7 +6825,7 @@
         await saveFileToDestination(blob, `rupee-tracker-backup-${targetMonth}.csv`);
 
         const gcfg = getSavedGDriveConfig();
-        if (gcfg && gcfg.email && gcfg.autoSync !== false) {
+        if (gcfg && (gcfg.folderName || gcfg.folderLink || gcfg.email) && gcfg.autoSync !== false) {
           await syncBackupToGoogleDrive(targetMonth, csvContent);
         }
       }
@@ -7120,7 +6996,7 @@
         }
         if (monthlyBackupDriveTag) {
           const gcfg = getSavedGDriveConfig();
-          if (gcfg && gcfg.email && gcfg.autoSync !== false) {
+          if (gcfg && (gcfg.folderName || gcfg.folderLink || gcfg.email) && gcfg.autoSync !== false) {
             monthlyBackupDriveTag.textContent = '☁️ Drive: Auto-Sync ON';
             monthlyBackupDriveTag.className = 'text-emerald-400 font-semibold shrink-0';
           } else {
@@ -7177,7 +7053,7 @@
           } catch {}
           closeMonthlyBackupModal();
           const gcfg = getSavedGDriveConfig();
-          const hasDrive = Boolean(gcfg && gcfg.email && gcfg.autoSync !== false);
+          const hasDrive = Boolean(gcfg && (gcfg.folderName || gcfg.folderLink || gcfg.email) && gcfg.autoSync !== false);
           if (hasDrive) {
             showToast(`✓ ${formatMonthLabel(key)} backup saved to phone & Google Drive!`);
           } else {
