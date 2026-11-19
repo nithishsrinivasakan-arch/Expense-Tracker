@@ -1,9 +1,11 @@
-const CACHE_NAME = 'rupee-tracker-cache-v53';
+const CACHE_NAME = 'rupee-tracker-cache-v55';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './app.css',
   './vendor/chart.umd.min.js',
+  './vendor/pdf.min.js',
+  './vendor/pdf.worker.min.js',
   './manifest.json',
   './icon-192.png',
   './icon-512.png',
