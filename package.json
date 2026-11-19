@@ -24,6 +24,7 @@
     "@capacitor/cli": "^8.6.2",
     "@capacitor/core": "^8.6.2",
     "chart.js": "^4.4.1",
+    "pdfjs-dist": "^3.11.174",
     "tesseract.js": "^7.0.0"
   },
   "devDependencies": {
