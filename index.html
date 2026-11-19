@@ -62,13 +62,23 @@
       -webkit-user-select: text;
     }
     html, body {
-      background-color: #0b0f19;
+      background-color: #020617;
       color: #f8fafc;
-      overscroll-behavior-y: none;
+      margin: 0;
+      padding: 0;
+      width: 100%;
       height: 100%;
-      height: 100dvh;
+      height: 100vh;
       overflow: hidden;
+      overscroll-behavior: none;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    #appMobileShell {
+      height: 100%;
+      height: 100vh;
+      max-height: 100vh;
     }
     /* Safe-area insets for notched phones */
     .pt-safe {
@@ -156,7 +166,7 @@
 <body class="bg-slate-950 text-slate-100 flex flex-col justify-between select-none antialiased">
 
   <!-- Mobile Shell Container -->
-  <div class="w-full max-w-md mx-auto h-[100dvh] flex flex-col justify-between relative px-3.5 pt-safe pb-safe overflow-hidden">
+  <div id="appMobileShell" class="w-full max-w-md mx-auto h-full flex flex-col justify-between relative px-3 pt-safe pb-safe overflow-hidden">
 
     <!-- ==========================================
          TOP MOBILE APP BAR (EXACT MATCH TO LAYOUT)
@@ -892,7 +902,7 @@
     <!-- ==========================================
          BOTTOM NATIVE MOBILE NAVIGATION BAR
          ========================================== -->
-    <nav id="bottomNav" class="shrink-0 bg-slate-900/90 backdrop-blur-xl border border-slate-800/90 rounded-3xl p-1.5 shadow-2xl mt-1.5 grid grid-cols-3 gap-1.5 z-30">
+    <nav id="bottomNav" class="shrink-0 bg-slate-900/90 backdrop-none border border-slate-800/90 rounded-3xl p-1.5 shadow-2xl mt-1.5 grid grid-cols-3 gap-1.5 z-30">
       
       <!-- Tab 1: Quick Add (Matching Image: + above Add Expense) -->
       <button
@@ -937,7 +947,7 @@
        ========================================== -->
   <div
     id="recordConfirmModal"
-    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-none opacity-0 pointer-events-none transition-all duration-200"
     role="dialog"
     aria-modal="true"
   >
@@ -976,7 +986,7 @@
        ========================================== -->
   <div
     id="deleteConfirmModal"
-    class="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200"
+    class="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/75 backdrop-none opacity-0 pointer-events-none transition-all duration-200"
     role="dialog"
     aria-modal="true"
   >
@@ -1027,7 +1037,7 @@
        ========================================== -->
   <div
     id="editExpenseModal"
-    class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200"
+    class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-none opacity-0 pointer-events-none transition-all duration-200"
     role="dialog"
     aria-modal="true"
   >
@@ -1161,7 +1171,7 @@
        ========================================== -->
   <div
     id="editBudgetModal"
-    class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200"
+    class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-none opacity-0 pointer-events-none transition-all duration-200"
     role="dialog"
     aria-modal="true"
   >
@@ -1293,7 +1303,7 @@
        ========================================== -->
   <div
     id="budgetRecordConfirmModal"
-    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-none opacity-0 pointer-events-none transition-all duration-200"
     role="dialog"
     aria-modal="true"
   >
@@ -1335,7 +1345,7 @@
        ========================================== -->
   <div
     id="budgetDeleteConfirmModal"
-    class="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200"
+    class="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/80 backdrop-none opacity-0 pointer-events-none transition-all duration-200"
     role="dialog"
     aria-modal="true"
   >
@@ -1388,7 +1398,7 @@
        ========================================== -->
   <div
     id="summaryDetailModal"
-    class="fixed inset-0 z-50 flex items-start justify-center p-3 pt-5 sm:p-4 sm:pt-8 bg-black/80 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200 overflow-y-auto"
+    class="fixed inset-0 z-50 flex items-start justify-center p-3 pt-5 sm:p-4 sm:pt-8 bg-black/80 backdrop-none opacity-0 pointer-events-none transition-all duration-200 overflow-y-auto"
     role="dialog"
     aria-modal="true"
   >
@@ -1462,7 +1472,7 @@
        ========================================== -->
   <div
     id="budgetDetailModal"
-    class="fixed inset-0 z-50 flex items-start justify-center p-3 pt-5 sm:p-4 sm:pt-8 bg-black/80 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200 overflow-y-auto"
+    class="fixed inset-0 z-50 flex items-start justify-center p-3 pt-5 sm:p-4 sm:pt-8 bg-black/80 backdrop-none opacity-0 pointer-events-none transition-all duration-200 overflow-y-auto"
     role="dialog"
     aria-modal="true"
   >
@@ -1561,7 +1571,7 @@
        ========================================== -->
   <div
     id="photoReviewModal"
-    class="fixed inset-0 z-50 flex items-start justify-center p-2.5 pt-3 sm:p-4 sm:pt-6 bg-black/90 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-200 overflow-y-auto"
+    class="fixed inset-0 z-50 flex items-start justify-center p-2.5 pt-3 sm:p-4 sm:pt-6 bg-black/90 backdrop-none opacity-0 pointer-events-none transition-all duration-200 overflow-y-auto"
     role="dialog"
     aria-modal="true"
   >
@@ -1685,15 +1695,12 @@
       </div>
     </div>
   </div>
-    </div>
-  </div>
-
-  <!-- ==========================================
+<!-- ==========================================
        PHOTO STAGED ITEM EDIT MODAL SCREEN
        ========================================== -->
   <div
     id="photoItemEditModal"
-    class="fixed inset-0 z-[65] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200"
+    class="fixed inset-0 z-[65] flex items-center justify-center p-4 bg-black/80 backdrop-none opacity-0 pointer-events-none transition-all duration-200"
     role="dialog"
     aria-modal="true"
   >
@@ -1824,7 +1831,7 @@
        ========================================== -->
   <div
     id="exportCsvModal"
-    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-200"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-none opacity-0 pointer-events-none transition-all duration-200"
     role="dialog"
     aria-modal="true"
   >
@@ -1978,7 +1985,7 @@
        ========================================== -->
   <div
     id="appMenuModal"
-    class="fixed inset-0 z-50 flex items-start justify-center p-3 sm:p-4 pt-6 bg-black/85 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-200 overflow-y-auto"
+    class="fixed inset-0 z-50 flex items-start justify-center p-3 sm:p-4 pt-6 bg-black/85 backdrop-none opacity-0 pointer-events-none transition-all duration-200 overflow-y-auto"
     role="dialog"
     aria-modal="true"
   >
@@ -2217,7 +2224,7 @@
        ========================================== -->
   <div
     id="deviceFolderModal"
-    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-200"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-none opacity-0 pointer-events-none transition-all duration-200"
     role="dialog"
     aria-modal="true"
   >
@@ -2297,7 +2304,7 @@
        ========================================== -->
   <div
     id="gdriveAuthModal"
-    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-200"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-none opacity-0 pointer-events-none transition-all duration-200"
     role="dialog"
     aria-modal="true"
   >
@@ -2383,7 +2390,7 @@
        ========================================== -->
   <div
     id="gdriveFolderModal"
-    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-200"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-none opacity-0 pointer-events-none transition-all duration-200"
     role="dialog"
     aria-modal="true"
   >
@@ -2467,14 +2474,13 @@
       </div>
     </div>
   </div>
-  </div>
 
   <!-- ==========================================
        MONTHLY SCHEDULED AUTO-BACKUP PROMPT (28th OF MONTH)
        ========================================== -->
   <div
     id="monthlyBackupModal"
-    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-200"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-none opacity-0 pointer-events-none transition-all duration-200"
     role="dialog"
     aria-modal="true"
   >
@@ -2546,7 +2552,7 @@
        ========================================== -->
   <div
     id="pinSettingsModal"
-    class="fixed inset-0 z-40 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 transition-all duration-200 opacity-0 pointer-events-none"
+    class="fixed inset-0 z-40 bg-slate-950/80 backdrop-none flex items-center justify-center p-4 transition-all duration-200 opacity-0 pointer-events-none"
   >
     <div
       id="pinSettingsCard"
@@ -2633,7 +2639,7 @@
   <div
     id="pinResetConfirmModal"
     style="z-index: 60;"
-    class="fixed inset-0 z-[60] bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-4 transition-all duration-200 opacity-0 pointer-events-none"
+    class="fixed inset-0 z-[60] bg-slate-950/85 backdrop-none flex items-center justify-center p-4 transition-all duration-200 opacity-0 pointer-events-none"
   >
     <div
       id="pinResetConfirmCard"
@@ -2851,9 +2857,6 @@
         </button>
       </div>
     </div>
-  </div>
-
-  
   </div>
 
   <!-- ==========================================
@@ -3979,16 +3982,17 @@
       function refreshUI() {
         updateSummaries();
         updateTagFilterOptions();
-        renderHistory();
-        if (currentTab === 'analytics') {
+        if (currentTab === 'history') {
+          renderHistory();
+        } else if (currentTab === 'analytics') {
           renderAnalytics();
         } else if (currentTab === 'budget') {
           renderBudget();
         }
-        if (typeof renderSummaryModal === 'function') {
+        if (typeof renderSummaryModal === 'function' && summaryDetailModal && !summaryDetailModal.classList.contains('opacity-0')) {
           renderSummaryModal();
         }
-        if (typeof renderBudgetModalList === 'function') {
+        if (typeof renderBudgetModalList === 'function' && budgetDetailModal && !budgetDetailModal.classList.contains('opacity-0')) {
           renderBudgetModalList();
         }
       }
@@ -4069,7 +4073,7 @@
         if (!toast) {
           toast = document.createElement('div');
           toast.id = 'globalToast';
-          toast.className = 'fixed top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 bg-slate-900/95 border border-slate-700/80 text-white text-xs font-bold rounded-2xl shadow-2xl backdrop-blur-md transition-all duration-300 opacity-0 pointer-events-none flex items-center gap-2 max-w-[90vw] text-center';
+          toast.className = 'fixed top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 bg-slate-900/95 border border-slate-700/80 text-white text-xs font-bold rounded-2xl shadow-2xl backdrop-none transition-all duration-300 opacity-0 pointer-events-none flex items-center gap-2 max-w-[90vw] text-center';
           document.body.appendChild(toast);
         }
         toast.textContent = msg;
@@ -8119,18 +8123,22 @@
         });
 
         // Whenever user re-opens or switches back to the app, check for update and recalculate
+        let lastVisChangeTimer = null;
         window.addEventListener('visibilitychange', () => {
           if (document.visibilityState === 'hidden') {
             lastHiddenTimestamp = Date.now();
           } else if (document.visibilityState === 'visible') {
-            refreshUI();
-            const pin = getSavedPin();
-            if (pin && !isPickingSystemFile) {
-              showPinLockOverlay('UNLOCK');
-            } else {
-              checkMonthlyBackupPrompt();
-            }
-            isPickingSystemFile = false;
+            clearTimeout(lastVisChangeTimer);
+            lastVisChangeTimer = setTimeout(() => {
+              refreshUI();
+              const pin = getSavedPin();
+              if (pin && !isPickingSystemFile) {
+                showPinLockOverlay('UNLOCK');
+              } else {
+                checkMonthlyBackupPrompt();
+              }
+              isPickingSystemFile = false;
+            }, 60);
           }
         });
         window.addEventListener('pagehide', () => {
